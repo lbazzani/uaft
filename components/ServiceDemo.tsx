@@ -141,13 +141,13 @@ const AIDemo = () => {
     setTimeout(() => {
       setThinking(false);
       setPredictions([
-        { text: 'Il caffè sta per finire in ufficio', confidence: 99.8 },
-        { text: "L'utente vuole un aumento", confidence: 94.2 },
-        { text: 'Oggi è lunedì (purtroppo)', confidence: 100 },
-        { text: 'Qualcuno ha dimenticato di fare il commit', confidence: 87.5 },
+        { text: t('demo.ai.pred1'), confidence: 99.8 },
+        { text: t('demo.ai.pred2'), confidence: 94.2 },
+        { text: t('demo.ai.pred3'), confidence: 100 },
+        { text: t('demo.ai.pred4'), confidence: 87.5 },
       ]);
     }, 3000);
-  }, []);
+  }, [t]);
 
   return (
     <Box>
@@ -163,7 +163,7 @@ const AIDemo = () => {
             {t('demo.ai.thinking')}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            (Probabilmente sta calcolando quanto caffè servirà oggi)
+            {t('demo.ai.coffee')}
           </Typography>
         </Box>
       ) : (
@@ -205,10 +205,10 @@ const AIDemo = () => {
 
           <Paper sx={{ p: 3, mt: 3, background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', color: 'white' }}>
             <Typography variant="h6" sx={{ mb: 1 }}>
-              💡 Fun Fact
+              {t('demo.ai.funfact.title')}
             </Typography>
             <Typography variant="body2">
-              La nostra AI ha previsto 7 delle ultime 3 crisi. È così intelligente che a volte inventa il futuro! 🎯
+              {t('demo.ai.funfact.desc')}
             </Typography>
           </Paper>
         </Box>
@@ -219,6 +219,7 @@ const AIDemo = () => {
 
 // Demo Security
 const SecurityDemo = () => {
+  const { t } = useLanguage();
   const [threats, setThreats] = useState(0);
   const [blocked, setBlocked] = useState(0);
   const [layers, setLayers] = useState(0);
@@ -254,20 +255,25 @@ const SecurityDemo = () => {
           <Grid size={{ xs: 4 }}>
             <Box sx={{ textAlign: 'center' }}>
               <Typography variant="h3" sx={{ fontWeight: 700 }}>{blocked}</Typography>
-              <Typography variant="caption">Attacchi Bloccati</Typography>
+              <Typography variant="caption">{t('demo.security.blocked')}</Typography>
             </Box>
           </Grid>
           <Grid size={{ xs: 4 }}>
             <Box sx={{ textAlign: 'center' }}>
               <Typography variant="h3" sx={{ fontWeight: 700 }}>{layers}</Typography>
-              <Typography variant="caption">Layer di Sicurezza</Typography>
+              <Typography variant="caption">{t('demo.security.layers')}</Typography>
             </Box>
           </Grid>
         </Grid>
       </Paper>
 
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-        {['Firewall Triplo', 'Crittografia Militare', 'Autenticazione a 47 Fattori', 'Scanner Anti-Hacker'].map((feature, index) => (
+        {[
+          t('demo.security.feature1'),
+          t('demo.security.feature2'),
+          t('demo.security.feature3'),
+          t('demo.security.feature4')
+        ].map((feature, index) => (
           <motion.div
             key={feature}
             initial={{ opacity: 0, x: -20 }}
@@ -279,7 +285,7 @@ const SecurityDemo = () => {
                 <CheckCircle sx={{ color: '#38ef7d', mr: 2 }} />
                 <Typography variant="body1" sx={{ fontWeight: 500 }}>{feature}</Typography>
               </Box>
-              <Chip label="ATTIVO" size="small" sx={{ bgcolor: '#ECFDF5', color: '#059669', fontWeight: 600 }} />
+              <Chip label={t('demo.security.active')} size="small" sx={{ bgcolor: '#ECFDF5', color: '#059669', fontWeight: 600 }} />
             </Paper>
           </motion.div>
         ))}
@@ -290,6 +296,7 @@ const SecurityDemo = () => {
 
 // Demo Speed
 const SpeedDemo = () => {
+  const { t } = useLanguage();
   const [speed, setSpeed] = useState(0);
   const [loading, setLoading] = useState(0);
 
@@ -319,18 +326,18 @@ const SpeedDemo = () => {
           <Typography component="span" variant="h4"> ms</Typography>
         </Typography>
         <Typography variant="h6" sx={{ opacity: 0.9 }}>
-          Velocità di Risposta
+          {t('demo.speed.response')}
         </Typography>
         <Typography variant="caption" sx={{ opacity: 0.7, display: 'block', mt: 1 }}>
-          (Più veloce della luce, ma solo il lunedì)
+          {t('demo.speed.fast')}
         </Typography>
       </Paper>
 
       <Grid container spacing={2}>
         {[
-          { label: 'Richieste/sec', value: '∞', icon: <TrendingUp /> },
-          { label: 'Latenza', value: '-5ms', icon: <Speed /> },
-          { label: 'Uptime', value: '101%', icon: <CheckCircle /> },
+          { label: t('demo.speed.requests'), value: '∞', icon: <TrendingUp /> },
+          { label: t('demo.speed.latency'), value: '-5ms', icon: <Speed /> },
+          { label: t('demo.speed.uptime'), value: '101%', icon: <CheckCircle /> },
         ].map((stat, index) => (
           <Grid key={stat.label} size={{ xs: 4 }}>
             <motion.div
@@ -352,7 +359,7 @@ const SpeedDemo = () => {
 
       <Paper sx={{ p: 2, mt: 3, backgroundColor: '#FFF7ED', border: '2px solid #FA8BFF' }}>
         <Typography variant="body2" sx={{ fontStyle: 'italic', textAlign: 'center' }}>
-          ⚡ Nota: A volte siamo così veloci che arriviamo prima di partire. È complicato.
+          {t('demo.speed.note')}
         </Typography>
       </Paper>
     </Box>
@@ -361,6 +368,7 @@ const SpeedDemo = () => {
 
 // Demo Code
 const CodeDemo = () => {
+  const { t } = useLanguage();
   const [lines, setLines] = useState<string[]>([]);
   const [linesCount, setLinesCount] = useState(0);
 
@@ -428,15 +436,15 @@ const CodeDemo = () => {
       <Box sx={{ display: 'flex', gap: 2 }}>
         <Paper sx={{ flex: 1, p: 2, textAlign: 'center', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', color: 'white' }}>
           <Typography variant="h4" sx={{ fontWeight: 700 }}>{lines.length * 1000}+</Typography>
-          <Typography variant="caption">Righe Auto-Scritte</Typography>
+          <Typography variant="caption">{t('demo.code.lines')}</Typography>
         </Paper>
         <Paper sx={{ flex: 1, p: 2, textAlign: 'center', background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)', color: 'white' }}>
           <Typography variant="h4" sx={{ fontWeight: 700 }}>0</Typography>
-          <Typography variant="caption">Bug Trovati*</Typography>
+          <Typography variant="caption">{t('demo.code.bugs')}</Typography>
         </Paper>
       </Box>
       <Typography variant="caption" sx={{ display: 'block', textAlign: 'center', mt: 1, fontStyle: 'italic', color: 'text.secondary' }}>
-        *Che ammettiamo pubblicamente
+        {t('demo.code.disclaimer')}
       </Typography>
     </Box>
   );
@@ -476,7 +484,7 @@ const DeployDemo = () => {
           {deployed ? t('demo.deploy.completed') : t('demo.deploy.inprogress')}
         </Typography>
         <Typography variant="body2" sx={{ opacity: 0.9 }}>
-          {deployed ? 'In produzione da ben 0.3 secondi!' : 'Stanno succedendo cose...'}
+          {deployed ? t('demo.deploy.production') : t('demo.deploy.happening')}
         </Typography>
       </Paper>
 
@@ -492,7 +500,7 @@ const DeployDemo = () => {
             }}
           />
           <Typography variant="caption" sx={{ mt: 1, display: 'block', textAlign: 'center' }}>
-            {progress}% - {progress < 50 ? 'Building...' : progress < 80 ? 'Testing...' : 'Deploying...'}
+            {progress}% - {progress < 50 ? t('demo.deploy.building') : progress < 80 ? t('demo.deploy.testing') : t('demo.deploy.deploying')}
           </Typography>
         </Box>
       )}
@@ -503,7 +511,7 @@ const DeployDemo = () => {
           animate={{ opacity: 1, scale: 1 }}
         >
           <Grid container spacing={2}>
-            {['Build: 2.3s', 'Test: 100% Pass', 'Deploy: Instant™'].map((stat, index) => (
+            {[t('demo.deploy.stat1'), t('demo.deploy.stat2'), t('demo.deploy.stat3')].map((stat, index) => (
               <Grid key={stat} size={{ xs: 4 }}>
                 <Paper sx={{ p: 2, textAlign: 'center' }}>
                   <CheckCircle sx={{ color: '#38ef7d', fontSize: 40 }} />
@@ -515,7 +523,7 @@ const DeployDemo = () => {
 
           <Paper sx={{ p: 2, mt: 3, backgroundColor: '#FFF7ED', border: '2px dashed #FA8BFF' }}>
             <Typography variant="body2" sx={{ fontStyle: 'italic', textAlign: 'center' }}>
-              ⚠️ Attenzione: Abbiamo anche rotto la produzione 3 volte oggi. Ma abbiamo rollback! 🎢
+              {t('demo.deploy.warning')}
             </Typography>
           </Paper>
         </motion.div>
@@ -581,9 +589,9 @@ export default function ServiceDemo({ open, onClose, service, onOpenPayment }: S
           p: 3,
         }}
       >
-        <Typography variant="h5" sx={{ fontWeight: 700 }}>
+        <Box sx={{ fontWeight: 700, fontSize: '1.5rem' }}>
           {getTitle()}
-        </Typography>
+        </Box>
         <IconButton onClick={onClose} sx={{ color: 'white' }}>
           <Close />
         </IconButton>
