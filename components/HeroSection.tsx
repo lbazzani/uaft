@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion } from 'framer-motion';
 import {
   Box,
   Container,
@@ -34,14 +34,11 @@ export default function HeroSection() {
   const { t, language } = useLanguage();
   const [demoOpen, setDemoOpen] = useState(false);
   const [selectedFeature, setSelectedFeature] = useState<'deploy' | 'ai' | 'security' | null>(null);
-  const { scrollY } = useScroll();
 
   const handleFeatureClick = (feature: 'deploy' | 'ai' | 'security') => {
     setSelectedFeature(feature);
     setDemoOpen(true);
   };
-  const heroOpacity = useTransform(scrollY, [0, 300], [1, 0]);
-  const heroY = useTransform(scrollY, [0, 300], [0, -50]);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -53,8 +50,6 @@ export default function HeroSection() {
         feature={selectedFeature}
       />
       <Box
-        component={motion.div}
-        style={{ opacity: heroOpacity, y: heroY }}
         sx={{
         background: 'linear-gradient(135deg, #FF6B35 0%, #FF8C5A 50%, #FFA07A 100%)',
         color: 'white',

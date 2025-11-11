@@ -14,8 +14,13 @@ import {
   ListItemIcon,
   ListItemText,
   Grow,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  IconButton,
 } from '@mui/material';
-import { AttachMoney, SmartToy, CheckCircle, TrendingUp, Speed, Security } from '@mui/icons-material';
+import { AttachMoney, SmartToy, CheckCircle, TrendingUp, Speed, Security, Close, Lightbulb } from '@mui/icons-material';
 import ScrollAnimation from './ScrollAnimation';
 import { useLanguage } from '@/contexts/LanguageContext';
 
@@ -48,6 +53,7 @@ export default function AIPricingSection() {
   const [isFocused, setIsFocused] = useState(false);
   const [nudgeMessage, setNudgeMessage] = useState<string>('');
   const [showNudge, setShowNudge] = useState(false);
+  const [analysisDialogOpen, setAnalysisDialogOpen] = useState(false);
   const nudgeTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   // Effect per mostrare messaggi di nudge quando l'utente non ha il focus
@@ -270,7 +276,7 @@ export default function AIPricingSection() {
 
                 {estimatedPrice !== null && (
                   <Fade in={true}>
-                    <Box sx={{ mt: 4, display: 'flex', flexDirection: 'column', gap: 3 }}>
+                    <Box sx={{ mt: 4 }}>
                       <Box
                         sx={{
                           p: 4,
@@ -290,29 +296,33 @@ export default function AIPricingSection() {
                         <Typography variant="h2" sx={{ fontWeight: 800, my: 2 }}>
                           €{estimatedPrice.toLocaleString()}<Typography component="span" variant="h5">{t('pricing.result.month')}</Typography>
                         </Typography>
-                        <Typography variant="body2" sx={{ opacity: 0.9 }}>
+                        <Typography variant="body2" sx={{ opacity: 0.9, mb: 3 }}>
                           {t('pricing.result.disclaimer')}
                         </Typography>
-                      </Box>
 
-                      {aiAnalysis && (
-                        <Paper
-                          elevation={0}
-                          sx={{
-                            p: 3,
-                            backgroundColor: '#F0F9FF',
-                            border: '2px solid #06B6D4',
-                            borderRadius: 3,
-                          }}
-                        >
-                          <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1, fontWeight: 600, color: '#0891B2' }}>
-                            <SmartToy /> {t('pricing.result.analysis')}
-                          </Typography>
-                          <Typography variant="body1" sx={{ whiteSpace: 'pre-wrap', lineHeight: 1.8, color: 'text.primary' }}>
-                            {aiAnalysis}
-                          </Typography>
-                        </Paper>
-                      )}
+                        {aiAnalysis && (
+                          <Button
+                            variant="contained"
+                            size="large"
+                            startIcon={<Lightbulb />}
+                            onClick={() => setAnalysisDialogOpen(true)}
+                            sx={{
+                              backgroundColor: 'white',
+                              color: '#F97316',
+                              fontWeight: 600,
+                              py: 1.5,
+                              px: 4,
+                              '&:hover': {
+                                backgroundColor: '#FFF7ED',
+                                transform: 'scale(1.05)',
+                              },
+                              transition: 'all 0.3s ease',
+                            }}
+                          >
+                            {t('pricing.result.viewAnalysis')}
+                          </Button>
+                        )}
+                      </Box>
                     </Box>
                   </Fade>
                 )}
@@ -321,6 +331,78 @@ export default function AIPricingSection() {
           </Box>
         </Box>
       </Container>
+
+      {/* AI Analysis Dialog */}
+      <Dialog
+        open={analysisDialogOpen}
+        onClose={() => setAnalysisDialogOpen(false)}
+        maxWidth="md"
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: 4,
+            maxHeight: '80vh',
+          },
+        }}
+      >
+        <DialogTitle
+          sx={{
+            background: 'linear-gradient(135deg, #06B6D4 0%, #0891B2 100%)',
+            color: 'white',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            p: 3,
+          }}
+        >
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+            <SmartToy sx={{ fontSize: 32 }} />
+            <Typography variant="h5" sx={{ fontWeight: 700 }}>
+              {t('pricing.result.analysis')}
+            </Typography>
+          </Box>
+          <IconButton onClick={() => setAnalysisDialogOpen(false)} sx={{ color: 'white' }}>
+            <Close />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent sx={{ p: 4, backgroundColor: '#F0F9FF' }}>
+          <Paper
+            elevation={0}
+            sx={{
+              p: 3,
+              backgroundColor: 'white',
+              borderRadius: 3,
+              border: '2px solid #06B6D4',
+            }}
+          >
+            <Typography
+              variant="body1"
+              sx={{
+                whiteSpace: 'pre-wrap',
+                lineHeight: 1.8,
+                color: 'text.primary',
+                fontSize: '1.05rem',
+              }}
+            >
+              {aiAnalysis}
+            </Typography>
+          </Paper>
+        </DialogContent>
+        <DialogActions sx={{ p: 3, backgroundColor: 'white' }}>
+          <Button
+            onClick={() => setAnalysisDialogOpen(false)}
+            variant="contained"
+            sx={{
+              backgroundColor: '#06B6D4',
+              '&:hover': {
+                backgroundColor: '#0891B2',
+              },
+            }}
+          >
+            {t('demo.close')}
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       {/* Rotating animation CSS */}
       <style jsx global>{`

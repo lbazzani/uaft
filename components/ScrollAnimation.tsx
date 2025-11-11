@@ -19,8 +19,8 @@ export default function ScrollAnimation({
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   const [ref, inView] = useInView({
-    triggerOnce: isMobile, // Su mobile l'animazione avviene una sola volta
-    threshold: isMobile ? 0.05 : 0.3, // Threshold aumentato per mantenere il contenuto visibile più a lungo
+    triggerOnce: true, // Animazione avviene una sola volta per evitare sfarfallio
+    threshold: 0.15, // Threshold ottimale per visibilità e performance
   });
 
   const directions = {
@@ -44,12 +44,7 @@ export default function ScrollAnimation({
               x: 0,
               y: 0,
             }
-          : isMobile
-            ? {} // Su mobile non anima l'uscita
-            : {
-                opacity: 0,
-                ...directions[direction],
-              }
+          : {} // Mantieni sempre visibile se già mostrato
       }
       transition={{
         duration: 0.6,

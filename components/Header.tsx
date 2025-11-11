@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion } from 'framer-motion';
 import {
   AppBar,
   Toolbar,
@@ -28,38 +28,22 @@ import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function Header() {
   const { t } = useLanguage();
-  const [showHeader, setShowHeader] = useState(true);
-  const [lastScrollY, setLastScrollY] = useState(0);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [contactDialogOpen, setContactDialogOpen] = useState(false);
   const [paymentDialogOpen, setPaymentDialogOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-  const { scrollY } = useScroll();
-  const headerOpacity = useTransform(scrollY, [0, 100], [0.95, 1]);
-  const headerShadow = useTransform(scrollY, [0, 100], [0, 0.15]);
 
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-
       setIsScrolled(currentScrollY > 50);
-
-      if (currentScrollY < 100) {
-        setShowHeader(true);
-      } else if (currentScrollY > lastScrollY && currentScrollY > 100) {
-        setShowHeader(false);
-      } else {
-        setShowHeader(true);
-      }
-
-      setLastScrollY(currentScrollY);
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [lastScrollY]);
+  }, []);
 
   const menuItems = [
     { label: t('header.services'), href: '#services' },
@@ -86,9 +70,6 @@ export default function Header() {
         onClose={() => setPaymentDialogOpen(false)}
       />
       <AppBar
-        component={motion.div}
-        animate={{ y: showHeader ? 0 : -100 }}
-        transition={{ duration: 0.3, ease: 'easeInOut' }}
         position="fixed"
         elevation={0}
         sx={{

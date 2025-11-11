@@ -67,7 +67,7 @@ const CloudDemo = () => {
 
   return (
     <Box>
-      <Paper sx={{ p: 3, mb: 3, background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', color: 'white', position: 'relative', overflow: 'hidden', minHeight: 250 }}>
+      <Paper sx={{ p: 3, mb: 3, background: 'linear-gradient(135deg, #F97316 0%, #FB923C 100%)', color: 'white', position: 'relative', overflow: 'hidden', minHeight: 250 }}>
         <Typography variant="h5" sx={{ mb: 2, fontWeight: 700 }}>
           {t('demo.cloud.intensifier')}
         </Typography>
@@ -111,7 +111,7 @@ const CloudDemo = () => {
 
       <Grid container spacing={2}>
         <Grid size={{ xs: 6 }}>
-          <Card sx={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 50%)' }}>
+          <Card sx={{ background: 'linear-gradient(135deg, #F97316 0%, #FB923C 50%)' }}>
             <CardContent>
               <Typography variant="h4" sx={{ color: 'white', fontWeight: 700 }}>∞</Typography>
               <Typography variant="body2" sx={{ color: 'white', opacity: 0.9 }}>{t('demo.cloud.clouds')}</Typography>
@@ -203,7 +203,7 @@ const AIDemo = () => {
             </motion.div>
           ))}
 
-          <Paper sx={{ p: 3, mt: 3, background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', color: 'white' }}>
+          <Paper sx={{ p: 3, mt: 3, background: 'linear-gradient(135deg, #F97316 0%, #FB923C 100%)', color: 'white' }}>
             <Typography variant="h6" sx={{ mb: 1 }}>
               {t('demo.ai.funfact.title')}
             </Typography>
@@ -434,7 +434,7 @@ const CodeDemo = () => {
       </Paper>
 
       <Box sx={{ display: 'flex', gap: 2 }}>
-        <Paper sx={{ flex: 1, p: 2, textAlign: 'center', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', color: 'white' }}>
+        <Paper sx={{ flex: 1, p: 2, textAlign: 'center', background: 'linear-gradient(135deg, #F97316 0%, #FB923C 100%)', color: 'white' }}>
           <Typography variant="h4" sx={{ fontWeight: 700 }}>{lines.length * 1000}+</Typography>
           <Typography variant="caption">{t('demo.code.lines')}</Typography>
         </Paper>
@@ -473,7 +473,7 @@ const DeployDemo = () => {
 
   return (
     <Box>
-      <Paper sx={{ p: 4, textAlign: 'center', background: deployed ? 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)' : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', color: 'white', mb: 3 }}>
+      <Paper sx={{ p: 4, textAlign: 'center', background: deployed ? 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)' : 'linear-gradient(135deg, #F97316 0%, #FB923C 100%)', color: 'white', mb: 3 }}>
         <motion.div
           animate={deployed ? { scale: [1, 1.2, 1], rotate: [0, 360] } : {}}
           transition={{ duration: 0.5 }}
@@ -549,14 +549,14 @@ export default function ServiceDemo({ open, onClose, service, onOpenPayment }: S
 
   const getColor = () => {
     const colors = {
-      cloud: '#667eea',
-      ai: '#764ba2',
+      cloud: '#F97316',
+      ai: '#FB923C',
       security: '#11998e',
       speed: '#FA8BFF',
       code: '#f093fb',
       deploy: '#38ef7d',
     };
-    return service ? colors[service] : '#FF6B35';
+    return service ? colors[service] : '#F97316';
   };
 
   const handleBuyService = () => {

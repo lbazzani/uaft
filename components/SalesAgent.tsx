@@ -10,7 +10,6 @@ import {
   CircularProgress,
   Collapse,
   Chip,
-  Fade,
   Button,
 } from '@mui/material';
 import {
@@ -68,22 +67,21 @@ export default function SalesAgent() {
   const [isLoading, setIsLoading] = useState(false);
   const [hasBeenClosed, setHasBeenClosed] = useState(false);
   const [isInputFocused, setIsInputFocused] = useState(false);
-  const [isVisible, setIsVisible] = useState(true);
   const [paymentDialogOpen, setPaymentDialogOpen] = useState(false);
   const [showPaymentButton, setShowPaymentButton] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const reopenTimerRef = useRef<NodeJS.Timeout | null>(null);
   const nudgeTimerRef = useRef<NodeJS.Timeout | null>(null);
   const lastMessageTimeRef = useRef<number>(Date.now());
-  const scrollTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const lastScrollY = useRef(0);
 
   useEffect(() => {
     // Appare dopo 20 secondi
-    const timer = setTimeout(() => {
+    const timer = setTimeout(async () => {
+      // Prima carica il messaggio iniziale
+      await sendInitialMessage();
+      // Poi apri la chat con il messaggio già pronto
       setIsOpen(true);
-      // Messaggio iniziale dell'agent
-      sendInitialMessage();
     }, 20000);
 
     return () => {
@@ -94,47 +92,10 @@ export default function SalesAgent() {
       if (nudgeTimerRef.current) {
         clearTimeout(nudgeTimerRef.current);
       }
-      if (scrollTimerRef.current) {
-        clearTimeout(scrollTimerRef.current);
-      }
     };
   }, []);
 
-  // Effect per gestire lo scroll
-  useEffect(() => {
-    if (!isOpen) return; // Solo se l'agent è aperto
-
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-
-      // Se l'utente sta scrollando (movimento > 5px)
-      if (Math.abs(currentScrollY - lastScrollY.current) > 5) {
-        // Nascondi l'agent
-        setIsVisible(false);
-
-        // Cancella il timer precedente se esiste
-        if (scrollTimerRef.current) {
-          clearTimeout(scrollTimerRef.current);
-        }
-
-        // Riapri dopo 10-15 secondi di inattività dallo scroll
-        scrollTimerRef.current = setTimeout(() => {
-          setIsVisible(true);
-        }, Math.floor(Math.random() * 5000) + 10000); // 10-15 secondi
-      }
-
-      lastScrollY.current = currentScrollY;
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      if (scrollTimerRef.current) {
-        clearTimeout(scrollTimerRef.current);
-      }
-    };
-  }, [isOpen]);
+  // Rimosso il meccanismo di scroll hiding per stabilità
 
   // Effect per "incalzare" l'utente se non risponde
   useEffect(() => {
@@ -259,7 +220,7 @@ export default function SalesAgent() {
     }
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
+  const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSend();
@@ -292,7 +253,6 @@ export default function SalesAgent() {
   return (
     <>
       <PaymentDialog open={paymentDialogOpen} onClose={() => setPaymentDialogOpen(false)} />
-      <Fade in={isVisible} timeout={400}>
         <Box
           sx={{
             position: 'fixed',
@@ -306,22 +266,15 @@ export default function SalesAgent() {
               elevation={8}
               sx={{
                 width: { xs: 'calc(100vw - 40px)', sm: 380 },
-                maxHeight: '70vh',
+                maxHeight: { xs: '80vh', sm: '70vh' },
                 display: 'flex',
                 flexDirection: 'column',
                 borderTopLeftRadius: 0,
                 borderTopRightRadius: 0,
-                animation: 'slideDown 0.5s ease-out',
-                '@keyframes slideDown': {
-                  from: {
-                    transform: 'translateY(-100%)',
-                    opacity: 0,
-                  },
-                  to: {
-                    transform: 'translateY(0)',
-                    opacity: 1,
-                  },
-                },
+                borderBottomLeftRadius: 12,
+                borderBottomRightRadius: 12,
+                overflow: 'hidden',
+                boxShadow: '0 8px 32px rgba(0,0,0,0.12)',
               }}
             >
         {/* Header */}
@@ -375,11 +328,27 @@ export default function SalesAgent() {
           sx={{
             flex: 1,
             overflowY: 'auto',
+            overflowX: 'hidden',
             p: 2,
             backgroundColor: '#f5f5f5',
             display: 'flex',
             flexDirection: 'column',
             gap: 2,
+            scrollBehavior: 'smooth',
+            WebkitOverflowScrolling: 'touch',
+            '&::-webkit-scrollbar': {
+              width: '8px',
+            },
+            '&::-webkit-scrollbar-track': {
+              backgroundColor: 'transparent',
+            },
+            '&::-webkit-scrollbar-thumb': {
+              backgroundColor: 'rgba(0,0,0,0.2)',
+              borderRadius: '4px',
+              '&:hover': {
+                backgroundColor: 'rgba(0,0,0,0.3)',
+              },
+            },
           }}
         >
           {messages.map((message, index) => (
@@ -392,16 +361,28 @@ export default function SalesAgent() {
               }}
             >
               <Paper
-                elevation={1}
+                elevation={message.role === 'user' ? 2 : 1}
                 sx={{
                   p: 2,
                   maxWidth: '80%',
                   backgroundColor:
                     message.role === 'user' ? 'primary.main' : 'white',
                   color: message.role === 'user' ? 'white' : 'text.primary',
+                  borderRadius: message.role === 'user'
+                    ? '16px 16px 4px 16px'
+                    : '16px 16px 16px 4px',
+                  wordWrap: 'break-word',
+                  overflowWrap: 'break-word',
                 }}
               >
-                <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap' }}>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    whiteSpace: 'pre-wrap',
+                    wordBreak: 'break-word',
+                    lineHeight: 1.5,
+                  }}
+                >
                   {message.content}
                 </Typography>
               </Paper>
@@ -461,12 +442,21 @@ export default function SalesAgent() {
               placeholder={t('chat.placeholder')}
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              onKeyPress={handleKeyPress}
+              onKeyDown={handleKeyDown}
               onFocus={() => setIsInputFocused(true)}
               onBlur={() => setIsInputFocused(false)}
               disabled={isLoading}
               variant="outlined"
               size="small"
+              inputRef={inputRef}
+              slotProps={{
+                htmlInput: {
+                  enterKeyHint: 'send',
+                  autoComplete: 'off',
+                  autoCorrect: 'off',
+                  autoCapitalize: 'sentences',
+                }
+              }}
             />
             <IconButton
               color="primary"
@@ -511,7 +501,6 @@ export default function SalesAgent() {
       )}
           </Collapse>
         </Box>
-      </Fade>
     </>
   );
 }

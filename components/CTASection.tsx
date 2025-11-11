@@ -12,14 +12,12 @@ import {
 } from '@mui/material';
 import { ArrowForward, CheckCircle, Stars } from '@mui/icons-material';
 import ScrollAnimation from './ScrollAnimation';
-import DemoDialog from './DemoDialog';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function CTASection() {
   const { t } = useLanguage();
   const [hoverCount, setHoverCount] = useState(0);
   const [showTooltip, setShowTooltip] = useState(false);
-  const [demoDialogOpen, setDemoDialogOpen] = useState(false);
 
   const DEMO_FEATURES = [
     t('cta.feature1'),
@@ -40,8 +38,6 @@ export default function CTASection() {
   ];
 
   return (
-    <>
-      <DemoDialog open={demoDialogOpen} onClose={() => setDemoDialogOpen(false)} />
     <Box
       sx={{
         minHeight: '100vh',
@@ -107,7 +103,7 @@ export default function CTASection() {
                     variant="contained"
                     size="large"
                     endIcon={<ArrowForward />}
-                    onClick={() => setDemoDialogOpen(true)}
+                    href="#ai-pricing"
                     onMouseEnter={() => {
                       setShowTooltip(true);
                       setHoverCount((prev) => prev + 1);
@@ -230,6 +226,5 @@ export default function CTASection() {
         </Grid>
       </Container>
     </Box>
-    </>
   );
 }
