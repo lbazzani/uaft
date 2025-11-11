@@ -54,7 +54,16 @@ export default function AIPricingSection() {
   const [nudgeMessage, setNudgeMessage] = useState<string>('');
   const [showNudge, setShowNudge] = useState(false);
   const [analysisDialogOpen, setAnalysisDialogOpen] = useState(false);
+  const [loadingStep, setLoadingStep] = useState(0);
   const nudgeTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const loadingIntervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Debug effect per tracciare aiAnalysis
+  useEffect(() => {
+    console.log('aiAnalysis changed:', aiAnalysis);
+    console.log('aiAnalysis length:', aiAnalysis?.length);
+    console.log('Button should show:', !!aiAnalysis);
+  }, [aiAnalysis]);
 
   // Effect per mostrare messaggi di nudge quando l'utente non ha il focus
   useEffect(() => {
@@ -89,6 +98,20 @@ export default function AIPricingSection() {
     setIsCalculating(true);
     setEstimatedPrice(null);
     setAiAnalysis('');
+    setLoadingStep(0);
+    setAnalysisDialogOpen(true); // Apri modale subito
+
+    // Anima i passi di caricamento
+    loadingIntervalRef.current = setInterval(() => {
+      setLoadingStep((prev) => (prev < 9 ? prev + 1 : prev));
+    }, 400);
+
+    // Calcola sempre il prezzo
+    const basePrice = 99;
+    const randomFactor = Math.random() * 900;
+    const wordCount = prompt.split(' ').length;
+    const complexity = prompt.includes('AI') || prompt.includes('blockchain') ? 2 : 1;
+    const price = Math.round((basePrice + randomFactor + wordCount * 10) * complexity);
 
     try {
       const response = await fetch('/api/chat', {
@@ -107,27 +130,29 @@ export default function AIPricingSection() {
       });
 
       const data = await response.json();
-
-      const basePrice = 99;
-      const randomFactor = Math.random() * 900;
-      const wordCount = prompt.split(' ').length;
-      const complexity = prompt.includes('AI') || prompt.includes('blockchain') ? 2 : 1;
-      const price = Math.round((basePrice + randomFactor + wordCount * 10) * complexity);
+      console.log('API Response:', data);
 
       setEstimatedPrice(price);
+
       if (data.message) {
+        console.log('Setting AI analysis:', data.message);
         setAiAnalysis(data.message);
+      } else if (data.error) {
+        console.error('API Error:', data.error);
+        setAiAnalysis(t('pricing.error.fallback'));
+      } else {
+        console.warn('No message in API response');
+        setAiAnalysis(t('pricing.error.fallback'));
       }
     } catch (error) {
       console.error('Errore:', error);
-      const basePrice = 99;
-      const randomFactor = Math.random() * 900;
-      const wordCount = prompt.split(' ').length;
-      const complexity = prompt.includes('AI') || prompt.includes('blockchain') ? 2 : 1;
-      const price = Math.round((basePrice + randomFactor + wordCount * 10) * complexity);
       setEstimatedPrice(price);
       setAiAnalysis(t('pricing.error.fallback'));
     } finally {
+      if (loadingIntervalRef.current) {
+        clearInterval(loadingIntervalRef.current);
+      }
+      setLoadingStep(10); // Ultima step
       setIsCalculating(false);
     }
   };
@@ -273,135 +298,159 @@ export default function AIPricingSection() {
                 >
                   {isCalculating ? t('pricing.button.calculating') : t('pricing.button.calculate')}
                 </Button>
-
-                {estimatedPrice !== null && (
-                  <Fade in={true}>
-                    <Box sx={{ mt: 4 }}>
-                      <Box
-                        sx={{
-                          p: 4,
-                          backgroundColor: '#F97316',
-                          color: 'white',
-                          borderRadius: 3,
-                          textAlign: 'center',
-                          boxShadow: '0 8px 32px rgba(249, 115, 22, 0.3)',
-                        }}
-                      >
-                        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1, mb: 2 }}>
-                          <CheckCircle />
-                          <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                            {t('pricing.result.title')}
-                          </Typography>
-                        </Box>
-                        <Typography variant="h2" sx={{ fontWeight: 800, my: 2 }}>
-                          €{estimatedPrice.toLocaleString()}<Typography component="span" variant="h5">{t('pricing.result.month')}</Typography>
-                        </Typography>
-                        <Typography variant="body2" sx={{ opacity: 0.9, mb: 3 }}>
-                          {t('pricing.result.disclaimer')}
-                        </Typography>
-
-                        {aiAnalysis && (
-                          <Button
-                            variant="contained"
-                            size="large"
-                            startIcon={<Lightbulb />}
-                            onClick={() => setAnalysisDialogOpen(true)}
-                            sx={{
-                              backgroundColor: 'white',
-                              color: '#F97316',
-                              fontWeight: 600,
-                              py: 1.5,
-                              px: 4,
-                              '&:hover': {
-                                backgroundColor: '#FFF7ED',
-                                transform: 'scale(1.05)',
-                              },
-                              transition: 'all 0.3s ease',
-                            }}
-                          >
-                            {t('pricing.result.viewAnalysis')}
-                          </Button>
-                        )}
-                      </Box>
-                    </Box>
-                  </Fade>
-                )}
               </Paper>
             </ScrollAnimation>
           </Box>
         </Box>
       </Container>
 
-      {/* AI Analysis Dialog */}
+      {/* AI Pricing Result Dialog */}
       <Dialog
         open={analysisDialogOpen}
-        onClose={() => setAnalysisDialogOpen(false)}
+        onClose={() => !isCalculating && setAnalysisDialogOpen(false)}
         maxWidth="md"
         fullWidth
         PaperProps={{
           sx: {
             borderRadius: 4,
-            maxHeight: '80vh',
+            maxHeight: '90vh',
+            minHeight: '500px',
           },
         }}
       >
         <DialogTitle
           sx={{
-            background: 'linear-gradient(135deg, #06B6D4 0%, #0891B2 100%)',
+            background: isCalculating
+              ? 'linear-gradient(135deg, #F97316 0%, #FB923C 100%)'
+              : 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
             color: 'white',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
             p: 3,
+            transition: 'background 0.5s ease',
           }}
         >
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-            <SmartToy sx={{ fontSize: 32 }} />
+            <SmartToy sx={{ fontSize: 32, animation: isCalculating ? 'rotate 2s linear infinite' : 'none' }} />
             <Typography variant="h5" sx={{ fontWeight: 700 }}>
-              {t('pricing.result.analysis')}
+              {isCalculating ? t('pricing.button.calculating') : t('pricing.result.title')}
             </Typography>
           </Box>
-          <IconButton onClick={() => setAnalysisDialogOpen(false)} sx={{ color: 'white' }}>
-            <Close />
-          </IconButton>
+          {!isCalculating && (
+            <IconButton onClick={() => setAnalysisDialogOpen(false)} sx={{ color: 'white' }}>
+              <Close />
+            </IconButton>
+          )}
         </DialogTitle>
-        <DialogContent sx={{ p: 4, backgroundColor: '#F0F9FF' }}>
-          <Paper
-            elevation={0}
-            sx={{
-              p: 3,
-              backgroundColor: 'white',
-              borderRadius: 3,
-              border: '2px solid #06B6D4',
-            }}
-          >
-            <Typography
-              variant="body1"
+
+        <DialogContent sx={{ p: 4, backgroundColor: '#F0F9FF', minHeight: '400px', display: 'flex', flexDirection: 'column' }}>
+          {isCalculating ? (
+            // Animazione di caricamento
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, flex: 1, justifyContent: 'center' }}>
+              {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((step) => (
+                <Fade in={loadingStep >= step} timeout={500} key={step}>
+                  <Paper
+                    elevation={loadingStep === step ? 8 : 2}
+                    sx={{
+                      p: 2,
+                      backgroundColor: loadingStep === step ? '#FFF7ED' : 'white',
+                      borderLeft: loadingStep === step ? '4px solid #F97316' : '4px solid transparent',
+                      transform: loadingStep === step ? 'scale(1.02)' : 'scale(1)',
+                      transition: 'all 0.3s ease',
+                    }}
+                  >
+                    <Typography
+                      variant="body1"
+                      sx={{
+                        fontWeight: loadingStep === step ? 600 : 400,
+                        color: loadingStep === step ? '#F97316' : 'text.secondary',
+                        fontFamily: 'monospace',
+                      }}
+                    >
+                      {t(`pricing.loading.step${step + 1}`)}
+                    </Typography>
+                  </Paper>
+                </Fade>
+              ))}
+            </Box>
+          ) : (
+            // Risultato finale
+            <Fade in={!isCalculating} timeout={800}>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                {/* Prezzo */}
+                <Paper
+                  elevation={8}
+                  sx={{
+                    p: 4,
+                    background: 'linear-gradient(135deg, #F97316 0%, #FB923C 100%)',
+                    color: 'white',
+                    borderRadius: 3,
+                    textAlign: 'center',
+                  }}
+                >
+                  <Typography variant="h6" sx={{ mb: 2, opacity: 0.9 }}>
+                    {t('pricing.result.title')}
+                  </Typography>
+                  <Typography variant="h2" sx={{ fontWeight: 800, mb: 1 }}>
+                    €{estimatedPrice?.toLocaleString()}<Typography component="span" variant="h5">{t('pricing.result.month')}</Typography>
+                  </Typography>
+                  <Typography variant="body2" sx={{ opacity: 0.9, fontSize: '0.9rem' }}>
+                    {t('pricing.result.disclaimer')}
+                  </Typography>
+                </Paper>
+
+                {/* Analisi AI */}
+                <Paper
+                  elevation={0}
+                  sx={{
+                    p: 3,
+                    backgroundColor: 'white',
+                    borderRadius: 3,
+                    border: '2px solid #06B6D4',
+                  }}
+                >
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+                    <Lightbulb sx={{ color: '#F97316' }} />
+                    <Typography variant="h6" sx={{ fontWeight: 600, color: '#0891B2' }}>
+                      {t('pricing.result.analysis')}
+                    </Typography>
+                  </Box>
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      whiteSpace: 'pre-wrap',
+                      lineHeight: 1.8,
+                      color: 'text.primary',
+                      fontSize: '1.05rem',
+                    }}
+                  >
+                    {aiAnalysis}
+                  </Typography>
+                </Paper>
+              </Box>
+            </Fade>
+          )}
+        </DialogContent>
+
+        {!isCalculating && (
+          <DialogActions sx={{ p: 3, backgroundColor: 'white' }}>
+            <Button
+              onClick={() => setAnalysisDialogOpen(false)}
+              variant="contained"
+              size="large"
               sx={{
-                whiteSpace: 'pre-wrap',
-                lineHeight: 1.8,
-                color: 'text.primary',
-                fontSize: '1.05rem',
+                backgroundColor: '#10B981',
+                px: 4,
+                '&:hover': {
+                  backgroundColor: '#059669',
+                },
               }}
             >
-              {aiAnalysis}
-            </Typography>
-          </Paper>
-        </DialogContent>
-        <DialogActions sx={{ p: 3, backgroundColor: 'white' }}>
-          <Button
-            onClick={() => setAnalysisDialogOpen(false)}
-            variant="contained"
-            sx={{
-              backgroundColor: '#06B6D4',
-              '&:hover': {
-                backgroundColor: '#0891B2',
-              },
-            }}
-          >
-            {t('demo.close')}
-          </Button>
-        </DialogActions>
+              {t('demo.close')}
+            </Button>
+          </DialogActions>
+        )}
       </Dialog>
 
       {/* Rotating animation CSS */}
