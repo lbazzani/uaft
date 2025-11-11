@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  uaft:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    container_name: uaft-app
+    restart: unless-stopped
+    ports:
+      - "3001:3000"
+    environment:
+      - NODE_ENV=production
+      # Aggiungi qui le variabili d'ambiente necessarie
+      # - OPENAI_API_KEY=${OPENAI_API_KEY}
+      # - NEXT_PUBLIC_SITE_URL=${NEXT_PUBLIC_SITE_URL}
+    env_file:
+      - ../.env.local
+    volumes:
+      # Volume per cache e ottimizzazioni (opzionale)
+      - uaft-cache:/app/.next/cache
+    networks:
+      - uaft-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  uaft-cache:
+    driver: local
+
+networks:
+  uaft-network:
+    driver: bridge

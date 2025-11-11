@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -38,7 +38,7 @@ interface PricingPlan {
   name: string;
   basePrice: number;
   features: string[];
-  icon: JSX.Element;
+  icon: React.ReactElement;
   color: string;
   badge?: string;
 }
