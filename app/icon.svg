@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Sfondo -->
+  <rect width="100" height="100" fill="#FF6B35"/>
+
+  <!-- Esagono bianco -->
+  <path
+    d="M50 10 L85 27.5 L85 72.5 L50 90 L15 72.5 L15 27.5 Z"
+    fill="white"
+    opacity="0.95"
+  />
+
+  <!-- Lettera U -->
+  <text
+    x="50"
+    y="65"
+    font-family="Arial, sans-serif"
+    font-size="45"
+    font-weight="bold"
+    fill="#FF6B35"
+    text-anchor="middle"
+  >U</text>
+</svg>
