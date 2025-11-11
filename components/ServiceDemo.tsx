@@ -32,6 +32,7 @@ import {
 } from '@mui/icons-material';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSpring, animated, config } from '@react-spring/web';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface ServiceDemoProps {
   open: boolean;
@@ -42,6 +43,7 @@ interface ServiceDemoProps {
 
 // Demo Cloud
 const CloudDemo = () => {
+  const { t } = useLanguage();
   const [clouds, setClouds] = useState<number[]>([]);
   const [backupLevel, setBackupLevel] = useState(0);
 
@@ -67,10 +69,10 @@ const CloudDemo = () => {
     <Box>
       <Paper sx={{ p: 3, mb: 3, background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', color: 'white', position: 'relative', overflow: 'hidden', minHeight: 250 }}>
         <Typography variant="h5" sx={{ mb: 2, fontWeight: 700 }}>
-          ☁️ Cloud Intensifier 3000
+          {t('demo.cloud.intensifier')}
         </Typography>
         <Typography variant="body2" sx={{ mb: 3, opacity: 0.9 }}>
-          Aggiungendo nuvole alle nuvole per massima nuvolosità
+          {t('demo.cloud.tagline')}
         </Typography>
 
         <Box sx={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, overflow: 'hidden' }}>
@@ -89,7 +91,7 @@ const CloudDemo = () => {
 
         <Box sx={{ position: 'relative', zIndex: 1 }}>
           <Typography variant="caption" sx={{ display: 'block', mb: 1 }}>
-            Livello di Backup Ricorsivo
+            {t('demo.cloud.backup')}
           </Typography>
           <LinearProgress
             variant="determinate"
@@ -102,7 +104,7 @@ const CloudDemo = () => {
             }}
           />
           <Typography variant="h6" sx={{ mt: 1 }}>
-            {backupLevel}% - {backupLevel < 50 ? 'Backup in corso...' : backupLevel < 100 ? 'Backup del backup...' : 'Backup del backup del backup! ✅'}
+            {backupLevel}% - {backupLevel < 50 ? t('demo.cloud.inprogress') : backupLevel < 100 ? t('demo.cloud.backup2') : t('demo.cloud.backup3')}
           </Typography>
         </Box>
       </Paper>
@@ -112,7 +114,7 @@ const CloudDemo = () => {
           <Card sx={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 50%)' }}>
             <CardContent>
               <Typography variant="h4" sx={{ color: 'white', fontWeight: 700 }}>∞</Typography>
-              <Typography variant="body2" sx={{ color: 'white', opacity: 0.9 }}>Nuvole Attive</Typography>
+              <Typography variant="body2" sx={{ color: 'white', opacity: 0.9 }}>{t('demo.cloud.clouds')}</Typography>
             </CardContent>
           </Card>
         </Grid>
@@ -120,7 +122,7 @@ const CloudDemo = () => {
           <Card sx={{ background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 50%)' }}>
             <CardContent>
               <Typography variant="h4" sx={{ color: 'white', fontWeight: 700 }}>999%</Typography>
-              <Typography variant="body2" sx={{ color: 'white', opacity: 0.9 }}>Nuvolosità</Typography>
+              <Typography variant="body2" sx={{ color: 'white', opacity: 0.9 }}>{t('demo.cloud.cloudiness')}</Typography>
             </CardContent>
           </Card>
         </Grid>
@@ -131,6 +133,7 @@ const CloudDemo = () => {
 
 // Demo AI
 const AIDemo = () => {
+  const { t } = useLanguage();
   const [thinking, setThinking] = useState(true);
   const [predictions, setPredictions] = useState<Array<{ text: string; confidence: number }>>([]);
 
@@ -157,7 +160,7 @@ const AIDemo = () => {
             <SmartToy sx={{ fontSize: 100, color: '#667eea' }} />
           </motion.div>
           <Typography variant="h6" sx={{ mt: 3 }}>
-            AI sta pensando intensamente...
+            {t('demo.ai.thinking')}
           </Typography>
           <Typography variant="body2" color="text.secondary">
             (Probabilmente sta calcolando quanto caffè servirà oggi)
@@ -166,7 +169,7 @@ const AIDemo = () => {
       ) : (
         <Box>
           <Typography variant="h5" sx={{ mb: 3, fontWeight: 700 }}>
-            🤖 Predizioni AI Ultra-Accurate
+            {t('demo.ai.predictions')}
           </Typography>
 
           {predictions.map((pred, index) => (
@@ -235,17 +238,17 @@ const SecurityDemo = () => {
       <Paper sx={{ p: 3, mb: 3, background: 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)', color: 'white' }}>
         <Typography variant="h5" sx={{ mb: 2, fontWeight: 700, display: 'flex', alignItems: 'center' }}>
           <Lock sx={{ mr: 1 }} />
-          Sistema di Sicurezza Quantistico
+          {t('demo.security.system')}
         </Typography>
         <Typography variant="body2" sx={{ opacity: 0.9, mb: 3 }}>
-          Crittografiamo tutto. Anche questa descrizione era crittografata.
+          {t('demo.security.tagline')}
         </Typography>
 
         <Grid container spacing={2}>
           <Grid size={{ xs: 4 }}>
             <Box sx={{ textAlign: 'center' }}>
               <Typography variant="h3" sx={{ fontWeight: 700 }}>{threats}</Typography>
-              <Typography variant="caption">Minacce Rilevate</Typography>
+              <Typography variant="caption">{t('demo.security.threats.detected')}</Typography>
             </Box>
           </Grid>
           <Grid size={{ xs: 4 }}>
@@ -389,7 +392,7 @@ const CodeDemo = () => {
   return (
     <Box>
       <Typography variant="h5" sx={{ mb: 3, fontWeight: 700 }}>
-        💻 Generatore di Codice Automagico
+        {t('demo.code.generator')}
       </Typography>
 
       <Paper sx={{ p: 3, backgroundColor: '#1e1e1e', color: '#d4d4d4', fontFamily: 'monospace', minHeight: 300, mb: 3 }}>
@@ -441,6 +444,7 @@ const CodeDemo = () => {
 
 // Demo Deploy
 const DeployDemo = () => {
+  const { t } = useLanguage();
   const [deployed, setDeployed] = useState(false);
   const [progress, setProgress] = useState(0);
 
@@ -469,7 +473,7 @@ const DeployDemo = () => {
           <Rocket sx={{ fontSize: 100 }} />
         </motion.div>
         <Typography variant="h4" sx={{ fontWeight: 700, mt: 2, mb: 1 }}>
-          {deployed ? '🎉 Deploy Completato!' : '🚀 Deploy in Corso...'}
+          {deployed ? t('demo.deploy.completed') : t('demo.deploy.inprogress')}
         </Typography>
         <Typography variant="body2" sx={{ opacity: 0.9 }}>
           {deployed ? 'In produzione da ben 0.3 secondi!' : 'Stanno succedendo cose...'}
@@ -521,14 +525,16 @@ const DeployDemo = () => {
 };
 
 export default function ServiceDemo({ open, onClose, service, onOpenPayment }: ServiceDemoProps) {
+  const { t } = useLanguage();
+
   const getTitle = () => {
     const titles = {
-      cloud: '☁️ Cloud as a Cloud',
-      ai: '🤖 AI Artificialmente Intelligente',
-      security: '🛡️ Sicurezza Esagerata',
-      speed: '⚡ Velocità Supersonica',
-      code: '💻 Codice Automagico',
-      deploy: '🚀 Deploy Istantaneo',
+      cloud: t('demo.cloud.title'),
+      ai: t('demo.ai.title'),
+      security: t('demo.security.title'),
+      speed: t('demo.speed.title'),
+      code: t('demo.code.title'),
+      deploy: t('demo.deploy.title'),
     };
     return service ? titles[service] : 'Demo';
   };
@@ -594,7 +600,7 @@ export default function ServiceDemo({ open, onClose, service, onOpenPayment }: S
 
       <DialogActions sx={{ p: 3, backgroundColor: 'white', borderTop: '1px solid #E5E7EB' }}>
         <Button onClick={onClose} variant="outlined">
-          Chiudi Demo
+          {t('demo.close')}
         </Button>
         <Button
           variant="contained"
@@ -606,7 +612,7 @@ export default function ServiceDemo({ open, onClose, service, onOpenPayment }: S
             }
           }}
         >
-          Voglio Questo Servizio!
+          {t('demo.buy')}
         </Button>
       </DialogActions>
     </Dialog>

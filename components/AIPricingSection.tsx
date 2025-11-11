@@ -17,28 +17,30 @@ import {
 } from '@mui/material';
 import { AttachMoney, SmartToy, CheckCircle, TrendingUp, Speed, Security } from '@mui/icons-material';
 import ScrollAnimation from './ScrollAnimation';
-
-const NUDGE_MESSAGES = [
-  '💡 Psst! La nostra AI sta aspettando di stupir ti con un preventivo super accurato... (o quasi)!',
-  '🎯 Dai, scrivi qualcosa! Anche "voglio conquistare il mondo" va benissimo. Abbiamo un servizio anche per quello!',
-  '⏰ Fun fact: ogni secondo che passa senza richiedere un preventivo è un secondo perso. Probabilmente.',
-  '🚀 La nostra AI si sta annoiando... Dalle qualcosa da fare! È addestrata per calcolare prezzi incredibili!',
-  '💼 Non essere timido! Descrivici il tuo progetto. Spoiler: costa meno di quello che pensi. (Forse)',
-  '📊 Il 94% degli utenti che NON richiedono un preventivo si pentono. È una statistica che ci siamo inventati ora.',
-  '🎪 Offerta speciale: se scrivi qualcosa nei prossimi 30 secondi... beh, non cambia nulla ma sembra più urgente!',
-  '🤔 Ancora lì a pensare? L\'AI è già pronta! È velocissima! (A calcolare prezzi, non a fare caffè)',
-  '✨ Pro tip: più parole usi nella descrizione, più il prezzo sembra professionale. È scienza!',
-  '🎯 Coraggio! Cosa potrebbe andare storto? (A parte tutto, ma siamo ottimisti)',
-];
-
-const BENEFITS = [
-  { icon: <Speed />, text: 'Preventivo istantaneo in 2 secondi' },
-  { icon: <SmartToy />, text: 'Analisi AI avanzata (davvero!)' },
-  { icon: <TrendingUp />, text: 'Prezzi competitivi* (*per noi)' },
-  { icon: <Security />, text: 'Accuratezza al 99%** (**±50%)' },
-];
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function AIPricingSection() {
+  const { t, language } = useLanguage();
+
+  const NUDGE_MESSAGES = [
+    t('pricing.nudge1'),
+    t('pricing.nudge2'),
+    t('pricing.nudge3'),
+    t('pricing.nudge4'),
+    t('pricing.nudge5'),
+    t('pricing.nudge6'),
+    t('pricing.nudge7'),
+    t('pricing.nudge8'),
+    t('pricing.nudge9'),
+    t('pricing.nudge10'),
+  ];
+
+  const BENEFITS = [
+    { icon: <Speed />, text: t('pricing.benefit1') },
+    { icon: <SmartToy />, text: t('pricing.benefit2') },
+    { icon: <TrendingUp />, text: t('pricing.benefit3') },
+    { icon: <Security />, text: t('pricing.benefit4') },
+  ];
   const [prompt, setPrompt] = useState('');
   const [estimatedPrice, setEstimatedPrice] = useState<number | null>(null);
   const [aiAnalysis, setAiAnalysis] = useState<string>('');
@@ -94,6 +96,7 @@ export default function AIPricingSection() {
             },
           ],
           type: 'pricing',
+          language: language,
         }),
       });
 
@@ -117,7 +120,7 @@ export default function AIPricingSection() {
       const complexity = prompt.includes('AI') || prompt.includes('blockchain') ? 2 : 1;
       const price = Math.round((basePrice + randomFactor + wordCount * 10) * complexity);
       setEstimatedPrice(price);
-      setAiAnalysis('L\'analisi AI non è disponibile al momento, ma il prezzo è comunque accurato al 99%! (O forse meno)');
+      setAiAnalysis(t('pricing.error.fallback'));
     } finally {
       setIsCalculating(false);
     }
@@ -144,15 +147,14 @@ export default function AIPricingSection() {
                 }}
               >
                 <SmartToy sx={{ fontSize: 20 }} />
-                <Typography variant="body2">Powered by Advanced AI</Typography>
+                <Typography variant="body2">{t('pricing.badge')}</Typography>
               </Box>
             </Fade>
             <Typography variant="h2" gutterBottom sx={{ fontWeight: 700, mb: 2 }}>
-              AI Pricing Engine
+              {t('pricing.title')}
             </Typography>
             <Typography variant="h6" color="text.secondary" sx={{ mb: 4, fontWeight: 400, maxWidth: '800px', mx: 'auto' }}>
-              Descrivi il servizio che ti serve, la nostra AI analizzerà la richiesta e
-              calcolerà un preventivo in tempo reale. Magicamente accurato!
+              {t('pricing.subtitle')}
             </Typography>
           </Box>
         </ScrollAnimation>
@@ -163,7 +165,7 @@ export default function AIPricingSection() {
             <ScrollAnimation delay={0.1}>
               <Paper elevation={3} sx={{ p: 4, borderRadius: 4, backgroundColor: 'white' }}>
                 <Typography variant="h5" gutterBottom sx={{ fontWeight: 600, mb: 3 }}>
-                  Perché usare il nostro AI Pricing?
+                  {t('pricing.benefits.title')}
                 </Typography>
                 <List>
                   {BENEFITS.map((benefit, index) => (
@@ -186,11 +188,10 @@ export default function AIPricingSection() {
 
                 <Box sx={{ mt: 4, p: 3, backgroundColor: '#FFF7ED', borderRadius: 2, border: '2px solid #F97316' }}>
                   <Typography variant="body2" sx={{ fontWeight: 600, color: '#EA580C', mb: 1 }}>
-                    🎉 Offerta Speciale!
+                    {t('pricing.special.title')}
                   </Typography>
                   <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                    Richiedi un preventivo ora e riceverai... un preventivo!
-                    È esattamente quello che ti aspettavi, ma con stile!
+                    {t('pricing.special.desc')}
                   </Typography>
                 </Box>
               </Paper>
@@ -223,7 +224,7 @@ export default function AIPricingSection() {
                   multiline
                   rows={6}
                   variant="outlined"
-                  placeholder="Esempio: Voglio un'app che gestisce inventory con ML predictions, real-time analytics e mobile app..."
+                  placeholder={t('pricing.placeholder')}
                   value={prompt}
                   onChange={(e) => setPrompt(e.target.value)}
                   onFocus={() => setIsFocused(true)}
@@ -264,7 +265,7 @@ export default function AIPricingSection() {
                     transition: 'all 0.3s ease',
                   }}
                 >
-                  {isCalculating ? 'L\'AI sta pensando intensamente...' : 'Calcola il Prezzo Magico ✨'}
+                  {isCalculating ? t('pricing.button.calculating') : t('pricing.button.calculate')}
                 </Button>
 
                 {estimatedPrice !== null && (
@@ -283,14 +284,14 @@ export default function AIPricingSection() {
                         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1, mb: 2 }}>
                           <CheckCircle />
                           <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                            Preventivo Calcolato!
+                            {t('pricing.result.title')}
                           </Typography>
                         </Box>
                         <Typography variant="h2" sx={{ fontWeight: 800, my: 2 }}>
-                          €{estimatedPrice.toLocaleString()}<Typography component="span" variant="h5">/mese</Typography>
+                          €{estimatedPrice.toLocaleString()}<Typography component="span" variant="h5">{t('pricing.result.month')}</Typography>
                         </Typography>
                         <Typography variant="body2" sx={{ opacity: 0.9 }}>
-                          Prezzo basato su analisi AI, algoritmi proprietari, e un pizzico di magia nera
+                          {t('pricing.result.disclaimer')}
                         </Typography>
                       </Box>
 
@@ -305,7 +306,7 @@ export default function AIPricingSection() {
                           }}
                         >
                           <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1, fontWeight: 600, color: '#0891B2' }}>
-                            <SmartToy /> Analisi dell'AI
+                            <SmartToy /> {t('pricing.result.analysis')}
                           </Typography>
                           <Typography variant="body1" sx={{ whiteSpace: 'pre-wrap', lineHeight: 1.8, color: 'text.primary' }}>
                             {aiAnalysis}

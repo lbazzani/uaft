@@ -20,50 +20,54 @@ import {
 import ScrollAnimation from './ScrollAnimation';
 import ServiceDemo from './ServiceDemo';
 import PaymentDialog from './PaymentDialog';
+import { useLanguage } from '@/contexts/LanguageContext';
 
-const services = [
-  {
-    icon: <Cloud sx={{ fontSize: 60 }} />,
-    title: 'Cloud as a Cloud',
-    description: 'Il cloud è nuvoloso per definizione. Noi lo rendiamo ancora più nuvoloso. Con backup dei backup dei backup. Non si sa mai.',
-    id: 'cloud' as const,
-  },
-  {
-    icon: <SmartToy sx={{ fontSize: 60 }} />,
-    title: 'AI Artificialmente Intelligente',
-    description: 'La nostra AI è così intelligente che a volte ci fa paura. Ma la paghiamo bene quindi va tutto bene.',
-    id: 'ai' as const,
-  },
-  {
-    icon: <Security sx={{ fontSize: 60 }} />,
-    title: 'Sicurezza Esagerata',
-    description: 'Crittografiamo tutto. TUTTO. Anche questo testo era crittografato ma lo abbiamo decriptato per te.',
-    id: 'security' as const,
-  },
-  {
-    icon: <Speed sx={{ fontSize: 60 }} />,
-    title: 'Velocità Supersonica',
-    description: 'I nostri server sono così veloci che il futuro ci invidia. Consegniamo prima che tu ordini. Quasi.',
-    id: 'speed' as const,
-  },
-  {
-    icon: <Code sx={{ fontSize: 60 }} />,
-    title: 'Codice Automagico',
-    description: 'Il nostro codice si scrive da solo. Noi stiamo qui a guardare con orgoglio. E a bere caffè.',
-    id: 'code' as const,
-  },
-  {
-    icon: <Rocket sx={{ fontSize: 60 }} />,
-    title: 'Deploy Istantaneo',
-    description: 'Deploy così veloci che rompiamo la barriera del suono. E spesso anche la produzione. Ma tranquillo, abbiamo rollback.',
-    id: 'deploy' as const,
-  },
-];
+// Services will be generated dynamically with translations
 
 export default function ServicesSection() {
+  const { t } = useLanguage();
   const [demoOpen, setDemoOpen] = useState(false);
   const [paymentOpen, setPaymentOpen] = useState(false);
   const [selectedService, setSelectedService] = useState<'cloud' | 'ai' | 'security' | 'speed' | 'code' | 'deploy' | null>(null);
+
+  const services = [
+    {
+      icon: <Cloud sx={{ fontSize: 60 }} />,
+      title: t('services.cloud.title'),
+      description: t('services.cloud.desc'),
+      id: 'cloud' as const,
+    },
+    {
+      icon: <SmartToy sx={{ fontSize: 60 }} />,
+      title: t('services.ai.title'),
+      description: t('services.ai.desc'),
+      id: 'ai' as const,
+    },
+    {
+      icon: <Security sx={{ fontSize: 60 }} />,
+      title: t('services.security.title'),
+      description: t('services.security.desc'),
+      id: 'security' as const,
+    },
+    {
+      icon: <Speed sx={{ fontSize: 60 }} />,
+      title: t('services.speed.title'),
+      description: t('services.speed.desc'),
+      id: 'speed' as const,
+    },
+    {
+      icon: <Code sx={{ fontSize: 60 }} />,
+      title: t('services.code.title'),
+      description: t('services.code.desc'),
+      id: 'code' as const,
+    },
+    {
+      icon: <Rocket sx={{ fontSize: 60 }} />,
+      title: t('services.deploy.title'),
+      description: t('services.deploy.desc'),
+      id: 'deploy' as const,
+    },
+  ];
 
   const handleServiceClick = (serviceId: typeof selectedService) => {
     setSelectedService(serviceId);
@@ -87,10 +91,10 @@ export default function ServicesSection() {
         <Container maxWidth="lg">
           <ScrollAnimation>
             <Typography variant="h2" align="center" gutterBottom sx={{ fontWeight: 700, mb: 2 }}>
-              I Nostri Servizi
+              {t('services.title')}
             </Typography>
             <Typography variant="h6" align="center" color="text.secondary" sx={{ mb: 10, fontWeight: 400 }}>
-              Soluzioni enterprise per ogni esigenza. Anche quelle che non sapevi di avere.
+              {t('services.subtitle')}
             </Typography>
           </ScrollAnimation>
 
@@ -119,7 +123,7 @@ export default function ServicesSection() {
                     }}
                   >
                     <Chip
-                      label="✨ Vedi Demo"
+                      label={`✨ ${t('services.demo.badge')}`}
                       size="small"
                       sx={{
                         position: 'absolute',

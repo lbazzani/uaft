@@ -11,6 +11,7 @@ import {
   Grid,
   useTheme,
   useMediaQuery,
+  Alert,
 } from '@mui/material';
 import {
   Rocket,
@@ -20,6 +21,7 @@ import {
 } from '@mui/icons-material';
 import ScrollAnimation from './ScrollAnimation';
 import FeatureDemo from './FeatureDemo';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const stats = [
   { value: '99.99%', label: 'Uptime' },
@@ -29,6 +31,7 @@ const stats = [
 ];
 
 export default function HeroSection() {
+  const { t, language } = useLanguage();
   const [demoOpen, setDemoOpen] = useState(false);
   const [selectedFeature, setSelectedFeature] = useState<'deploy' | 'ai' | 'security' | null>(null);
   const { scrollY } = useScroll();
@@ -352,6 +355,28 @@ export default function HeroSection() {
               </Box>
             </ScrollAnimation>
 
+            {language === 'en' && t('hero.acronym.note') && (
+              <ScrollAnimation delay={0.25}>
+                <Alert
+                  severity="info"
+                  sx={{
+                    mb: 3,
+                    maxWidth: '700px',
+                    mx: 'auto',
+                    backgroundColor: 'rgba(255,255,255,0.95)',
+                    backdropFilter: 'blur(10px)',
+                    '& .MuiAlert-icon': {
+                      color: '#0891B2',
+                    },
+                  }}
+                >
+                  <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                    {t('hero.acronym.note')}
+                  </Typography>
+                </Alert>
+              </ScrollAnimation>
+            )}
+
             <ScrollAnimation delay={0.3}>
               <Typography variant="h6" sx={{
                 mb: 4,
@@ -363,7 +388,7 @@ export default function HeroSection() {
                 maxWidth: '800px',
                 mx: 'auto',
               }}>
-                Servizi IT enterprise-grade. Soluzioni professionali per aziende che vogliono fare tutto.
+                {t('hero.subtitle')}
               </Typography>
             </ScrollAnimation>
 
@@ -397,7 +422,7 @@ export default function HeroSection() {
                   }}
                   href="#ai-pricing"
                 >
-                  Prova l'AI Pricing
+                  {t('hero.cta.primary')}
                 </Button>
                 <Button
                   variant="outlined"
@@ -420,7 +445,7 @@ export default function HeroSection() {
                   }}
                   href="#services"
                 >
-                  Scopri i Servizi
+                  {t('hero.cta.secondary')}
                 </Button>
               </Box>
             </ScrollAnimation>
@@ -454,7 +479,7 @@ export default function HeroSection() {
                   }}
                 >
                   <Chip
-                    label="🎯 Prova la Demo!"
+                    label={`🎯 ${t('hero.demo.badge')}`}
                     size="small"
                     sx={{
                       position: 'absolute',
@@ -482,10 +507,10 @@ export default function HeroSection() {
                     </Box>
                     <Box sx={{ flex: 1 }}>
                       <Typography variant="h6" sx={{ fontWeight: 700, color: 'text.primary', mb: 0.5 }}>
-                        Deploy Istantaneo
+                        {t('hero.feature.deploy')}
                       </Typography>
                       <Typography variant="body2" sx={{ color: 'text.secondary', mb: 1.5 }}>
-                        Da idea a produzione in minuti
+                        {t('hero.feature.deploy.desc')}
                       </Typography>
                       <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
                         <Chip label="CI/CD" size="small" sx={{ bgcolor: '#FFF7ED', color: '#F97316' }} />
@@ -516,7 +541,7 @@ export default function HeroSection() {
                   }}
                 >
                   <Chip
-                    label="🤖 Prova la Demo!"
+                    label={`🤖 ${t('hero.demo.badge')}`}
                     size="small"
                     sx={{
                       position: 'absolute',
@@ -544,10 +569,10 @@ export default function HeroSection() {
                     </Box>
                     <Box sx={{ flex: 1 }}>
                       <Typography variant="h6" sx={{ fontWeight: 700, color: 'text.primary', mb: 0.5 }}>
-                        AI-Powered
+                        {t('hero.feature.ai')}
                       </Typography>
                       <Typography variant="body2" sx={{ color: 'text.secondary', mb: 1.5 }}>
-                        Automazione intelligente
+                        {t('hero.feature.ai.desc')}
                       </Typography>
                       <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
                         <Chip label="ML Ops" size="small" sx={{ bgcolor: '#ECFEFF', color: '#0891B2' }} />
@@ -578,7 +603,7 @@ export default function HeroSection() {
                   }}
                 >
                   <Chip
-                    label="🛡️ Prova la Demo!"
+                    label={`🛡️ ${t('hero.demo.badge')}`}
                     size="small"
                     sx={{
                       position: 'absolute',
@@ -606,10 +631,10 @@ export default function HeroSection() {
                     </Box>
                     <Box sx={{ flex: 1 }}>
                       <Typography variant="h6" sx={{ fontWeight: 700, color: 'text.primary', mb: 0.5 }}>
-                        Security First
+                        {t('hero.feature.security')}
                       </Typography>
                       <Typography variant="body2" sx={{ color: 'text.secondary', mb: 1.5 }}>
-                        Compliance enterprise
+                        {t('hero.feature.security.desc')}
                       </Typography>
                       <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
                         <Chip label="SOC 2" size="small" sx={{ bgcolor: '#ECFDF5', color: '#059669' }} />

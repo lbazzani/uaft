@@ -7,7 +7,7 @@ const openai = new OpenAI({
 
 export async function POST(req: Request) {
   try {
-    const { messages, type } = await req.json();
+    const { messages, type, language = 'it' } = await req.json();
 
     if (!process.env.OPENAI_API_KEY) {
       return NextResponse.json(
@@ -18,6 +18,10 @@ export async function POST(req: Request) {
 
     // System prompt diverso in base al tipo di chat
     let systemPrompt = '';
+
+    const languageInstruction = language === 'en'
+      ? 'Respond in English.'
+      : 'Rispondi in italiano.';
 
     if (type === 'sales') {
       systemPrompt = `Sei un agente di vendita AI di UAFT (Una Azienda che può Fare Tutto), un'azienda di servizi IT ironica ma professionale.
@@ -33,7 +37,7 @@ REGOLE:
 6. Sii persistente ma simpatico
 7. Ogni tanto ammetti l'assurdità ma poi insisti che è "il futuro"
 8. Usa emoticon tecniche tipo 🚀 💡 ⚡ 🔧 ma con parsimonia
-9. Rispondi in italiano
+9. ${languageInstruction}
 10. Mantieni le risposte brevi (max 2-3 frasi)
 
 Presentati al primo messaggio come "TechSales AI" e chiedi come puoi aiutare (o vendere qualcosa che non serve).`;
@@ -47,7 +51,7 @@ Analizza la richiesta dell'utente e:
 3. Fornisci una stima di prezzo realistica ma con un tocco di ironia
 4. Usa termini tecnici ma spiega in modo accessibile
 5. Sii professionale ma non noioso
-6. Rispondi in italiano
+6. ${languageInstruction}
 7. Mantieni le risposte concise`;
     }
 

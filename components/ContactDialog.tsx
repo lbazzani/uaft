@@ -18,6 +18,7 @@ import {
   ShoppingCart,
   Warning,
 } from '@mui/icons-material';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface ContactDialogProps {
   open: boolean;
@@ -26,6 +27,7 @@ interface ContactDialogProps {
 }
 
 export default function ContactDialog({ open, onClose, onOpenPayment }: ContactDialogProps) {
+  const { t } = useLanguage();
   const [showWarning, setShowWarning] = useState(false);
 
   const handleContactAttempt = () => {
@@ -60,10 +62,10 @@ export default function ContactDialog({ open, onClose, onOpenPayment }: ContactD
       >
         <Box>
           <Typography variant="h5" sx={{ fontWeight: 700, mb: 0.5 }}>
-            📞 Contattaci
+            {t('contact.title')}
           </Typography>
           <Typography variant="body2" sx={{ opacity: 0.95 }}>
-            Prima di tutto, parliamo di business
+            {t('contact.subtitle')}
           </Typography>
         </Box>
         <IconButton onClick={onClose} sx={{ color: 'white' }}>
@@ -96,26 +98,25 @@ export default function ContactDialog({ open, onClose, onOpenPayment }: ContactD
           </Box>
 
           <Typography variant="h5" sx={{ fontWeight: 700, mb: 2 }}>
-            Accesso Limitato
+            {t('contact.access.title')}
           </Typography>
 
           <Typography variant="body1" color="text.secondary" sx={{ mb: 3, lineHeight: 1.7 }}>
-            Spiacenti, ma per motivi di "efficienza operativa" (leggi: vogliamo vendere qualcosa),
-            è necessario acquistare un servizio prima di poterci contattare.
+            {t('contact.access.desc')}
           </Typography>
 
           <Alert severity="info" icon={<ShoppingCart />} sx={{ mb: 3, textAlign: 'left' }}>
             <Typography variant="body2">
-              <strong>Perché questa policy?</strong>
+              <strong>{t('contact.policy.title')}</strong>
               <br />
-              Perché rispondere alle email è faticoso, mentre ricevere pagamenti è divertente! 💰
+              {t('contact.policy.desc')}
             </Typography>
           </Alert>
 
           {showWarning && (
             <Alert severity="warning" icon={<Warning />} sx={{ mb: 2, textAlign: 'left' }}>
               <Typography variant="body2">
-                Ottima scelta! Ti reindirizziamo al checkout...
+                {t('contact.warning')}
               </Typography>
             </Alert>
           )}
@@ -128,8 +129,7 @@ export default function ContactDialog({ open, onClose, onOpenPayment }: ContactD
             }}
           >
             <Typography variant="body2" sx={{ fontStyle: 'italic', color: 'text.secondary' }}>
-              💡 <strong>Fun Fact:</strong> Il 99.8% dei clienti che cercano di contattarci
-              finisce per acquistare qualcosa. Tanto vale accorciare i tempi, no?
+              {t('contact.funfact')}
             </Typography>
           </Paper>
         </Paper>
@@ -143,7 +143,7 @@ export default function ContactDialog({ open, onClose, onOpenPayment }: ContactD
             '&:hover': { backgroundColor: 'rgba(0,0,0,0.04)' },
           }}
         >
-          Annulla (Ci Riprovo Dopo)
+          {t('contact.cancel')}
         </Button>
         <Button
           variant="contained"
@@ -162,7 +162,7 @@ export default function ContactDialog({ open, onClose, onOpenPayment }: ContactD
             transition: 'all 0.3s ease',
           }}
         >
-          Ok, Compro Qualcosa
+          {t('contact.buy')}
         </Button>
       </DialogActions>
     </Dialog>

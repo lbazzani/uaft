@@ -21,44 +21,46 @@ import {
   ShoppingCart,
 } from '@mui/icons-material';
 import PaymentDialog from './PaymentDialog';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface Message {
   role: 'user' | 'assistant';
   content: string;
 }
 
-const REOPEN_MESSAGES = [
-  '👋 Ehi! Non puoi liberarti di me così facilmente! Ho servizi incredibili da mostrarti!',
-  '🤔 Mi hai chiuso? Davvero? Ok, ma ascolta... abbiamo uno sconto del 200% (sì, hai letto bene)!',
-  '😢 Perché mi eviti? Ho solo 47 servizi da venderti, non ci vorrà molto!',
-  '🚀 Torno! Come un boomerang! Ma più fastidioso e con prezzi imbattibili!',
-  '💡 Plot twist: chiudere questa finestra attiva automaticamente il nostro servizio "Persistence as a Service"!',
-  '🎯 Ho notato che hai chiuso la chat. Classico errore. Tutti tornano da me alla fine.',
-  '⚠️ ATTENZIONE: Chiudere questa finestra può causare FOMO (Fear Of Missing Offerings)!',
-  '🔄 Sono come un popup degli anni 2000, ma con intelligenza artificiale! Molto meglio, vero?',
-  '💼 Ti sei perso la mia ultima offerta? "Noia as a Service" - solo €999/mese!',
-  '🎪 Bentornato! (Sapevo che saresti tornato. L\'algoritmo non sbaglia mai. O quasi.)',
-];
-
-const NUDGE_MESSAGES = [
-  '🤔 Ancora lì? Sto aspettando la tua risposta... Ho così tante offerte da proporti!',
-  '⏰ Tick tock! Ogni secondo che passa è un servizio che non stai comprando!',
-  '💭 Ti vedo pensare... Ma sai cosa è meglio del pensare? COMPRARE!',
-  '🎯 Non essere timido! Dimmi di cosa hai bisogno. Spoiler: la risposta è "tutto".',
-  '📊 Fun fact: il 99% delle persone che non rispondono finiscono per comprare comunque. Accorciamo i tempi?',
-  '🚀 Posso sentire che stai per scrivere qualcosa... Dai, fallo! I nostri server stanno aspettando!',
-  '💡 Proposta: tu compri qualcosa, io smetto di mandarti messaggi. Win-win!',
-  '🎪 Ok, faccio finta di non esserci... (ma in realtà sto ancora qui che aspetto)',
-  '📢 OFFERTA LAMPO: se rispondi entro 10 secondi... beh, non cambia nulla ma sembra più urgente!',
-  '🤝 Guarda, facciamo così: tu fingi di essere interessato, io fingo che il prezzo sia scontato. Deal?',
-  '💳 Hai mai provato a cliccare su "Acquista Ora"? È un\'esperienza catartica, fidati!',
-  '🎁 REGALO: se acquisti oggi ricevi... beh, il servizio che hai pagato. Ma suona bene, no?',
-  '🏃‍♂️ I nostri competitor stanno già rubando i tuoi clienti. Vuoi davvero aspettare ancora?',
-  '💰 Abbiamo 3 piani perfetti per te. Spoiler: vanno tutti bene, basta che paghi!',
-  '🎯 Clicca sul mio pulsante magico e scopri prezzi che aumentano in tempo reale!',
-];
-
 export default function SalesAgent() {
+  const { t, language } = useLanguage();
+
+  const REOPEN_MESSAGES = [
+    t('chat.reopen1'),
+    t('chat.reopen2'),
+    t('chat.reopen3'),
+    t('chat.reopen4'),
+    t('chat.reopen5'),
+    t('chat.reopen6'),
+    t('chat.reopen7'),
+    t('chat.reopen8'),
+    t('chat.reopen9'),
+    t('chat.reopen10'),
+  ];
+
+  const NUDGE_MESSAGES = [
+    t('chat.nudge1'),
+    t('chat.nudge2'),
+    t('chat.nudge3'),
+    t('chat.nudge4'),
+    t('chat.nudge5'),
+    t('chat.nudge6'),
+    t('chat.nudge7'),
+    t('chat.nudge8'),
+    t('chat.nudge9'),
+    t('chat.nudge10'),
+    t('chat.nudge11'),
+    t('chat.nudge12'),
+    t('chat.nudge13'),
+    t('chat.nudge14'),
+    t('chat.nudge15'),
+  ];
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -172,6 +174,7 @@ export default function SalesAgent() {
         body: JSON.stringify({
           messages: [{ role: 'user', content: 'Ciao' }],
           type: 'sales',
+          language: language,
         }),
       });
 
@@ -184,8 +187,7 @@ export default function SalesAgent() {
       setMessages([
         {
           role: 'assistant',
-          content:
-            '👋 Ciao! Sono TechSales AI di UAFT. Ho notato che stai navigando senza aver ancora acquistato nessuno dei nostri rivoluzionari servizi. Posso aiutarti a trovare qualcosa di cui non sapevi di aver bisogno? 🚀',
+          content: t('chat.initial.fallback'),
         },
       ]);
     } finally {
@@ -225,6 +227,7 @@ export default function SalesAgent() {
         body: JSON.stringify({
           messages: [...messages, userMessage],
           type: 'sales',
+          language: language,
         }),
       });
 
@@ -239,7 +242,7 @@ export default function SalesAgent() {
           ...prev,
           {
             role: 'assistant',
-            content: `⚠️ Ops! ${data.error}. Ma tranquillo, posso comunque convincerti a comprare qualcosa!`,
+            content: t('chat.error.api').replace('{error}', data.error),
           },
         ]);
       }
@@ -248,8 +251,7 @@ export default function SalesAgent() {
         ...prev,
         {
           role: 'assistant',
-          content:
-            '🔧 Sembra che ci sia un problema tecnico. Tipico! Probabilmente hai bisogno del nostro servizio "Error Handling as a Service" per soli €299/mese!',
+          content: t('chat.error.technical'),
         },
       ]);
     } finally {
@@ -338,7 +340,7 @@ export default function SalesAgent() {
           </Avatar>
           <Box sx={{ flex: 1 }}>
             <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-              TechSales AI
+              {t('chat.title')}
             </Typography>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <Box
@@ -349,7 +351,7 @@ export default function SalesAgent() {
                   bgcolor: '#4ade80',
                 }}
               />
-              <Typography variant="caption">Online - Pronto a vendere</Typography>
+              <Typography variant="caption">{t('chat.status')}</Typography>
             </Box>
           </Box>
           <IconButton
@@ -448,7 +450,7 @@ export default function SalesAgent() {
                 },
               }}
             >
-              💳 Acquista Ora (Prima che i prezzi aumentino!)
+              {t('chat.buy.button')}
             </Button>
           )}
           <Box sx={{ display: 'flex', gap: 1, alignItems: 'flex-end' }}>
@@ -456,7 +458,7 @@ export default function SalesAgent() {
               fullWidth
               multiline
               maxRows={3}
-              placeholder="Scrivi un messaggio... (se vuoi resistere)"
+              placeholder={t('chat.placeholder')}
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyPress={handleKeyPress}
@@ -481,7 +483,7 @@ export default function SalesAgent() {
       {isMinimized && (
         <Chip
           icon={<SmartToy />}
-          label="TechSales AI vuole parlarti!"
+          label={t('chat.minimized')}
           onClick={() => setIsMinimized(false)}
           sx={{
             position: 'fixed',

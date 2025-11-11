@@ -13,29 +13,31 @@ import {
 import { ArrowForward, CheckCircle, Stars } from '@mui/icons-material';
 import ScrollAnimation from './ScrollAnimation';
 import DemoDialog from './DemoDialog';
-
-const DEMO_FEATURES = [
-  'Demo personalizzata di 47 minuti* (*possono diventare 3 ore)',
-  'Consulente dedicato che non si arrende facilmente',
-  'Presentazione PowerPoint con troppi effetti di transizione',
-  'Coffee break virtuale incluso (porta il tuo caffè)',
-  'Preventivo che arriva in tempo reale mentre parliamo',
-  'Opzione "fai finta di essere interessato" disponibile',
-];
-
-const BUTTON_HOVER_MESSAGES = [
-  'Dai, clicca! Non morde... molto',
-  'Solo clienti coraggiosi oltre questo punto',
-  'Avviso: questo bottone causa dipendenza da servizi IT',
-  'Disclaimer: potresti effettivamente voler comprare qualcosa',
-  '⚠️ Attenzione: una volta cliccato non potrai più tornare indietro*',
-  'Il 78% di chi passa il mouse clicca. Sarai tu l\'eccezione?',
-];
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function CTASection() {
+  const { t } = useLanguage();
   const [hoverCount, setHoverCount] = useState(0);
   const [showTooltip, setShowTooltip] = useState(false);
   const [demoDialogOpen, setDemoDialogOpen] = useState(false);
+
+  const DEMO_FEATURES = [
+    t('cta.feature1'),
+    t('cta.feature2'),
+    t('cta.feature3'),
+    t('cta.feature4'),
+    t('cta.feature5'),
+    t('cta.feature6'),
+  ];
+
+  const BUTTON_HOVER_MESSAGES = [
+    t('cta.hover1'),
+    t('cta.hover2'),
+    t('cta.hover3'),
+    t('cta.hover4'),
+    t('cta.hover5'),
+    t('cta.hover6'),
+  ];
 
   return (
     <>
@@ -60,7 +62,7 @@ export default function CTASection() {
               <Box sx={{ textAlign: { xs: 'center', md: 'left' } }}>
                 <Chip
                   icon={<Stars />}
-                  label="Offerta Limitata*"
+                  label={t('cta.badge')}
                   sx={{
                     mb: 3,
                     backgroundColor: 'rgba(255,255,255,0.2)',
@@ -71,14 +73,13 @@ export default function CTASection() {
                   }}
                 />
                 <Typography variant="h2" gutterBottom sx={{ fontWeight: 700, mb: 3 }}>
-                  Pronto a Iniziare?
+                  {t('cta.title')}
                 </Typography>
                 <Typography variant="h5" sx={{ mb: 4, opacity: 0.95, fontWeight: 400, lineHeight: 1.6 }}>
-                  Trasformiamo le tue idee in soluzioni concrete.
-                  Richiedi una demo e scopri tutto quello che possiamo fare per te.
+                  {t('cta.subtitle')}
                 </Typography>
                 <Typography variant="body2" sx={{ mb: 4, opacity: 0.8, fontStyle: 'italic', fontSize: '0.9rem' }}>
-                  *L'offerta è limitata solo dalla tua capacità di resistere alla nostra persistenza
+                  {t('cta.disclaimer')}
                 </Typography>
                 <Tooltip
                   title={BUTTON_HOVER_MESSAGES[hoverCount % BUTTON_HOVER_MESSAGES.length]}
@@ -130,7 +131,7 @@ export default function CTASection() {
                       transition: 'all 0.3s ease',
                     }}
                   >
-                    Richiedi una Demo Ora
+                    {t('cta.button')}
                   </Button>
                 </Tooltip>
               </Box>
@@ -160,7 +161,7 @@ export default function CTASection() {
                     textAlign: 'center',
                   }}
                 >
-                  Cosa Otterrai con la Demo 🎁
+                  {t('cta.benefits.title')}
                 </Typography>
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                   {DEMO_FEATURES.map((feature, index) => (
@@ -220,7 +221,7 @@ export default function CTASection() {
                       fontSize: '0.95rem',
                     }}
                   >
-                    📊 Statistiche reali: 9 clienti su 10 richiedono la demo solo per vedere se è vero che non ci arrendiamo
+                    {t('cta.stats')}
                   </Typography>
                 </Box>
               </Paper>

@@ -5,6 +5,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import theme from '@/lib/theme';
 import CookieBanner from '@/components/CookieBanner';
 import SalesAgent from '@/components/SalesAgent';
+import { LanguageProvider } from '@/contexts/LanguageContext';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -23,10 +24,12 @@ export default function RootLayout({
       <body style={{ margin: 0 }}>
         <AppRouterCacheProvider>
           <ThemeProvider theme={theme}>
-            <CssBaseline />
-            {children}
-            <CookieBanner />
-            <SalesAgent />
+            <LanguageProvider>
+              <CssBaseline />
+              {children}
+              <CookieBanner />
+              <SalesAgent />
+            </LanguageProvider>
           </ThemeProvider>
         </AppRouterCacheProvider>
       </body>

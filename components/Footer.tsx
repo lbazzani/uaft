@@ -12,22 +12,23 @@ import {
 import { LinkedIn, Twitter, GitHub } from '@mui/icons-material';
 import Link from 'next/link';
 import Logo from './Logo';
-
-const SOCIAL_MESSAGES = [
-  'Ops! Il nostro social media manager è in ferie permanenti 🏖️',
-  'Seguici! (O almeno fai finta, ci fa piacere) 😅',
-  'Link social temporaneamente non disponibile. Prova a comprare qualcosa invece! 💰',
-  'Social media? Preferivamo le pagine gialle, erano più affidabili 📞',
-  'Questo link ti porterà... da nessuna parte. Sorpresa! 🎉',
-  'I nostri profili social sono un work in progress dal 2019 🚧',
-];
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function Footer() {
+  const { t } = useLanguage();
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
 
   const handleSocialClick = () => {
-    const randomMessage = SOCIAL_MESSAGES[Math.floor(Math.random() * SOCIAL_MESSAGES.length)];
+    const messages = [
+      t('footer.social.msg1'),
+      t('footer.social.msg2'),
+      t('footer.social.msg3'),
+      t('footer.social.msg4'),
+      t('footer.social.msg5'),
+      t('footer.social.msg6'),
+    ];
+    const randomMessage = messages[Math.floor(Math.random() * messages.length)];
     setSnackbarMessage(randomMessage);
     setSnackbarOpen(true);
   };
@@ -39,15 +40,15 @@ export default function Footer() {
           <Grid size={{ xs: 12, md: 4 }}>
             <Logo size={36} color="white" showFullName={true} />
             <Typography variant="body2" sx={{ opacity: 0.5, mt: 1 }}>
-              © 2099 UAFT. Tutti i diritti riservati (anche nel futuro).
+              © 2099 UAFT. {t('footer.rights')}
             </Typography>
             <Typography variant="caption" sx={{ opacity: 0.4, mt: 0.5, display: 'block', fontStyle: 'italic' }}>
-              Noi siamo già nel futuro. Tu arrivi quando puoi.
+              {t('footer.tagline')}
             </Typography>
           </Grid>
           <Grid size={{ xs: 12, md: 4 }}>
             <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
-              Link Utili
+              {t('footer.useful.links')}
             </Typography>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
               <Link href="/privacy" style={{ color: 'white', opacity: 0.7, textDecoration: 'none' }}>
@@ -63,7 +64,7 @@ export default function Footer() {
           </Grid>
           <Grid size={{ xs: 12, md: 4 }}>
             <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
-              Seguici
+              {t('footer.follow')}
             </Typography>
             <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
               <IconButton

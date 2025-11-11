@@ -23,8 +23,11 @@ import Link from 'next/link';
 import Logo from './Logo';
 import ContactDialog from './ContactDialog';
 import PaymentDialog from './PaymentDialog';
+import LanguageSwitcher from './LanguageSwitcher';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function Header() {
+  const { t } = useLanguage();
   const [showHeader, setShowHeader] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -59,9 +62,9 @@ export default function Header() {
   }, [lastScrollY]);
 
   const menuItems = [
-    { label: 'Servizi', href: '#services' },
-    { label: 'Chi Siamo', href: '#about' },
-    { label: 'Privacy', href: '/privacy' },
+    { label: t('header.services'), href: '#services' },
+    { label: t('header.about'), href: '#about' },
+    { label: t('header.privacy'), href: '/privacy' },
   ];
 
   const handleDrawerToggle = () => {
@@ -126,7 +129,7 @@ export default function Header() {
               >
                 <Chip
                   icon={<Rocket sx={{ fontSize: 18 }} />}
-                  label="La tua azienda che può fare tutto"
+                  label={t('header.tagline')}
                   size="small"
                   sx={{
                     backgroundColor: alpha('#F97316', 0.1),
@@ -179,6 +182,9 @@ export default function Header() {
                   </Button>
                 </motion.div>
               ))}
+              <Box sx={{ ml: 1 }}>
+                <LanguageSwitcher />
+              </Box>
               <motion.div
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -188,7 +194,7 @@ export default function Header() {
                   endIcon={<ArrowForward />}
                   onClick={() => setContactDialogOpen(true)}
                   sx={{
-                    ml: 2,
+                    ml: 1,
                     px: 3,
                     py: 1.2,
                     background: 'linear-gradient(135deg, #F97316 0%, #EA580C 100%)',
@@ -203,7 +209,7 @@ export default function Header() {
                     },
                   }}
                 >
-                  Inizia Ora
+                  {t('header.cta')}
                 </Button>
               </motion.div>
             </>
@@ -325,7 +331,7 @@ export default function Header() {
                   transition: 'all 0.3s ease',
                 }}
               >
-                Inizia Ora
+                {t('header.cta')}
               </Button>
             </ListItem>
           </motion.div>
@@ -345,7 +351,7 @@ export default function Header() {
               textAlign: 'center',
             }}
           >
-            UAFT - Una Azienda che può Fare Tutto
+            {t('misc.company')}
           </Typography>
         </Box>
       </Drawer>
