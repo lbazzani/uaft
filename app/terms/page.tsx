@@ -33,7 +33,7 @@ export default function TermsPage() {
           {language === 'it' ? 'Termini e Condizioni' : 'Terms and Conditions'}
         </Typography>
         <Typography variant="subtitle1" color="text.secondary" sx={{ mb: 4 }}>
-          {language === 'it' ? 'Ultimo aggiornamento: 11 Novembre 2024' : 'Last updated: November 11, 2024'}
+          {language === 'it' ? 'Ultimo aggiornamento: 11 Novembre 2025' : 'Last updated: November 11, 2025'}
         </Typography>
 
         {language === 'it' ? (

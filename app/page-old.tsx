@@ -314,7 +314,7 @@ export default function Home() {
             I Nostri Super Servizi
           </Typography>
           <Typography variant="h6" align="center" color="text.secondary" sx={{ mb: 8 }}>
-            Tutto as a Service. Perché nel 2024 se non è "as a Service" non vale niente.
+            Tutto as a Service. Perché nel 2025 se non è "as a Service" non vale niente.
           </Typography>
 
           <Grid container spacing={4}>
@@ -363,7 +363,7 @@ export default function Home() {
 
           <Paper elevation={3} sx={{ p: 5, borderRadius: 3 }}>
             <Typography variant="body1" paragraph>
-              UAFT nasce nel 2024 (proprio oggi, in realtà) dall'idea rivoluzionaria che
+              UAFT nasce nel 2025 (proprio oggi, in realtà) dall'idea rivoluzionaria che
               un'azienda possa fare tutto. Letteralmente tutto. Web development? ✅ Machine Learning? ✅
               Preparare il caffè? Beh, quello ancora no, ma ci stiamo lavorando.
             </Typography>
@@ -422,7 +422,7 @@ export default function Home() {
                 Una Azienda che può Fare Tutto
               </Typography>
               <Typography variant="body2" sx={{ opacity: 0.8, mt: 1 }}>
-                © 2024 UAFT. Tutti i diritti riservati. Forse.
+                © 2025 UAFT. Tutti i diritti riservati. Forse.
               </Typography>
             </Grid>
             <Grid item xs={12} md={4}>

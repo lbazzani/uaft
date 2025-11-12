@@ -17,7 +17,7 @@ export default function Home() {
     url: 'https://uaft.it',
     logo: 'https://uaft.it/logo.png',
     description: 'Servizi IT innovativi con un tocco ironico ma professionale. Cloud, AI, automazione e soluzioni as-a-Service.',
-    foundingDate: '2024',
+    foundingDate: '2025',
     areaServed: {
       '@type': 'Country',
       name: 'Italia',
