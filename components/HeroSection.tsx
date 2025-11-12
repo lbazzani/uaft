@@ -63,7 +63,7 @@ export default function HeroSection() {
         minHeight: { xs: 'auto', md: 'calc(100vh - 80px)' },
         display: 'flex',
         alignItems: 'center',
-        pt: { xs: 12, md: 8 },
+        pt: { xs: 16, md: 12 },
         pb: { xs: 6, md: 8 },
         position: 'relative',
         overflow: 'hidden',
