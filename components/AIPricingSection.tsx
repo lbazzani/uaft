@@ -348,7 +348,18 @@ export default function AIPricingSection() {
           {isCalculating ? (
             // Animazione di caricamento
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, flex: 1, justifyContent: 'center' }}>
-              {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((step) => (
+              {([
+                'pricing.loading.step1',
+                'pricing.loading.step2',
+                'pricing.loading.step3',
+                'pricing.loading.step4',
+                'pricing.loading.step5',
+                'pricing.loading.step6',
+                'pricing.loading.step7',
+                'pricing.loading.step8',
+                'pricing.loading.step9',
+                'pricing.loading.step10',
+              ] as const).map((stepKey, step) => (
                 <Fade in={loadingStep >= step} timeout={500} key={step}>
                   <Paper
                     elevation={loadingStep === step ? 8 : 2}
@@ -368,7 +379,7 @@ export default function AIPricingSection() {
                         fontFamily: 'monospace',
                       }}
                     >
-                      {t(`pricing.loading.step${step + 1}`)}
+                      {t(stepKey)}
                     </Typography>
                   </Paper>
                 </Fade>
