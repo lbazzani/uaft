@@ -45,6 +45,21 @@ export default function Footer() {
             <Typography variant="caption" sx={{ opacity: 0.4, mt: 0.5, display: 'block', fontStyle: 'italic' }}>
               {t('footer.tagline')}
             </Typography>
+            <Typography variant="caption" sx={{ opacity: 0.5, mt: 1, display: 'block' }}>
+              Powered by{' '}
+              <a
+                href="https://bazzani.info/"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  color: '#F97316',
+                  textDecoration: 'none',
+                  fontWeight: 500
+                }}
+              >
+                bazzani.info
+              </a>
+            </Typography>
           </Grid>
           <Grid size={{ xs: 12, md: 4 }}>
             <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>

@@ -6,11 +6,13 @@ import { ReactNode } from 'react';
 interface ScrollAnimationProps {
   children: ReactNode;
   delay?: number;
+  style?: React.CSSProperties;
 }
 
 export default function ScrollAnimation({
   children,
   delay = 0,
+  style,
 }: ScrollAnimationProps) {
   const [ref, inView] = useInView({
     triggerOnce: true,
@@ -20,6 +22,7 @@ export default function ScrollAnimation({
   return (
     <motion.div
       ref={ref}
+      style={style}
       initial={{ opacity: 0, y: 20 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
       transition={{
