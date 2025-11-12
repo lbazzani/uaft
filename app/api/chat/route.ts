@@ -61,7 +61,7 @@ IMPORTANTE: Sii DIVERTENTE ma dai comunque informazioni tecniche VERE. L'ironia 
     }
 
     const completion = await openai.chat.completions.create({
-      model: 'gpt-3.5-turbo',
+      model: 'gpt-4o-mini',
       messages: [
         {
           role: 'system',
@@ -70,7 +70,7 @@ IMPORTANTE: Sii DIVERTENTE ma dai comunque informazioni tecniche VERE. L'ironia 
         ...messages,
       ],
       temperature: 0.8,
-      max_tokens: 200,
+      max_completion_tokens: 200,
     });
 
     const message = completion.choices[0].message.content;
