@@ -121,10 +121,7 @@ export default function CTASection() {
                       boxShadow: '0 8px 32px rgba(0,0,0,0.2)',
                       '&:hover': {
                         backgroundColor: '#f5f5f5',
-                        transform: 'translateY(-4px) scale(1.05)',
-                        boxShadow: '0 12px 48px rgba(0,0,0,0.3)',
                       },
-                      transition: 'all 0.3s ease',
                     }}
                   >
                     {t('cta.button')}
@@ -170,11 +167,6 @@ export default function CTASection() {
                         p: 1.5,
                         borderRadius: 2,
                         backgroundColor: index % 2 === 0 ? '#FFF7ED' : 'transparent',
-                        transition: 'all 0.3s ease',
-                        '&:hover': {
-                          backgroundColor: '#FFF7ED',
-                          transform: 'translateX(8px)',
-                        },
                       }}
                     >
                       <CheckCircle

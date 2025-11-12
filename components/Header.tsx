@@ -1,6 +1,5 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
 import {
   AppBar,
   Toolbar,
@@ -96,103 +95,65 @@ export default function Header() {
               gap: 2,
             }}
           >
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <Logo size={isScrolled ? 32 : 36} />
-            </motion.div>
+            <Logo size={isScrolled ? 32 : 36} />
             {!isMobile && isScrolled && (
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.3 }}
-              >
-                <Chip
-                  icon={<Rocket sx={{ fontSize: 18 }} />}
-                  label={t('header.tagline')}
-                  size="small"
-                  sx={{
-                    backgroundColor: alpha('#F97316', 0.1),
-                    color: '#F97316',
-                    fontWeight: 600,
-                    fontSize: '0.75rem',
-                  }}
-                />
-              </motion.div>
+              <Chip
+                icon={<Rocket sx={{ fontSize: 18 }} />}
+                label={t('header.tagline')}
+                size="small"
+                sx={{
+                  backgroundColor: alpha('#F97316', 0.1),
+                  color: '#F97316',
+                  fontWeight: 600,
+                  fontSize: '0.75rem',
+                }}
+              />
             )}
           </Box>
 
           {/* Desktop Menu */}
           {!isMobile && (
             <>
-              {menuItems.map((item, index) => (
-                <motion.div
+              {menuItems.map((item) => (
+                <Button
                   key={item.label}
-                  initial={{ opacity: 0, y: -20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1, duration: 0.3 }}
+                  color="inherit"
+                  component={Link}
+                  href={item.href}
+                  sx={{
+                    mx: 0.5,
+                    px: 2,
+                    fontWeight: 600,
+                    fontSize: '0.95rem',
+                  }}
                 >
-                  <Button
-                    color="inherit"
-                    component={Link}
-                    href={item.href}
-                    sx={{
-                      mx: 0.5,
-                      px: 2,
-                      fontWeight: 600,
-                      fontSize: '0.95rem',
-                      position: 'relative',
-                      '&::after': {
-                        content: '""',
-                        position: 'absolute',
-                        bottom: 8,
-                        left: '50%',
-                        transform: 'translateX(-50%)',
-                        width: 0,
-                        height: 2,
-                        backgroundColor: '#F97316',
-                        transition: 'width 0.3s ease',
-                      },
-                      '&:hover::after': {
-                        width: '70%',
-                      },
-                    }}
-                  >
-                    {item.label}
-                  </Button>
-                </motion.div>
+                  {item.label}
+                </Button>
               ))}
               <Box sx={{ ml: 1 }}>
                 <LanguageSwitcher />
               </Box>
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+              <Button
+                variant="contained"
+                endIcon={<ArrowForward />}
+                onClick={() => setContactDialogOpen(true)}
+                sx={{
+                  ml: 1,
+                  px: 3,
+                  py: 1.2,
+                  background: 'linear-gradient(135deg, #F97316 0%, #EA580C 100%)',
+                  fontWeight: 700,
+                  fontSize: '0.95rem',
+                  borderRadius: 2,
+                  boxShadow: '0 4px 12px rgba(249, 115, 22, 0.3)',
+                  textTransform: 'none',
+                  '&:hover': {
+                    background: 'linear-gradient(135deg, #EA580C 0%, #DC2626 100%)',
+                  },
+                }}
               >
-                <Button
-                  variant="contained"
-                  endIcon={<ArrowForward />}
-                  onClick={() => setContactDialogOpen(true)}
-                  sx={{
-                    ml: 1,
-                    px: 3,
-                    py: 1.2,
-                    background: 'linear-gradient(135deg, #F97316 0%, #EA580C 100%)',
-                    fontWeight: 700,
-                    fontSize: '0.95rem',
-                    borderRadius: 2,
-                    boxShadow: '0 4px 12px rgba(249, 115, 22, 0.3)',
-                    textTransform: 'none',
-                    '&:hover': {
-                      background: 'linear-gradient(135deg, #EA580C 0%, #DC2626 100%)',
-                      boxShadow: '0 6px 16px rgba(249, 115, 22, 0.4)',
-                    },
-                  }}
-                >
-                  {t('header.cta')}
-                </Button>
-              </motion.div>
+                {t('header.cta')}
+              </Button>
             </>
           )}
 
@@ -247,75 +208,57 @@ export default function Header() {
           </IconButton>
         </Box>
         <List sx={{ px: 2, pt: 3 }}>
-          {menuItems.map((item, index) => (
-            <motion.div
-              key={item.label}
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: index * 0.1, duration: 0.3 }}
-            >
-              <ListItem disablePadding sx={{ mb: 2 }}>
-                <ListItemButton
-                  component={Link}
-                  href={item.href}
-                  onClick={handleDrawerToggle}
-                  sx={{
-                    borderRadius: 2,
-                    py: 1.5,
-                    backgroundColor: 'rgba(255,255,255,0.1)',
-                    '&:hover': {
-                      backgroundColor: 'rgba(255,255,255,0.2)',
-                      transform: 'translateX(8px)',
-                      transition: 'all 0.3s ease',
-                    },
-                  }}
-                >
-                  <ListItemText
-                    primary={item.label}
-                    primaryTypographyProps={{
-                      fontWeight: 700,
-                      fontSize: '1.1rem',
-                    }}
-                  />
-                  <ArrowForward sx={{ opacity: 0.7 }} />
-                </ListItemButton>
-              </ListItem>
-            </motion.div>
-          ))}
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4, duration: 0.3 }}
-          >
-            <ListItem disablePadding sx={{ mt: 4 }}>
-              <Button
-                fullWidth
-                variant="contained"
-                endIcon={<Rocket />}
-                onClick={() => {
-                  handleDrawerToggle();
-                  setContactDialogOpen(true);
-                }}
+          {menuItems.map((item) => (
+            <ListItem key={item.label} disablePadding sx={{ mb: 2 }}>
+              <ListItemButton
+                component={Link}
+                href={item.href}
+                onClick={handleDrawerToggle}
                 sx={{
-                  backgroundColor: 'white',
-                  color: '#F97316',
-                  py: 2,
-                  fontSize: '1.1rem',
-                  fontWeight: 700,
                   borderRadius: 2,
-                  boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                  py: 1.5,
+                  backgroundColor: 'rgba(255,255,255,0.1)',
                   '&:hover': {
-                    backgroundColor: 'rgba(255,255,255,0.95)',
-                    transform: 'translateY(-2px)',
-                    boxShadow: '0 6px 16px rgba(0,0,0,0.2)',
+                    backgroundColor: 'rgba(255,255,255,0.2)',
                   },
-                  transition: 'all 0.3s ease',
                 }}
               >
-                {t('header.cta')}
-              </Button>
+                <ListItemText
+                  primary={item.label}
+                  primaryTypographyProps={{
+                    fontWeight: 700,
+                    fontSize: '1.1rem',
+                  }}
+                />
+                <ArrowForward sx={{ opacity: 0.7 }} />
+              </ListItemButton>
             </ListItem>
-          </motion.div>
+          ))}
+          <ListItem disablePadding sx={{ mt: 4 }}>
+            <Button
+              fullWidth
+              variant="contained"
+              endIcon={<Rocket />}
+              onClick={() => {
+                handleDrawerToggle();
+                setContactDialogOpen(true);
+              }}
+              sx={{
+                backgroundColor: 'white',
+                color: '#F97316',
+                py: 2,
+                fontSize: '1.1rem',
+                fontWeight: 700,
+                borderRadius: 2,
+                boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                '&:hover': {
+                  backgroundColor: 'rgba(255,255,255,0.95)',
+                },
+              }}
+            >
+              {t('header.cta')}
+            </Button>
+          </ListItem>
         </List>
         <Box
           sx={{

@@ -1,14 +1,9 @@
 'use client';
 import { useState, useEffect } from 'react';
 import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
   Button,
   Box,
   Typography,
-  IconButton,
   Paper,
   LinearProgress,
   Chip,
@@ -17,7 +12,6 @@ import {
   Grid,
 } from '@mui/material';
 import {
-  Close,
   Cloud,
   SmartToy,
   Security,
@@ -33,6 +27,7 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSpring, animated, config } from '@react-spring/web';
 import { useLanguage } from '@/contexts/LanguageContext';
+import Modal from './Modal';
 
 interface ServiceDemoProps {
   open: boolean;
@@ -547,18 +542,6 @@ export default function ServiceDemo({ open, onClose, service, onOpenPayment }: S
     return service ? titles[service] : 'Demo';
   };
 
-  const getColor = () => {
-    const colors = {
-      cloud: '#F97316',
-      ai: '#FB923C',
-      security: '#11998e',
-      speed: '#FA8BFF',
-      code: '#f093fb',
-      deploy: '#38ef7d',
-    };
-    return service ? colors[service] : '#F97316';
-  };
-
   const handleBuyService = () => {
     onClose();
     if (onOpenPayment) {
@@ -567,62 +550,32 @@ export default function ServiceDemo({ open, onClose, service, onOpenPayment }: S
   };
 
   return (
-    <Dialog
+    <Modal
       open={open}
       onClose={onClose}
+      title={getTitle()}
       maxWidth="md"
-      fullWidth
-      PaperProps={{
-        sx: {
-          borderRadius: 4,
-          maxHeight: '90vh',
-        },
-      }}
+      actions={
+        <>
+          <Button onClick={onClose} variant="outlined" color="inherit">
+            {t('demo.close')}
+          </Button>
+          <Button
+            variant="contained"
+            onClick={handleBuyService}
+            color="primary"
+          >
+            {t('demo.buy')}
+          </Button>
+        </>
+      }
     >
-      <DialogTitle
-        sx={{
-          background: `linear-gradient(135deg, ${getColor()} 0%, ${getColor()}dd 100%)`,
-          color: 'white',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          p: 3,
-        }}
-      >
-        <Box sx={{ fontWeight: 700, fontSize: '1.5rem' }}>
-          {getTitle()}
-        </Box>
-        <IconButton onClick={onClose} sx={{ color: 'white' }}>
-          <Close />
-        </IconButton>
-      </DialogTitle>
-
-      <DialogContent sx={{ p: 4, backgroundColor: '#FAFBFC' }}>
-        {service === 'cloud' && <CloudDemo />}
-        {service === 'ai' && <AIDemo />}
-        {service === 'security' && <SecurityDemo />}
-        {service === 'speed' && <SpeedDemo />}
-        {service === 'code' && <CodeDemo />}
-        {service === 'deploy' && <DeployDemo />}
-      </DialogContent>
-
-      <DialogActions sx={{ p: 3, backgroundColor: 'white', borderTop: '1px solid #E5E7EB' }}>
-        <Button onClick={onClose} variant="outlined">
-          {t('demo.close')}
-        </Button>
-        <Button
-          variant="contained"
-          onClick={handleBuyService}
-          sx={{
-            backgroundColor: getColor(),
-            '&:hover': {
-              backgroundColor: `${getColor()}dd`,
-            }
-          }}
-        >
-          {t('demo.buy')}
-        </Button>
-      </DialogActions>
-    </Dialog>
+      {service === 'cloud' && <CloudDemo />}
+      {service === 'ai' && <AIDemo />}
+      {service === 'security' && <SecurityDemo />}
+      {service === 'speed' && <SpeedDemo />}
+      {service === 'code' && <CodeDemo />}
+      {service === 'deploy' && <DeployDemo />}
+    </Modal>
   );
 }

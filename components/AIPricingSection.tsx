@@ -190,117 +190,173 @@ export default function AIPricingSection() {
           </Box>
         </ScrollAnimation>
 
-        <Box sx={{ display: 'flex', gap: 4, flexDirection: { xs: 'column', md: 'row' }, alignItems: 'flex-start' }}>
-          {/* Colonna sinistra - Benefits */}
-          <Box sx={{ flex: 1 }}>
-            <ScrollAnimation delay={0.1}>
-              <Paper elevation={3} sx={{ p: 4, borderRadius: 4, backgroundColor: 'white' }}>
-                <Typography variant="h5" gutterBottom sx={{ fontWeight: 600, mb: 3 }}>
-                  {t('pricing.benefits.title')}
-                </Typography>
-                <List>
-                  {BENEFITS.map((benefit, index) => (
-                    <Grow in={true} timeout={500 + index * 200} key={index}>
-                      <ListItem sx={{ px: 0 }}>
-                        <ListItemIcon sx={{ color: 'primary.main', minWidth: 40 }}>
-                          {benefit.icon}
-                        </ListItemIcon>
-                        <ListItemText
-                          primary={benefit.text}
-                          primaryTypographyProps={{
-                            fontWeight: 500,
-                            fontSize: '1rem',
-                          }}
-                        />
-                      </ListItem>
-                    </Grow>
-                  ))}
-                </List>
-
-                <Box sx={{ mt: 4, p: 3, backgroundColor: '#FFF7ED', borderRadius: 2, border: '2px solid #F97316' }}>
-                  <Typography variant="body2" sx={{ fontWeight: 600, color: '#EA580C', mb: 1 }}>
-                    {t('pricing.special.title')}
-                  </Typography>
-                  <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                    {t('pricing.special.desc')}
+        {/* Main Chat Area - Prominente */}
+        <Box sx={{ maxWidth: '900px', mx: 'auto', mb: 6 }}>
+          <ScrollAnimation delay={0.1}>
+            <Paper
+              elevation={isFocused ? 16 : 8}
+              sx={{
+                p: { xs: 4, md: 6 },
+                borderRadius: 4,
+                position: 'relative',
+                background: isFocused
+                  ? 'linear-gradient(135deg, #FFF7ED 0%, #FFFBF5 100%)'
+                  : 'white',
+                border: isFocused ? '3px solid #F97316' : '3px solid transparent',
+                transition: 'all 0.3s ease',
+                transform: isFocused ? 'scale(1.02)' : 'scale(1)',
+              }}
+            >
+              {/* Header della Chat */}
+              <Box sx={{ textAlign: 'center', mb: 4 }}>
+                <Box sx={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 1.5,
+                  mb: 2,
+                  p: 2,
+                  borderRadius: 3,
+                  backgroundColor: '#FFF7ED',
+                }}>
+                  <SmartToy sx={{ fontSize: 32, color: '#F97316' }} />
+                  <Typography variant="h5" sx={{ fontWeight: 700, color: '#F97316' }}>
+                    Inizia a scrivere qui
                   </Typography>
                 </Box>
-              </Paper>
-            </ScrollAnimation>
-          </Box>
+                <Typography variant="body1" color="text.secondary" sx={{ fontSize: '1.1rem' }}>
+                  Descrivi il tuo progetto e ricevi un preventivo AI in tempo reale
+                </Typography>
+              </Box>
 
-          {/* Colonna destra - Form */}
-          <Box sx={{ flex: 1.2 }}>
-            <ScrollAnimation delay={0.2}>
-              <Paper elevation={8} sx={{ p: { xs: 3, md: 5 }, borderRadius: 4, position: 'relative' }}>
-                {/* Nudge Message */}
-                <Fade in={showNudge}>
-                  <Alert
-                    severity="info"
-                    sx={{
-                      mb: 3,
-                      backgroundColor: '#E0F2FE',
-                      '& .MuiAlert-icon': {
-                        color: '#0891B2',
-                      }
-                    }}
-                    onClose={() => setShowNudge(false)}
-                  >
-                    {nudgeMessage}
-                  </Alert>
-                </Fade>
-
-                <TextField
-                  fullWidth
-                  multiline
-                  rows={6}
-                  variant="outlined"
-                  placeholder={t('pricing.placeholder')}
-                  value={prompt}
-                  onChange={(e) => setPrompt(e.target.value)}
-                  onFocus={() => setIsFocused(true)}
-                  onBlur={() => setIsFocused(false)}
+              {/* Nudge Message */}
+              <Fade in={showNudge}>
+                <Alert
+                  severity="info"
                   sx={{
                     mb: 3,
-                    '& .MuiOutlinedInput-root': {
-                      fontSize: '1.1rem',
-                      backgroundColor: isFocused ? '#FFFBF5' : 'white',
-                      transition: 'background-color 0.3s ease',
-                      '&:hover': {
-                        backgroundColor: '#FFFBF5',
-                      }
+                    backgroundColor: '#E0F2FE',
+                    fontSize: '1rem',
+                    '& .MuiAlert-icon': {
+                      color: '#0891B2',
                     }
                   }}
-                />
-
-                <Button
-                  fullWidth
-                  variant="contained"
-                  size="large"
-                  onClick={calculatePrice}
-                  disabled={!prompt || isCalculating}
-                  startIcon={isCalculating ? <SmartToy className="rotating" /> : <AttachMoney />}
-                  sx={{
-                    py: 2,
-                    fontSize: '1.1rem',
-                    backgroundColor: '#F97316',
-                    fontWeight: 600,
-                    '&:hover': {
-                      backgroundColor: '#EA580C',
-                      transform: 'translateY(-2px)',
-                      boxShadow: '0 8px 24px rgba(249, 115, 22, 0.3)',
-                    },
-                    '&:disabled': {
-                      backgroundColor: '#FED7AA',
-                    },
-                    transition: 'all 0.3s ease',
-                  }}
+                  onClose={() => setShowNudge(false)}
                 >
-                  {isCalculating ? t('pricing.button.calculating') : t('pricing.button.calculate')}
-                </Button>
-              </Paper>
-            </ScrollAnimation>
-          </Box>
+                  {nudgeMessage}
+                </Alert>
+              </Fade>
+
+              <TextField
+                fullWidth
+                multiline
+                rows={8}
+                variant="outlined"
+                placeholder={t('pricing.placeholder')}
+                value={prompt}
+                onChange={(e) => setPrompt(e.target.value)}
+                onFocus={() => setIsFocused(true)}
+                onBlur={() => setIsFocused(false)}
+                sx={{
+                  mb: 3,
+                  '& .MuiOutlinedInput-root': {
+                    fontSize: '1.15rem',
+                    backgroundColor: 'white',
+                    transition: 'all 0.3s ease',
+                    borderRadius: 3,
+                    '& fieldset': {
+                      borderWidth: 2,
+                      borderColor: isFocused ? '#F97316' : 'rgba(0,0,0,0.23)',
+                    },
+                    '&:hover fieldset': {
+                      borderColor: '#F97316',
+                    },
+                  },
+                  '& .MuiInputBase-input': {
+                    lineHeight: 1.8,
+                  }
+                }}
+              />
+
+              <Button
+                fullWidth
+                variant="contained"
+                size="large"
+                onClick={calculatePrice}
+                disabled={!prompt || isCalculating}
+                startIcon={isCalculating ? <SmartToy className="rotating" /> : <AttachMoney />}
+                sx={{
+                  py: 2.5,
+                  fontSize: '1.2rem',
+                  backgroundColor: '#F97316',
+                  fontWeight: 700,
+                  borderRadius: 3,
+                  boxShadow: '0 8px 24px rgba(249, 115, 22, 0.3)',
+                  '&:hover': {
+                    backgroundColor: '#EA580C',
+                    transform: 'translateY(-2px)',
+                    boxShadow: '0 12px 32px rgba(249, 115, 22, 0.4)',
+                  },
+                  '&:disabled': {
+                    backgroundColor: '#FED7AA',
+                  },
+                  transition: 'all 0.3s ease',
+                }}
+              >
+                {isCalculating ? t('pricing.button.calculating') : t('pricing.button.calculate')}
+              </Button>
+            </Paper>
+          </ScrollAnimation>
+        </Box>
+
+        {/* Benefits Grid - Sotto la chat */}
+        <Box sx={{ maxWidth: '1100px', mx: 'auto' }}>
+          <ScrollAnimation delay={0.2}>
+            <Box sx={{
+              display: 'grid',
+              gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' },
+              gap: 3
+            }}>
+              {BENEFITS.map((benefit, index) => (
+                <Grow in={true} timeout={500 + index * 200} key={index}>
+                  <Paper
+                    elevation={2}
+                    sx={{
+                      p: 3,
+                      borderRadius: 3,
+                      textAlign: 'center',
+                      backgroundColor: 'white',
+                      border: '1px solid',
+                      borderColor: 'divider',
+                      '&:hover': {
+                        borderColor: 'primary.main',
+                        transform: 'translateY(-4px)',
+                      },
+                      transition: 'all 0.3s ease',
+                    }}
+                  >
+                    <Box sx={{ color: 'primary.main', mb: 2 }}>
+                      {benefit.icon}
+                    </Box>
+                    <Typography variant="body2" sx={{ fontWeight: 600, lineHeight: 1.6 }}>
+                      {benefit.text}
+                    </Typography>
+                  </Paper>
+                </Grow>
+              ))}
+            </Box>
+          </ScrollAnimation>
+
+          {/* Special Offer */}
+          <ScrollAnimation delay={0.3}>
+            <Box sx={{ mt: 4, p: 4, backgroundColor: '#FFF7ED', borderRadius: 3, border: '2px solid #F97316', textAlign: 'center' }}>
+              <Typography variant="h6" sx={{ fontWeight: 700, color: '#EA580C', mb: 1 }}>
+                {t('pricing.special.title')}
+              </Typography>
+              <Typography variant="body1" sx={{ color: 'text.secondary' }}>
+                {t('pricing.special.desc')}
+              </Typography>
+            </Box>
+          </ScrollAnimation>
         </Box>
       </Container>
 

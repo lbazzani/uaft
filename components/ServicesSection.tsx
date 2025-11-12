@@ -98,10 +98,10 @@ export default function ServicesSection() {
             </Typography>
           </ScrollAnimation>
 
-          <Grid container spacing={4}>
+          <Grid container spacing={4} sx={{ alignItems: 'stretch' }}>
             {services.map((service, index) => (
-              <Grid key={index} size={{ xs: 12, md: 4 }}>
-                <ScrollAnimation delay={index * 0.1}>
+              <Grid key={index} size={{ xs: 12, md: 4 }} sx={{ display: 'flex' }}>
+                <ScrollAnimation delay={index * 0.1} style={{ display: 'flex', width: '100%' }}>
                   <Card
                     elevation={0}
                     onClick={() => handleServiceClick(service.id)}
@@ -112,12 +112,9 @@ export default function ServicesSection() {
                       border: '1px solid',
                       borderColor: 'divider',
                       borderRadius: 3,
-                      transition: 'all 0.3s ease',
                       cursor: 'pointer',
                       position: 'relative',
                       '&:hover': {
-                        transform: 'translateY(-8px)',
-                        boxShadow: '0 12px 40px rgba(0,0,0,0.12)',
                         borderColor: 'primary.main',
                       },
                     }}
@@ -132,11 +129,6 @@ export default function ServicesSection() {
                         bgcolor: 'primary.main',
                         color: 'white',
                         fontWeight: 600,
-                        animation: 'pulse 2s ease-in-out infinite',
-                        '@keyframes pulse': {
-                          '0%, 100%': { transform: 'scale(1)' },
-                          '50%': { transform: 'scale(1.05)' },
-                        },
                       }}
                     />
                     <CardContent sx={{ flexGrow: 1, p: 4 }}>

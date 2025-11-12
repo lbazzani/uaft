@@ -1,6 +1,5 @@
 'use client';
 import { useState } from 'react';
-import { motion } from 'framer-motion';
 import {
   Box,
   Container,
@@ -21,6 +20,8 @@ import {
 } from '@mui/icons-material';
 import ScrollAnimation from './ScrollAnimation';
 import FeatureDemo from './FeatureDemo';
+import FeatureCard from './FeatureCard';
+import PaymentDialog from './PaymentDialog';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 const stats = [
@@ -34,6 +35,7 @@ export default function HeroSection() {
   const { t, language } = useLanguage();
   const [demoOpen, setDemoOpen] = useState(false);
   const [selectedFeature, setSelectedFeature] = useState<'deploy' | 'ai' | 'security' | null>(null);
+  const [paymentDialogOpen, setPaymentDialogOpen] = useState(false);
 
   const handleFeatureClick = (feature: 'deploy' | 'ai' | 'security') => {
     setSelectedFeature(feature);
@@ -48,6 +50,11 @@ export default function HeroSection() {
         open={demoOpen}
         onClose={() => setDemoOpen(false)}
         feature={selectedFeature}
+        onOpenPricing={() => setPaymentDialogOpen(true)}
+      />
+      <PaymentDialog
+        open={paymentDialogOpen}
+        onClose={() => setPaymentDialogOpen(false)}
       />
       <Box
         sx={{
@@ -56,7 +63,8 @@ export default function HeroSection() {
         minHeight: { xs: 'auto', md: 'calc(100vh - 80px)' },
         display: 'flex',
         alignItems: 'center',
-        py: { xs: 6, md: 8 },
+        pt: { xs: 12, md: 8 },
+        pb: { xs: 6, md: 8 },
         position: 'relative',
         overflow: 'hidden',
         '&::before': {
@@ -76,21 +84,6 @@ export default function HeroSection() {
           <Grid size={{ xs: 12, md: 12 }}>
             <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
               <ScrollAnimation delay={0.1}>
-                <Chip
-                  label="Il Futuro è Adesso"
-                  sx={{
-                    mb: 3,
-                    backgroundColor: 'rgba(255,255,255,0.15)',
-                    color: 'white',
-                    backdropFilter: 'blur(10px)',
-                    fontWeight: 600,
-                    fontSize: '0.9rem',
-                    px: 1,
-                  }}
-                />
-              </ScrollAnimation>
-
-              <ScrollAnimation delay={0.2}>
                 <Box sx={{ mb: 4, width: '100%' }}>
                 {/* UAFT Acronimo - tutto sulla stessa riga */}
                 <Box
@@ -105,25 +98,27 @@ export default function HeroSection() {
                 >
                   {/* Card Lettere */}
                   {[
-                    { letter: 'U', word: 'Una', color: '#004E89' },
-                    { letter: 'A', word: 'Azienda', color: '#1A6BA5' },
+                    { letter: 'U', word: 'Una', color: '#004E89', delay: 0 },
+                    { letter: 'A', word: 'Azienda', color: '#1A6BA5', delay: 0.1 },
                   ].map((item, index) => (
                     <Box
                       key={item.letter}
-                      component={motion.div}
-                      initial={{ scale: 0, rotate: -180 }}
-                      animate={{ scale: 1, rotate: 0 }}
-                      transition={{
-                        delay: 0.3 + index * 0.1,
-                        duration: 0.5,
-                        type: 'spring',
-                        stiffness: 200,
-                      }}
                       sx={{
                         position: 'relative',
                         display: 'flex',
                         flexDirection: 'column',
                         alignItems: 'center',
+                        animation: `slideInUp 0.8s ease-out ${item.delay}s both`,
+                        '@keyframes slideInUp': {
+                          '0%': {
+                            opacity: 0,
+                            transform: 'translateY(40px)',
+                          },
+                          '100%': {
+                            opacity: 1,
+                            transform: 'translateY(0)',
+                          },
+                        },
                       }}
                     >
                       <Box
@@ -138,9 +133,18 @@ export default function HeroSection() {
                           boxShadow: '0 8px 32px rgba(0,0,0,0.2)',
                           border: `3px solid ${item.color}`,
                           transition: 'all 0.3s ease',
+                          animation: `float 3s ease-in-out ${item.delay + 1}s infinite`,
                           '&:hover': {
-                            transform: 'translateY(-8px) scale(1.1)',
-                            boxShadow: '0 12px 48px rgba(0,0,0,0.3)',
+                            transform: 'scale(1.1) rotate(5deg)',
+                            boxShadow: `0 12px 40px ${item.color}40`,
+                          },
+                          '@keyframes float': {
+                            '0%, 100%': {
+                              transform: 'translateY(0)',
+                            },
+                            '50%': {
+                              transform: 'translateY(-10px)',
+                            },
                           },
                         }}
                       >
@@ -174,16 +178,23 @@ export default function HeroSection() {
 
                   {/* "che può" con cerchio integrato */}
                   <Box
-                    component={motion.div}
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.5, duration: 0.5, type: 'spring', stiffness: 200 }}
                     sx={{
                       position: 'relative',
                       display: 'flex',
                       flexDirection: 'column',
                       alignItems: 'center',
                       justifyContent: 'center',
+                      animation: 'scaleIn 0.6s ease-out 0.2s both',
+                      '@keyframes scaleIn': {
+                        '0%': {
+                          opacity: 0,
+                          transform: 'scale(0.5)',
+                        },
+                        '100%': {
+                          opacity: 1,
+                          transform: 'scale(1)',
+                        },
+                      },
                     }}
                   >
                     <Box
@@ -198,11 +209,19 @@ export default function HeroSection() {
                         boxShadow: '0 8px 32px rgba(0,0,0,0.2)',
                         border: '3px dashed rgba(255,255,255,0.5)',
                         backdropFilter: 'blur(10px)',
+                        animation: 'pulse-glow 2s ease-in-out 1.2s infinite',
                         transition: 'all 0.3s ease',
                         '&:hover': {
-                          transform: 'translateY(-8px) scale(1.1)',
+                          transform: 'scale(1.05)',
                           backgroundColor: 'rgba(255,255,255,0.25)',
-                          borderStyle: 'solid',
+                        },
+                        '@keyframes pulse-glow': {
+                          '0%, 100%': {
+                            boxShadow: '0 8px 32px rgba(0,0,0,0.2)',
+                          },
+                          '50%': {
+                            boxShadow: '0 12px 48px rgba(255,255,255,0.5)',
+                          },
                         },
                       }}
                     >
@@ -237,25 +256,27 @@ export default function HeroSection() {
 
                   {/* F e T */}
                   {[
-                    { letter: 'F', word: 'Fare', color: '#3B82F6' },
-                    { letter: 'T', word: 'Tutto', color: '#2563EB' },
-                  ].map((item, index) => (
+                    { letter: 'F', word: 'Fare', color: '#3B82F6', delay: 0.3 },
+                    { letter: 'T', word: 'Tutto', color: '#2563EB', delay: 0.4 },
+                  ].map((item) => (
                     <Box
                       key={item.letter}
-                      component={motion.div}
-                      initial={{ scale: 0, rotate: -180 }}
-                      animate={{ scale: 1, rotate: 0 }}
-                      transition={{
-                        delay: 0.6 + index * 0.1,
-                        duration: 0.5,
-                        type: 'spring',
-                        stiffness: 200,
-                      }}
                       sx={{
                         position: 'relative',
                         display: 'flex',
                         flexDirection: 'column',
                         alignItems: 'center',
+                        animation: `slideInUp 0.8s ease-out ${item.delay}s both`,
+                        '@keyframes slideInUp': {
+                          '0%': {
+                            opacity: 0,
+                            transform: 'translateY(40px)',
+                          },
+                          '100%': {
+                            opacity: 1,
+                            transform: 'translateY(0)',
+                          },
+                        },
                       }}
                     >
                       <Box
@@ -270,9 +291,18 @@ export default function HeroSection() {
                           boxShadow: '0 8px 32px rgba(0,0,0,0.2)',
                           border: `3px solid ${item.color}`,
                           transition: 'all 0.3s ease',
+                          animation: `float 3s ease-in-out ${item.delay + 1.3}s infinite`,
                           '&:hover': {
-                            transform: 'translateY(-8px) scale(1.1)',
-                            boxShadow: '0 12px 48px rgba(0,0,0,0.3)',
+                            transform: 'scale(1.1) rotate(-5deg)',
+                            boxShadow: `0 12px 40px ${item.color}40`,
+                          },
+                          '@keyframes float': {
+                            '0%, 100%': {
+                              transform: 'translateY(0)',
+                            },
+                            '50%': {
+                              transform: 'translateY(-10px)',
+                            },
                           },
                         }}
                       >
@@ -306,15 +336,25 @@ export default function HeroSection() {
 
                   {/* Badge finale "Fare Tutto!" */}
                   <Box
-                    component={motion.div}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.8, duration: 0.5 }}
                     sx={{
                       display: { xs: 'none', md: 'flex' },
                       alignItems: 'center',
                       ml: 1,
                       mb: 1,
+                      animation: 'bounceIn 0.8s ease-out 0.5s both',
+                      '@keyframes bounceIn': {
+                        '0%': {
+                          opacity: 0,
+                          transform: 'scale(0)',
+                        },
+                        '50%': {
+                          transform: 'scale(1.2)',
+                        },
+                        '100%': {
+                          opacity: 1,
+                          transform: 'scale(1)',
+                        },
+                      },
                     }}
                   >
                     <Box
@@ -326,10 +366,22 @@ export default function HeroSection() {
                         border: '3px solid rgba(255,255,255,0.5)',
                         backdropFilter: 'blur(10px)',
                         boxShadow: '0 8px 32px rgba(0,0,0,0.2)',
+                        animation: 'electric-pulse 1.5s ease-in-out 1.5s infinite',
                         transition: 'all 0.3s ease',
                         '&:hover': {
-                          transform: 'scale(1.05)',
-                          backgroundColor: 'rgba(255,255,255,0.3)',
+                          backgroundColor: 'rgba(255,255,255,0.35)',
+                          transform: 'scale(1.15) rotate(10deg)',
+                          boxShadow: '0 12px 48px rgba(255,255,255,0.6)',
+                        },
+                        '@keyframes electric-pulse': {
+                          '0%, 100%': {
+                            boxShadow: '0 8px 32px rgba(0,0,0,0.2)',
+                            filter: 'brightness(1)',
+                          },
+                          '50%': {
+                            boxShadow: '0 12px 48px rgba(255,255,255,0.8), 0 0 30px rgba(255,255,255,0.6)',
+                            filter: 'brightness(1.3)',
+                          },
                         },
                       }}
                     >
@@ -340,6 +392,15 @@ export default function HeroSection() {
                           fontSize: { md: '1.8rem' },
                           color: 'white',
                           textShadow: '0 2px 8px rgba(0,0,0,0.3)',
+                          animation: 'glow-text 1.5s ease-in-out 1.5s infinite',
+                          '@keyframes glow-text': {
+                            '0%, 100%': {
+                              textShadow: '0 2px 8px rgba(0,0,0,0.3)',
+                            },
+                            '50%': {
+                              textShadow: '0 0 20px rgba(255,255,255,0.9), 0 0 30px rgba(255,255,255,0.6)',
+                            },
+                          },
                         }}
                       >
                         ⚡
@@ -410,10 +471,7 @@ export default function HeroSection() {
                     boxShadow: '0 4px 16px rgba(0,0,0,0.15)',
                     '&:hover': {
                       backgroundColor: '#f5f5f5',
-                      transform: 'translateY(-2px)',
-                      boxShadow: '0 8px 24px rgba(0,0,0,0.25)',
                     },
-                    transition: 'all 0.3s ease',
                   }}
                   href="#ai-pricing"
                 >
@@ -434,9 +492,7 @@ export default function HeroSection() {
                       borderColor: 'white',
                       borderWidth: 2,
                       backgroundColor: 'rgba(255,255,255,0.15)',
-                      transform: 'translateY(-2px)',
                     },
-                    transition: 'all 0.3s ease',
                   }}
                   href="#services"
                 >
@@ -446,199 +502,43 @@ export default function HeroSection() {
             </ScrollAnimation>
 
             <ScrollAnimation delay={0.3}>
-              <Box sx={{
-                display: 'flex',
-                flexDirection: { xs: 'column', md: 'row' },
-                gap: 3,
-                mt: { xs: 4, md: 6 },
-                width: '100%',
-              }}>
+              <Grid container spacing={3} sx={{ mt: { xs: 2, md: 4 } }}>
                 {/* Deploy Istantaneo */}
-                <Paper
-                  elevation={24}
-                  onClick={() => handleFeatureClick('deploy')}
-                  sx={{
-                    p: 3,
-                    backgroundColor: 'rgba(255,255,255,0.98)',
-                    backdropFilter: 'blur(20px)',
-                    borderRadius: 3,
-                    border: '1px solid rgba(255,255,255,0.3)',
-                    transition: 'all 0.3s ease',
-                    flex: 1,
-                    cursor: 'pointer',
-                    position: 'relative',
-                    '&:hover': {
-                      transform: 'translateY(-4px)',
-                      boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
-                    }
-                  }}
-                >
-                  <Chip
-                    label={`🎯 ${t('hero.demo.badge')}`}
-                    size="small"
-                    sx={{
-                      position: 'absolute',
-                      bottom: 12,
-                      right: 12,
-                      bgcolor: '#F97316',
-                      color: 'white',
-                      fontWeight: 600,
-                      animation: 'pulse 2s ease-in-out infinite',
-                      '@keyframes pulse': {
-                        '0%, 100%': { transform: 'scale(1)' },
-                        '50%': { transform: 'scale(1.05)' },
-                      },
-                    }}
+                <Grid size={{ xs: 12, md: 4 }}>
+                  <FeatureCard
+                    icon={Rocket}
+                    title={t('hero.feature.deploy')}
+                    description={t('hero.feature.deploy.desc')}
+                    badge={`🎯 ${t('hero.demo.badge')}`}
+                    color="#F97316"
+                    onClick={() => handleFeatureClick('deploy')}
                   />
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2.5 }}>
-                    <Box sx={{
-                      p: 2,
-                      borderRadius: 2,
-                      backgroundColor: '#F97316',
-                      color: 'white',
-                      flexShrink: 0,
-                    }}>
-                      <Rocket sx={{ fontSize: 32 }} />
-                    </Box>
-                    <Box sx={{ flex: 1 }}>
-                      <Typography variant="h6" sx={{ fontWeight: 700, color: 'text.primary', mb: 0.5 }}>
-                        {t('hero.feature.deploy')}
-                      </Typography>
-                      <Typography variant="body2" sx={{ color: 'text.secondary', mb: 1.5 }}>
-                        {t('hero.feature.deploy.desc')}
-                      </Typography>
-                      <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-                        <Chip label="CI/CD" size="small" sx={{ bgcolor: '#FFF7ED', color: '#F97316' }} />
-                        <Chip label="Auto-scaling" size="small" sx={{ bgcolor: '#FFF7ED', color: '#F97316' }} />
-                      </Box>
-                    </Box>
-                  </Box>
-                </Paper>
+                </Grid>
 
                 {/* AI-Powered */}
-                <Paper
-                  elevation={24}
-                  onClick={() => handleFeatureClick('ai')}
-                  sx={{
-                    p: 3,
-                    backgroundColor: 'rgba(255,255,255,0.98)',
-                    backdropFilter: 'blur(20px)',
-                    borderRadius: 3,
-                    border: '1px solid rgba(255,255,255,0.3)',
-                    transition: 'all 0.3s ease',
-                    flex: 1,
-                    cursor: 'pointer',
-                    position: 'relative',
-                    '&:hover': {
-                      transform: 'translateY(-4px)',
-                      boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
-                    }
-                  }}
-                >
-                  <Chip
-                    label={`🤖 ${t('hero.demo.badge')}`}
-                    size="small"
-                    sx={{
-                      position: 'absolute',
-                      bottom: 12,
-                      right: 12,
-                      bgcolor: '#06B6D4',
-                      color: 'white',
-                      fontWeight: 600,
-                      animation: 'pulse 2s ease-in-out infinite',
-                      '@keyframes pulse': {
-                        '0%, 100%': { transform: 'scale(1)' },
-                        '50%': { transform: 'scale(1.05)' },
-                      },
-                    }}
+                <Grid size={{ xs: 12, md: 4 }}>
+                  <FeatureCard
+                    icon={SmartToy}
+                    title={t('hero.feature.ai')}
+                    description={t('hero.feature.ai.desc')}
+                    badge={`🤖 ${t('hero.demo.badge')}`}
+                    color="#06B6D4"
+                    onClick={() => handleFeatureClick('ai')}
                   />
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2.5 }}>
-                    <Box sx={{
-                      p: 2,
-                      borderRadius: 2,
-                      backgroundColor: '#06B6D4',
-                      color: 'white',
-                      flexShrink: 0,
-                    }}>
-                      <SmartToy sx={{ fontSize: 32 }} />
-                    </Box>
-                    <Box sx={{ flex: 1 }}>
-                      <Typography variant="h6" sx={{ fontWeight: 700, color: 'text.primary', mb: 0.5 }}>
-                        {t('hero.feature.ai')}
-                      </Typography>
-                      <Typography variant="body2" sx={{ color: 'text.secondary', mb: 1.5 }}>
-                        {t('hero.feature.ai.desc')}
-                      </Typography>
-                      <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-                        <Chip label="ML Ops" size="small" sx={{ bgcolor: '#ECFEFF', color: '#0891B2' }} />
-                        <Chip label="Predictive" size="small" sx={{ bgcolor: '#ECFEFF', color: '#0891B2' }} />
-                      </Box>
-                    </Box>
-                  </Box>
-                </Paper>
+                </Grid>
 
                 {/* Security First */}
-                <Paper
-                  elevation={24}
-                  onClick={() => handleFeatureClick('security')}
-                  sx={{
-                    p: 3,
-                    backgroundColor: 'rgba(255,255,255,0.98)',
-                    backdropFilter: 'blur(20px)',
-                    borderRadius: 3,
-                    border: '1px solid rgba(255,255,255,0.3)',
-                    transition: 'all 0.3s ease',
-                    flex: 1,
-                    cursor: 'pointer',
-                    position: 'relative',
-                    '&:hover': {
-                      transform: 'translateY(-4px)',
-                      boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
-                    }
-                  }}
-                >
-                  <Chip
-                    label={`🛡️ ${t('hero.demo.badge')}`}
-                    size="small"
-                    sx={{
-                      position: 'absolute',
-                      bottom: 12,
-                      right: 12,
-                      bgcolor: '#10B981',
-                      color: 'white',
-                      fontWeight: 600,
-                      animation: 'pulse 2s ease-in-out infinite',
-                      '@keyframes pulse': {
-                        '0%, 100%': { transform: 'scale(1)' },
-                        '50%': { transform: 'scale(1.05)' },
-                      },
-                    }}
+                <Grid size={{ xs: 12, md: 4 }}>
+                  <FeatureCard
+                    icon={Security}
+                    title={t('hero.feature.security')}
+                    description={t('hero.feature.security.desc')}
+                    badge={`🛡️ ${t('hero.demo.badge')}`}
+                    color="#10B981"
+                    onClick={() => handleFeatureClick('security')}
                   />
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2.5 }}>
-                    <Box sx={{
-                      p: 2,
-                      borderRadius: 2,
-                      backgroundColor: '#10B981',
-                      color: 'white',
-                      flexShrink: 0,
-                    }}>
-                      <Security sx={{ fontSize: 32 }} />
-                    </Box>
-                    <Box sx={{ flex: 1 }}>
-                      <Typography variant="h6" sx={{ fontWeight: 700, color: 'text.primary', mb: 0.5 }}>
-                        {t('hero.feature.security')}
-                      </Typography>
-                      <Typography variant="body2" sx={{ color: 'text.secondary', mb: 1.5 }}>
-                        {t('hero.feature.security.desc')}
-                      </Typography>
-                      <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-                        <Chip label="SOC 2" size="small" sx={{ bgcolor: '#ECFDF5', color: '#059669' }} />
-                        <Chip label="GDPR" size="small" sx={{ bgcolor: '#ECFDF5', color: '#059669' }} />
-                      </Box>
-                    </Box>
-                  </Box>
-                </Paper>
-              </Box>
+                </Grid>
+              </Grid>
             </ScrollAnimation>
             </Box>
           </Grid>

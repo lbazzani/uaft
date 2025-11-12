@@ -1,14 +1,9 @@
 'use client';
 import { useState, useEffect } from 'react';
 import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
   Button,
   Box,
   Typography,
-  IconButton,
   Paper,
   LinearProgress,
   Chip,
@@ -18,9 +13,9 @@ import {
   Card,
   CardContent,
   Alert,
+  CircularProgress,
 } from '@mui/material';
 import {
-  Close,
   CheckCircle,
   Rocket,
   SmartToy,
@@ -30,14 +25,95 @@ import {
   CloudUpload,
   Analytics,
   Shield,
+  Speed,
+  TrendingUp,
+  Warning,
 } from '@mui/icons-material';
 import { motion, AnimatePresence } from 'framer-motion';
+import Modal from './Modal';
+import { Line, Doughnut } from 'react-chartjs-2';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement,
+} from 'chart.js';
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement
+);
 
 interface FeatureDemoProps {
   open: boolean;
   onClose: () => void;
   feature: 'deploy' | 'ai' | 'security' | null;
+  onOpenPricing?: () => void;
 }
+
+// Componente Gauge ironico
+const IronicGauge = ({ value, label, subtitle }: { value: number; label: string; subtitle: string }) => {
+  return (
+    <Box sx={{ position: 'relative', display: 'inline-flex', flexDirection: 'column', alignItems: 'center', m: 2 }}>
+      <Box sx={{ position: 'relative' }}>
+        <CircularProgress
+          variant="determinate"
+          value={100}
+          size={100}
+          thickness={4}
+          sx={{ color: '#E5E7EB' }}
+        />
+        <CircularProgress
+          variant="determinate"
+          value={value}
+          size={100}
+          thickness={4}
+          sx={{
+            color: value > 90 ? '#10B981' : value > 70 ? '#F59E0B' : '#EF4444',
+            position: 'absolute',
+            left: 0,
+            '& .MuiCircularProgress-circle': {
+              strokeLinecap: 'round',
+            },
+          }}
+        />
+        <Box
+          sx={{
+            top: 0,
+            left: 0,
+            bottom: 0,
+            right: 0,
+            position: 'absolute',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <Typography variant="h5" component="div" sx={{ fontWeight: 700 }}>
+            {value}%
+          </Typography>
+        </Box>
+      </Box>
+      <Typography variant="body2" sx={{ mt: 1, fontWeight: 600, textAlign: 'center' }}>
+        {label}
+      </Typography>
+      <Typography variant="caption" color="text.secondary" sx={{ textAlign: 'center', maxWidth: 100, fontSize: '0.65rem' }}>
+        {subtitle}
+      </Typography>
+    </Box>
+  );
+};
 
 // Componente terminale animato
 const AnimatedTerminal = ({ lines }: { lines: string[] }) => {
@@ -182,7 +258,10 @@ const DeployDemo = () => {
             </Box>
             <Typography variant="h4" color="primary">18.3s</Typography>
             <Typography variant="caption" color="text.secondary">
-              92% più veloce della media
+              92% più veloce*
+            </Typography>
+            <Typography variant="caption" display="block" sx={{ fontSize: '0.6rem', mt: 0.5 }}>
+              *del caffè del mattino
             </Typography>
           </CardContent>
         </Card>
@@ -194,11 +273,100 @@ const DeployDemo = () => {
             </Box>
             <Typography variant="h4" color="success.main">98/100</Typography>
             <Typography variant="caption" color="text.secondary">
-              Lighthouse Score
+              I 2 punti persi?
+            </Typography>
+            <Typography variant="caption" display="block" sx={{ fontSize: '0.6rem', mt: 0.5 }}>
+              Modestia.
+            </Typography>
+          </CardContent>
+        </Card>
+        <Card sx={{ flex: 1, minWidth: 200 }}>
+          <CardContent>
+            <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+              <TrendingUp sx={{ color: '#06B6D4', mr: 1 }} />
+              <Typography variant="h6">Scalabilità</Typography>
+            </Box>
+            <Typography variant="h4" sx={{ color: '#06B6D4' }}>∞</Typography>
+            <Typography variant="caption" color="text.secondary">
+              Letteralmente infinito
+            </Typography>
+            <Typography variant="caption" display="block" sx={{ fontSize: '0.6rem', mt: 0.5 }}>
+              Trust us bro.
             </Typography>
           </CardContent>
         </Card>
       </Box>
+
+      {progress === 100 && (
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}>
+          <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center', gap: 3, flexWrap: 'wrap' }}>
+            <IronicGauge value={98} label="Magia Applicata" subtitle="(alias tecnologia)" />
+            <IronicGauge value={147} label="Buzzword Density" subtitle="Off the charts!" />
+            <IronicGauge value={99} label="Hype Level" subtitle="MASSIMO!" />
+          </Box>
+
+          <Paper sx={{ p: 3, mt: 3, bgcolor: '#FFF7ED' }}>
+            <Typography variant="h6" sx={{ mb: 2, display: 'flex', alignItems: 'center' }}>
+              <Speed sx={{ mr: 1, color: '#F97316' }} />
+              📊 Confronto Performance (Dati Assolutamente Reali™)
+            </Typography>
+            <Line
+              data={{
+                labels: ['0s', '5s', '10s', '15s', '18s'],
+                datasets: [
+                  {
+                    label: 'UAFT Deploy',
+                    data: [0, 45, 78, 92, 98],
+                    borderColor: '#F97316',
+                    backgroundColor: 'rgba(249, 115, 22, 0.1)',
+                    tension: 0.4,
+                    borderWidth: 3,
+                  },
+                  {
+                    label: 'Competitor Medio',
+                    data: [0, 10, 25, 40, 55],
+                    borderColor: '#9CA3AF',
+                    backgroundColor: 'rgba(156, 163, 175, 0.1)',
+                    tension: 0.4,
+                    borderDash: [5, 5],
+                  },
+                  {
+                    label: 'Deploy Manuale (no comment)',
+                    data: [0, 5, 12, 20, 28],
+                    borderColor: '#EF4444',
+                    backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                    tension: 0.4,
+                    borderDash: [10, 5],
+                  },
+                ],
+              }}
+              options={{
+                responsive: true,
+                plugins: {
+                  legend: { position: 'top' },
+                  title: { display: false },
+                },
+                scales: {
+                  y: {
+                    beginAtZero: true,
+                    max: 100,
+                    title: { display: true, text: 'Performance Score' },
+                  },
+                  x: {
+                    title: { display: true, text: 'Tempo (secondi)' },
+                  },
+                },
+              }}
+            />
+            <Alert severity="info" sx={{ mt: 2 }} icon={<Warning />}>
+              <Typography variant="caption">
+                *Disclaimer: Questi grafici sono stati generati da una AI addestrata su stackoverflow e troppo caffè.
+                I risultati potrebbero variare. O no. Chi lo sa veramente? 🤷
+              </Typography>
+            </Alert>
+          </Paper>
+        </motion.div>
+      )}
     </Box>
   );
 };
@@ -311,6 +479,67 @@ const AIDemo = () => {
               Analisi completata! L'AI ha identificato 4 opportunità di ottimizzazione.
             </Typography>
           </Alert>
+
+          <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center', gap: 3, flexWrap: 'wrap' }}>
+            <IronicGauge value={94} label="AI Confidence" subtitle="73% delle volte" />
+            <IronicGauge value={127} label="Neural Density" subtitle="Molto neurale" />
+            <IronicGauge value={89} label="Buzzword Score" subtitle="AI-powered!" />
+          </Box>
+
+          <Paper sx={{ p: 3, mt: 3, bgcolor: '#F0F9FF' }}>
+            <Typography variant="h6" sx={{ mb: 3, display: 'flex', alignItems: 'center' }}>
+              <SmartToy sx={{ mr: 1, color: '#06B6D4' }} />
+              🧠 Come Pensa la Nostra AI (Probabilmente)
+            </Typography>
+            <Box sx={{ maxWidth: 400, mx: 'auto' }}>
+              <Doughnut
+                data={{
+                  labels: [
+                    'Machine Learning Vero',
+                    'If/Else Statements',
+                    'Random Number Generator',
+                    'Magia Nera',
+                    'Stack Overflow',
+                  ],
+                  datasets: [
+                    {
+                      data: [35, 25, 15, 10, 15],
+                      backgroundColor: [
+                        '#10B981',
+                        '#F59E0B',
+                        '#3B82F6',
+                        '#8B5CF6',
+                        '#EF4444',
+                      ],
+                      borderWidth: 2,
+                      borderColor: '#fff',
+                    },
+                  ],
+                }}
+                options={{
+                  responsive: true,
+                  plugins: {
+                    legend: {
+                      position: 'bottom',
+                    },
+                    tooltip: {
+                      callbacks: {
+                        label: (context) => {
+                          return `${context.label}: ${context.parsed}% (forse)`;
+                        },
+                      },
+                    },
+                  },
+                }}
+              />
+            </Box>
+            <Alert severity="warning" sx={{ mt: 3 }} icon={<Warning />}>
+              <Typography variant="caption">
+                Disclaimer: Questo grafico potrebbe essere accurato quanto un oroscopo.
+                Ma hey, sembra professionale! 📊
+              </Typography>
+            </Alert>
+          </Paper>
         </motion.div>
       )}
     </Box>
@@ -444,91 +673,48 @@ const SecurityDemo = () => {
   );
 };
 
-export default function FeatureDemo({ open, onClose, feature }: FeatureDemoProps) {
+export default function FeatureDemo({ open, onClose, feature, onOpenPricing }: FeatureDemoProps) {
   const getTitle = () => {
     switch (feature) {
-      case 'deploy': return '🚀 Deploy Istantaneo - Live Demo';
-      case 'ai': return '🤖 AI-Powered - Live Demo';
-      case 'security': return '🛡️ Security First - Live Demo';
+      case 'deploy': return 'Deploy Istantaneo - Demo';
+      case 'ai': return 'AI-Powered - Demo';
+      case 'security': return 'Security First - Demo';
       default: return 'Demo';
     }
   };
 
-  const getIcon = () => {
-    switch (feature) {
-      case 'deploy': return <Rocket sx={{ color: '#F97316' }} />;
-      case 'ai': return <SmartToy sx={{ color: '#06B6D4' }} />;
-      case 'security': return <Security sx={{ color: '#10B981' }} />;
-      default: return null;
-    }
-  };
-
-  const getColor = () => {
-    switch (feature) {
-      case 'deploy': return '#F97316';
-      case 'ai': return '#06B6D4';
-      case 'security': return '#10B981';
-      default: return '#FF6B35';
+  const handleStartNow = () => {
+    onClose();
+    if (onOpenPricing) {
+      onOpenPricing();
     }
   };
 
   return (
-    <Dialog
+    <Modal
       open={open}
       onClose={onClose}
+      title={getTitle()}
       maxWidth="md"
-      fullWidth
-      PaperProps={{
-        sx: {
-          borderRadius: 4,
-          maxHeight: '90vh',
-        },
-      }}
+      actions={
+        <>
+          <Button onClick={onClose} variant="outlined" color="inherit">
+            Chiudi
+          </Button>
+          <Button
+            variant="contained"
+            startIcon={<PlayArrow />}
+            color="primary"
+            onClick={handleStartNow}
+          >
+            Inizia Ora
+          </Button>
+        </>
+      }
     >
-      <DialogTitle
-        sx={{
-          background: `linear-gradient(135deg, ${getColor()} 0%, ${getColor()}dd 100%)`,
-          color: 'white',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          p: 3,
-        }}
-      >
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          {getIcon()}
-          <Typography variant="h5" sx={{ fontWeight: 700 }}>
-            {getTitle()}
-          </Typography>
-        </Box>
-        <IconButton onClick={onClose} sx={{ color: 'white' }}>
-          <Close />
-        </IconButton>
-      </DialogTitle>
-
-      <DialogContent sx={{ p: 4, backgroundColor: '#FAFBFC' }}>
-        {feature === 'deploy' && <DeployDemo />}
-        {feature === 'ai' && <AIDemo />}
-        {feature === 'security' && <SecurityDemo />}
-      </DialogContent>
-
-      <DialogActions sx={{ p: 3, backgroundColor: 'white', borderTop: '1px solid #E5E7EB' }}>
-        <Button onClick={onClose} variant="outlined">
-          Chiudi Demo
-        </Button>
-        <Button
-          variant="contained"
-          startIcon={<PlayArrow />}
-          sx={{
-            backgroundColor: getColor(),
-            '&:hover': {
-              backgroundColor: `${getColor()}dd`,
-            }
-          }}
-        >
-          Inizia Ora
-        </Button>
-      </DialogActions>
-    </Dialog>
+      {feature === 'deploy' && <DeployDemo />}
+      {feature === 'ai' && <AIDemo />}
+      {feature === 'security' && <SecurityDemo />}
+    </Modal>
   );
 }

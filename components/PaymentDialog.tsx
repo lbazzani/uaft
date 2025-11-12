@@ -26,6 +26,7 @@ import {
   Star,
   Rocket,
 } from '@mui/icons-material';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface PaymentDialogProps {
   open: boolean;
@@ -112,6 +113,7 @@ const SERVICE_NAMES: Record<string, string> = {
 };
 
 export default function PaymentDialog({ open, onClose, selectedService }: PaymentDialogProps) {
+  const { t } = useLanguage();
   const [selectedPlan, setSelectedPlan] = useState<string>('standard');
   const [prices, setPrices] = useState<Record<string, number>>({});
   const [hoveredPlan, setHoveredPlan] = useState<string | null>(null);
@@ -208,14 +210,14 @@ export default function PaymentDialog({ open, onClose, selectedService }: Paymen
       >
         <Box>
           <Typography variant="h5" sx={{ fontWeight: 700, mb: 0.5 }}>
-            {paymentStep === 'plans' && '💳 Scegli il Tuo Piano'}
-            {paymentStep === 'payment' && '🔒 Checkout Sicuro*'}
-            {paymentStep === 'success' && '🎉 Congratulazioni!'}
+            {paymentStep === 'plans' && t('payment.title.plans')}
+            {paymentStep === 'payment' && t('payment.title.payment')}
+            {paymentStep === 'success' && t('payment.title.success')}
           </Typography>
           <Typography variant="body2" sx={{ opacity: 0.95 }}>
-            {paymentStep === 'plans' && 'Prezzi dinamici basati sul tuo livello di interesse'}
-            {paymentStep === 'payment' && '*Sicurezza non garantita, ma ci proviamo'}
-            {paymentStep === 'success' && 'Hai fatto la scelta giusta (forse)'}
+            {paymentStep === 'plans' && t('payment.subtitle.plans')}
+            {paymentStep === 'payment' && t('payment.subtitle.payment')}
+            {paymentStep === 'success' && t('payment.subtitle.success')}
           </Typography>
         </Box>
         {paymentStep !== 'success' && (
