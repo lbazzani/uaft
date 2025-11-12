@@ -78,10 +78,16 @@ export default function SalesAgent() {
   useEffect(() => {
     // Appare dopo 20 secondi
     const timer = setTimeout(async () => {
-      // Prima carica il messaggio iniziale
-      await sendInitialMessage();
-      // Poi apri la chat con il messaggio già pronto
-      setIsOpen(true);
+      // Controlla se ci sono altre modali aperte
+      const openDialogs = document.querySelectorAll('[role="dialog"]');
+      const hasOpenDialog = openDialogs.length > 0;
+
+      if (!hasOpenDialog) {
+        // Prima carica il messaggio iniziale
+        await sendInitialMessage();
+        // Poi apri la chat con il messaggio già pronto
+        setIsOpen(true);
+      }
     }, 20000);
 
     return () => {
@@ -263,7 +269,7 @@ export default function SalesAgent() {
         >
           <Collapse in={!isMinimized}>
             <Paper
-              elevation={8}
+              elevation={12}
               sx={{
                 width: { xs: 'calc(100vw - 40px)', sm: 380 },
                 maxHeight: { xs: '80vh', sm: '70vh' },
@@ -274,52 +280,94 @@ export default function SalesAgent() {
                 borderBottomLeftRadius: 12,
                 borderBottomRightRadius: 12,
                 overflow: 'hidden',
-                boxShadow: '0 8px 32px rgba(0,0,0,0.12)',
+                boxShadow: '0 0 0 2px rgba(249, 115, 22, 0.3), 0 12px 40px rgba(0,0,0,0.25)',
+                border: '2px solid #F97316',
               }}
             >
-        {/* Header */}
+        {/* Header - Stile più tecnico e compatto */}
         <Box
           sx={{
-            background: 'linear-gradient(135deg, #F97316 0%, #FB923C 100%)',
+            background: 'linear-gradient(135deg, #1e293b 0%, #334155 100%)',
+            borderBottom: '2px solid #F97316',
             color: 'white',
-            p: 2,
+            p: 1.5,
             display: 'flex',
             alignItems: 'center',
-            gap: 2,
+            gap: 1.5,
           }}
         >
-          <Avatar sx={{ bgcolor: 'rgba(255,255,255,0.2)' }}>
-            <SmartToy />
+          <Avatar
+            sx={{
+              bgcolor: '#F97316',
+              width: 32,
+              height: 32,
+              border: '2px solid rgba(255,255,255,0.2)',
+            }}
+          >
+            <SmartToy sx={{ fontSize: 18 }} />
           </Avatar>
           <Box sx={{ flex: 1 }}>
-            <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+            <Typography
+              variant="body2"
+              sx={{
+                fontWeight: 700,
+                fontSize: '0.95rem',
+                fontFamily: 'monospace',
+                letterSpacing: '0.5px',
+              }}
+            >
               {t('chat.title')}
             </Typography>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.8 }}>
               <Box
                 sx={{
-                  width: 8,
-                  height: 8,
+                  width: 6,
+                  height: 6,
                   borderRadius: '50%',
                   bgcolor: '#4ade80',
+                  boxShadow: '0 0 8px #4ade80',
+                  animation: 'pulse 2s ease-in-out infinite',
                 }}
               />
-              <Typography variant="caption">{t('chat.status')}</Typography>
+              <Typography
+                variant="caption"
+                sx={{
+                  fontSize: '0.7rem',
+                  fontFamily: 'monospace',
+                  opacity: 0.9,
+                }}
+              >
+                {t('chat.status')}
+              </Typography>
             </Box>
           </Box>
           <IconButton
             size="small"
             onClick={() => setIsMinimized(true)}
-            sx={{ color: 'white' }}
+            sx={{
+              color: 'rgba(255,255,255,0.8)',
+              padding: 0.5,
+              '&:hover': {
+                color: 'white',
+                bgcolor: 'rgba(249, 115, 22, 0.2)',
+              },
+            }}
           >
-            <Minimize />
+            <Minimize sx={{ fontSize: 18 }} />
           </IconButton>
           <IconButton
             size="small"
             onClick={handleClose}
-            sx={{ color: 'white' }}
+            sx={{
+              color: 'rgba(255,255,255,0.8)',
+              padding: 0.5,
+              '&:hover': {
+                color: 'white',
+                bgcolor: 'rgba(239, 68, 68, 0.3)',
+              },
+            }}
           >
-            <Close />
+            <Close sx={{ fontSize: 18 }} />
           </IconButton>
         </Box>
 
@@ -330,23 +378,24 @@ export default function SalesAgent() {
             overflowY: 'auto',
             overflowX: 'hidden',
             p: 2,
-            backgroundColor: '#f5f5f5',
+            backgroundColor: '#0f172a',
+            backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(249, 115, 22, 0.03) 2px, rgba(249, 115, 22, 0.03) 4px)',
             display: 'flex',
             flexDirection: 'column',
             gap: 2,
             scrollBehavior: 'smooth',
             WebkitOverflowScrolling: 'touch',
             '&::-webkit-scrollbar': {
-              width: '8px',
+              width: '6px',
             },
             '&::-webkit-scrollbar-track': {
-              backgroundColor: 'transparent',
+              backgroundColor: 'rgba(249, 115, 22, 0.1)',
             },
             '&::-webkit-scrollbar-thumb': {
-              backgroundColor: 'rgba(0,0,0,0.2)',
-              borderRadius: '4px',
+              backgroundColor: '#F97316',
+              borderRadius: '3px',
               '&:hover': {
-                backgroundColor: 'rgba(0,0,0,0.3)',
+                backgroundColor: '#EA580C',
               },
             },
           }}
@@ -361,18 +410,24 @@ export default function SalesAgent() {
               }}
             >
               <Paper
-                elevation={message.role === 'user' ? 2 : 1}
+                elevation={0}
                 sx={{
-                  p: 2,
+                  p: 1.5,
                   maxWidth: '80%',
                   backgroundColor:
-                    message.role === 'user' ? 'primary.main' : 'white',
-                  color: message.role === 'user' ? 'white' : 'text.primary',
+                    message.role === 'user' ? '#F97316' : '#1e293b',
+                  color: 'white',
+                  border: message.role === 'user'
+                    ? '1px solid rgba(255, 255, 255, 0.2)'
+                    : '1px solid rgba(249, 115, 22, 0.5)',
                   borderRadius: message.role === 'user'
-                    ? '16px 16px 4px 16px'
-                    : '16px 16px 16px 4px',
+                    ? '12px 12px 2px 12px'
+                    : '12px 12px 12px 2px',
                   wordWrap: 'break-word',
                   overflowWrap: 'break-word',
+                  boxShadow: message.role === 'user'
+                    ? '0 2px 8px rgba(249, 115, 22, 0.3)'
+                    : '0 2px 8px rgba(0, 0, 0, 0.3)',
                 }}
               >
                 <Typography
@@ -380,7 +435,8 @@ export default function SalesAgent() {
                   sx={{
                     whiteSpace: 'pre-wrap',
                     wordBreak: 'break-word',
-                    lineHeight: 1.5,
+                    lineHeight: 1.6,
+                    fontSize: '0.9rem',
                   }}
                 >
                   {message.content}
@@ -391,8 +447,15 @@ export default function SalesAgent() {
 
           {isLoading && (
             <Box sx={{ display: 'flex', justifyContent: 'flex-start' }}>
-              <Paper elevation={1} sx={{ p: 2 }}>
-                <CircularProgress size={20} />
+              <Paper
+                elevation={0}
+                sx={{
+                  p: 2,
+                  backgroundColor: '#1e293b',
+                  border: '1px solid rgba(249, 115, 22, 0.5)',
+                }}
+              >
+                <CircularProgress size={20} sx={{ color: '#F97316' }} />
               </Paper>
             </Box>
           )}
@@ -401,7 +464,13 @@ export default function SalesAgent() {
         </Box>
 
         {/* Input */}
-        <Box sx={{ p: 2, backgroundColor: 'white', borderTop: '1px solid #e0e0e0' }}>
+        <Box
+          sx={{
+            p: 2,
+            backgroundColor: '#1e293b',
+            borderTop: '2px solid #F97316',
+          }}
+        >
           {showPaymentButton && (
             <Button
               fullWidth
@@ -457,11 +526,52 @@ export default function SalesAgent() {
                   autoCapitalize: 'sentences',
                 }
               }}
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  backgroundColor: '#0f172a',
+                  color: 'white',
+                  fontFamily: 'monospace',
+                  '& fieldset': {
+                    borderColor: 'rgba(249, 115, 22, 0.3)',
+                    borderWidth: '2px',
+                  },
+                  '&:hover fieldset': {
+                    borderColor: 'rgba(249, 115, 22, 0.6)',
+                  },
+                  '&.Mui-focused fieldset': {
+                    borderColor: '#F97316',
+                    borderWidth: '2px',
+                  },
+                  '&.Mui-disabled': {
+                    backgroundColor: '#1e293b',
+                  },
+                },
+                '& .MuiInputBase-input': {
+                  color: 'white',
+                  WebkitTapHighlightColor: 'transparent',
+                  '&::placeholder': {
+                    color: 'rgba(255, 255, 255, 0.5)',
+                    opacity: 1,
+                  },
+                },
+              }}
             />
             <IconButton
-              color="primary"
               onClick={handleSend}
               disabled={!input.trim() || isLoading}
+              sx={{
+                backgroundColor: '#F97316',
+                color: 'white',
+                '&:hover': {
+                  backgroundColor: '#EA580C',
+                  transform: 'scale(1.05)',
+                },
+                '&.Mui-disabled': {
+                  backgroundColor: 'rgba(249, 115, 22, 0.3)',
+                  color: 'rgba(255, 255, 255, 0.3)',
+                },
+                transition: 'all 0.2s ease',
+              }}
             >
               <Send />
             </IconButton>
@@ -501,6 +611,18 @@ export default function SalesAgent() {
       )}
           </Collapse>
         </Box>
+
+      {/* Pulse animation for status indicator */}
+      <style jsx global>{`
+        @keyframes pulse {
+          0%, 100% {
+            opacity: 1;
+          }
+          50% {
+            opacity: 0.5;
+          }
+        }
+      `}</style>
     </>
   );
 }
