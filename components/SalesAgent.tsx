@@ -103,6 +103,23 @@ export default function SalesAgent() {
 
   // Rimosso il meccanismo di scroll hiding per stabilità
 
+  // Effect per chiudere automaticamente se si apre una modale
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const checkForModals = setInterval(() => {
+      const openDialogs = document.querySelectorAll('[role="dialog"]');
+      const hasOpenDialog = openDialogs.length > 0;
+
+      // Se c'è una modale aperta e il chat è visibile, minimizza il chat
+      if (hasOpenDialog && !isMinimized) {
+        setIsMinimized(true);
+      }
+    }, 1000); // Controlla ogni secondo
+
+    return () => clearInterval(checkForModals);
+  }, [isOpen, isMinimized]);
+
   // Effect per "incalzare" l'utente se non risponde
   useEffect(() => {
     if (!isOpen || isMinimized || isInputFocused || isLoading) {
@@ -241,16 +258,27 @@ export default function SalesAgent() {
     const randomDelay = Math.floor(Math.random() * 15000) + 20000;
 
     reopenTimerRef.current = setTimeout(() => {
-      setIsOpen(true);
-      setIsMinimized(false);
+      // Controlla se ci sono altre modali aperte prima di riaprire
+      const openDialogs = document.querySelectorAll('[role="dialog"]');
+      const hasOpenDialog = openDialogs.length > 0;
 
-      // Aggiungi un messaggio casuale di lamentela
-      const randomMessage =
-        REOPEN_MESSAGES[Math.floor(Math.random() * REOPEN_MESSAGES.length)];
-      setMessages((prev) => [
-        ...prev,
-        { role: 'assistant', content: randomMessage },
-      ]);
+      if (!hasOpenDialog) {
+        setIsOpen(true);
+        setIsMinimized(false);
+
+        // Aggiungi un messaggio casuale di lamentela
+        const randomMessage =
+          REOPEN_MESSAGES[Math.floor(Math.random() * REOPEN_MESSAGES.length)];
+        setMessages((prev) => [
+          ...prev,
+          { role: 'assistant', content: randomMessage },
+        ]);
+      } else {
+        // Se c'è una modale aperta, riprova dopo 10 secondi
+        setTimeout(() => {
+          handleClose(); // Riprova ricorsivamente
+        }, 10000);
+      }
     }, randomDelay);
   };
 

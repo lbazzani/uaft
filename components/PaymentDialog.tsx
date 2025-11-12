@@ -44,64 +44,65 @@ interface PricingPlan {
   badge?: string;
 }
 
-const PLANS: PricingPlan[] = [
+// Helper to get plan configuration with translation keys
+const getPlanConfig = () => [
   {
     id: 'basic',
-    name: 'Base',
+    nameKey: 'payment.plan.basic.name' as const,
     basePrice: 99,
-    features: [
-      'Deploy quando capita',
-      'Support via email (risposta in 3-5 giorni lavorativi)',
-      'Documentazione (se la troviamo)',
-      '1 bug fix al mese*',
-      'Coffee break incluso (virtuale)',
-    ],
+    featureKeys: [
+      'payment.plan.basic.feature1',
+      'payment.plan.basic.feature2',
+      'payment.plan.basic.feature3',
+      'payment.plan.basic.feature4',
+      'payment.plan.basic.feature5',
+    ] as const,
     icon: <Star />,
     color: '#6B7280',
   },
   {
     id: 'standard',
-    name: 'Standard',
+    nameKey: 'payment.plan.standard.name' as const,
     basePrice: 299,
-    features: [
-      'Deploy quasi istantaneo',
-      'Support 24/7* (*nei giorni che finiamo con "dì")',
-      'Documentazione completa (forse)',
-      '5 bug fix al mese',
-      'Consulenza strategica (15 minuti)',
-      'Dashboard con grafici inutili',
-    ],
+    featureKeys: [
+      'payment.plan.standard.feature1',
+      'payment.plan.standard.feature2',
+      'payment.plan.standard.feature3',
+      'payment.plan.standard.feature4',
+      'payment.plan.standard.feature5',
+      'payment.plan.standard.feature6',
+    ] as const,
     icon: <CheckCircle />,
     color: '#3B82F6',
-    badge: 'Più Popolare',
+    badgeKey: 'payment.plan.standard.badge' as const,
   },
   {
     id: 'enterprise',
-    name: 'Super Enterprise',
+    nameKey: 'payment.plan.enterprise.name' as const,
     basePrice: 999,
-    features: [
-      'Deploy istantaneo garantito*',
-      'Support 25/8 (abbiamo trovato ore extra)',
-      'Documentazione scritta da copywriter professionisti',
-      'Bug fix illimitati (anche quelli che non esistono)',
-      'Consulenza strategica daily',
-      'Dashboard con ML che prevede quando vorrai caffè',
-      'Dedicated account manager (che ti chiama anche il weekend)',
-      'Logo sulla nostra homepage',
-    ],
+    featureKeys: [
+      'payment.plan.enterprise.feature1',
+      'payment.plan.enterprise.feature2',
+      'payment.plan.enterprise.feature3',
+      'payment.plan.enterprise.feature4',
+      'payment.plan.enterprise.feature5',
+      'payment.plan.enterprise.feature6',
+      'payment.plan.enterprise.feature7',
+      'payment.plan.enterprise.feature8',
+    ] as const,
     icon: <Rocket />,
     color: '#F59E0B',
-    badge: 'CEO Choice',
+    badgeKey: 'payment.plan.enterprise.badge' as const,
   },
 ];
 
-const PAYMENT_MESSAGES = [
-  'Non preoccuparti, accettiamo anche carte scadute!',
-  'I tuoi dati sono sicuri (probabilmente)',
-  'Transazione crittografata con algoritmo militare (Excel password)',
-  'SSL Certificate: Sì (l\'abbiamo comprato su eBay)',
-  'Politica rimborsi: 100% garantita* (*nei primi 0.5 secondi)',
-];
+const PAYMENT_MESSAGE_KEYS = [
+  'payment.message1',
+  'payment.message2',
+  'payment.message3',
+  'payment.message4',
+  'payment.message5',
+] as const;
 
 const SERVICE_NAMES: Record<string, string> = {
   cloud: 'Cloud as a Cloud',
@@ -121,6 +122,9 @@ export default function PaymentDialog({ open, onClose, selectedService }: Paymen
   const [messageIndex, setMessageIndex] = useState(0);
   const [priceIncreaseCount, setPriceIncreaseCount] = useState(0);
 
+  // Get plans with translations
+  const PLANS = getPlanConfig();
+
   useEffect(() => {
     // Inizializza i prezzi base
     const initialPrices: Record<string, number> = {};
@@ -134,7 +138,7 @@ export default function PaymentDialog({ open, onClose, selectedService }: Paymen
     if (paymentStep === 'payment') {
       // Rotazione messaggi ogni 3 secondi
       const timer = setInterval(() => {
-        setMessageIndex((prev) => (prev + 1) % PAYMENT_MESSAGES.length);
+        setMessageIndex((prev) => (prev + 1) % PAYMENT_MESSAGE_KEYS.length);
       }, 3000);
       return () => clearInterval(timer);
     }
@@ -277,7 +281,7 @@ export default function PaymentDialog({ open, onClose, selectedService }: Paymen
                   }}
                   onClick={() => handleSelectPlan(plan.id)}
                 >
-                  {plan.badge && (
+                  {plan.badgeKey && (
                     <Box
                       sx={{
                         position: 'absolute',
@@ -293,7 +297,7 @@ export default function PaymentDialog({ open, onClose, selectedService }: Paymen
                         letterSpacing: 0.5,
                       }}
                     >
-                      {plan.badge}
+                      {t(plan.badgeKey)}
                     </Box>
                   )}
 
@@ -315,7 +319,7 @@ export default function PaymentDialog({ open, onClose, selectedService }: Paymen
                   </Box>
 
                   <Typography variant="h5" sx={{ fontWeight: 700, mb: 1, color: 'text.primary' }}>
-                    {plan.name}
+                    {t(plan.nameKey)}
                   </Typography>
 
                   <Box sx={{ display: 'flex', alignItems: 'baseline', mb: 3 }}>
@@ -323,7 +327,7 @@ export default function PaymentDialog({ open, onClose, selectedService }: Paymen
                       €{prices[plan.id] || plan.basePrice}
                     </Typography>
                     <Typography variant="body2" color="text.secondary" sx={{ ml: 1, fontWeight: 500 }}>
-                      /mese
+                      {t('payment.plan.month')}
                     </Typography>
                     {hoveredPlan === plan.id && (
                       <Zoom in>
@@ -348,11 +352,11 @@ export default function PaymentDialog({ open, onClose, selectedService }: Paymen
                   <Divider sx={{ mb: 2.5 }} />
 
                   <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 1.75, mb: 3 }}>
-                    {plan.features.map((feature, index) => (
+                    {plan.featureKeys.map((featureKey, index) => (
                       <Box key={index} sx={{ display: 'flex', alignItems: 'start', gap: 1.5 }}>
                         <CheckCircle sx={{ fontSize: 18, color: '#10B981', mt: 0.2, flexShrink: 0 }} />
                         <Typography variant="body2" sx={{ color: 'text.secondary', lineHeight: 1.6 }}>
-                          {feature}
+                          {t(featureKey)}
                         </Typography>
                       </Box>
                     ))}
@@ -432,7 +436,7 @@ export default function PaymentDialog({ open, onClose, selectedService }: Paymen
                 </Box>
                 <Box sx={{ flex: 1 }}>
                   <Typography variant="h6" sx={{ fontWeight: 700, mb: 0.5 }}>
-                    {t('payment.checkout.plan', { plan: selectedPlanData.name })}
+                    {t('payment.checkout.plan', { plan: t(selectedPlanData.nameKey) })}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
                     {t('payment.checkout.billing.full')}
@@ -443,7 +447,7 @@ export default function PaymentDialog({ open, onClose, selectedService }: Paymen
                     €{prices[selectedPlan]}
                   </Typography>
                   <Typography variant="caption" color="text.secondary">
-                    /mese
+                    {t('payment.plan.month')}
                   </Typography>
                 </Box>
               </Box>
@@ -461,7 +465,7 @@ export default function PaymentDialog({ open, onClose, selectedService }: Paymen
               }}
             >
               <Typography variant="body2" sx={{ fontWeight: 600, color: '#1E40AF' }}>
-                🔒 {PAYMENT_MESSAGES[messageIndex]}
+                🔒 {t(PAYMENT_MESSAGE_KEYS[messageIndex])}
               </Typography>
             </Alert>
 
@@ -597,7 +601,7 @@ export default function PaymentDialog({ open, onClose, selectedService }: Paymen
             </Typography>
 
             <Paper elevation={3} sx={{ p: 3, maxWidth: 500, margin: '0 auto', backgroundColor: '#FFF7ED' }}>
-              <Typography variant="body1" sx={{ mb: 2, lineHeight: 1.8 }} dangerouslySetInnerHTML={{ __html: t('payment.success.msg', { plan: selectedPlanData?.name }) }} />
+              <Typography variant="body1" sx={{ mb: 2, lineHeight: 1.8 }} dangerouslySetInnerHTML={{ __html: t('payment.success.msg', { plan: selectedPlanData ? t(selectedPlanData.nameKey) : '' }) }} />
               <Typography variant="body2" sx={{ fontStyle: 'italic', opacity: 0.8, mt: 2 }}>
                 {t('payment.success.ps')}
               </Typography>

@@ -661,7 +661,7 @@ export default function AIPricingSection() {
                 },
               }}
             >
-              Chiudi
+              {t('pricing.result.close')}
             </Button>
             <Button
               variant="contained"
@@ -678,7 +678,7 @@ export default function AIPricingSection() {
                 },
               }}
             >
-              🎉 Voglio Questo Prezzo!
+              {t('pricing.result.buy')}
             </Button>
           </DialogActions>
         )}
