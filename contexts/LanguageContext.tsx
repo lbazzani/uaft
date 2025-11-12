@@ -5,7 +5,7 @@ import { Language, translations, TranslationKey, detectBrowserLanguage } from '@
 interface LanguageContextType {
   language: Language;
   setLanguage: (lang: Language) => void;
-  t: (key: TranslationKey) => string;
+  t: (key: TranslationKey, params?: Record<string, string | number | undefined>) => string;
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
@@ -21,8 +21,20 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     setMounted(true);
   }, []);
 
-  const t = (key: TranslationKey): string => {
-    return translations[language][key] || key;
+  const t = (key: TranslationKey, params?: Record<string, string | number | undefined>): string => {
+    let text = translations[language][key] || key;
+
+    // Replace template variables like {variable} with param values
+    if (params) {
+      Object.keys(params).forEach((param) => {
+        const value = params[param];
+        if (value !== undefined) {
+          text = text.replace(new RegExp(`\\{${param}\\}`, 'g'), String(value));
+        }
+      });
+    }
+
+    return text;
   };
 
   // Evita flash of untranslated content

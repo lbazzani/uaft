@@ -23,9 +23,11 @@ import {
 import { AttachMoney, SmartToy, CheckCircle, TrendingUp, Speed, Security, Close, Lightbulb } from '@mui/icons-material';
 import ScrollAnimation from './ScrollAnimation';
 import { useLanguage } from '@/contexts/LanguageContext';
+import PaymentDialog from './PaymentDialog';
 
 export default function AIPricingSection() {
   const { t, language } = useLanguage();
+  const [paymentDialogOpen, setPaymentDialogOpen] = useState(false);
 
   const NUDGE_MESSAGES = [
     t('pricing.nudge1'),
@@ -158,10 +160,10 @@ export default function AIPricingSection() {
   };
 
   return (
-    <Box id="ai-pricing" sx={{ minHeight: '100vh', display: 'flex', alignItems: 'center', py: { xs: 10, md: 15 }, backgroundColor: 'background.default', position: 'relative' }}>
+    <Box id="ai-pricing" sx={{ minHeight: '100vh', display: 'flex', alignItems: 'center', py: { xs: 8, md: 10 }, backgroundColor: 'background.default', position: 'relative' }}>
       <Container maxWidth="lg">
         <ScrollAnimation>
-          <Box sx={{ textAlign: 'center', mb: 8 }}>
+          <Box sx={{ textAlign: 'center', mb: 4 }}>
             <Fade in={true}>
               <Box
                 sx={{
@@ -169,75 +171,56 @@ export default function AIPricingSection() {
                   alignItems: 'center',
                   gap: 1,
                   px: 2,
-                  py: 1,
+                  py: 0.75,
                   borderRadius: 10,
                   backgroundColor: '#FFF7ED',
                   color: '#F97316',
-                  mb: 3,
+                  mb: 2,
                   fontWeight: 600,
                 }}
               >
-                <SmartToy sx={{ fontSize: 20 }} />
-                <Typography variant="body2">{t('pricing.badge')}</Typography>
+                <SmartToy sx={{ fontSize: 18 }} />
+                <Typography variant="body2" sx={{ fontSize: '0.875rem' }}>{t('pricing.badge')}</Typography>
               </Box>
             </Fade>
-            <Typography variant="h2" gutterBottom sx={{ fontWeight: 700, mb: 2 }}>
+            <Typography variant="h2" sx={{ fontWeight: 700, mb: 1.5, fontSize: { xs: '2rem', md: '2.75rem' } }}>
               {t('pricing.title')}
             </Typography>
-            <Typography variant="h6" color="text.secondary" sx={{ mb: 4, fontWeight: 400, maxWidth: '800px', mx: 'auto' }}>
+            <Typography variant="h6" color="text.secondary" sx={{ mb: 0, fontWeight: 400, maxWidth: '700px', mx: 'auto', fontSize: { xs: '1rem', md: '1.1rem' } }}>
               {t('pricing.subtitle')}
             </Typography>
           </Box>
         </ScrollAnimation>
 
-        {/* Main Chat Area - Prominente */}
-        <Box sx={{ maxWidth: '900px', mx: 'auto', mb: 6 }}>
+        {/* Main Chat Area - Compatta e professionale */}
+        <Box sx={{ maxWidth: '1100px', mx: 'auto', mb: 4 }}>
           <ScrollAnimation delay={0.1}>
             <Paper
-              elevation={isFocused ? 16 : 8}
+              elevation={isFocused ? 12 : 4}
               sx={{
-                p: { xs: 4, md: 6 },
-                borderRadius: 4,
+                p: { xs: 3, md: 4 },
+                borderRadius: 3,
                 position: 'relative',
-                background: isFocused
-                  ? 'linear-gradient(135deg, #FFF7ED 0%, #FFFBF5 100%)'
-                  : 'white',
-                border: isFocused ? '3px solid #F97316' : '3px solid transparent',
+                background: 'white',
+                border: isFocused ? '2px solid #F97316' : '2px solid #E5E7EB',
                 transition: 'all 0.3s ease',
-                transform: isFocused ? 'scale(1.02)' : 'scale(1)',
+                boxShadow: isFocused
+                  ? '0 20px 60px rgba(249, 115, 22, 0.15)'
+                  : '0 4px 20px rgba(0, 0, 0, 0.05)',
               }}
             >
-              {/* Header della Chat */}
-              <Box sx={{ textAlign: 'center', mb: 4 }}>
-                <Box sx={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: 1.5,
-                  mb: 2,
-                  p: 2,
-                  borderRadius: 3,
-                  backgroundColor: '#FFF7ED',
-                }}>
-                  <SmartToy sx={{ fontSize: 32, color: '#F97316' }} />
-                  <Typography variant="h5" sx={{ fontWeight: 700, color: '#F97316' }}>
-                    Inizia a scrivere qui
-                  </Typography>
-                </Box>
-                <Typography variant="body1" color="text.secondary" sx={{ fontSize: '1.1rem' }}>
-                  Descrivi il tuo progetto e ricevi un preventivo AI in tempo reale
-                </Typography>
-              </Box>
-
-              {/* Nudge Message */}
+              {/* Nudge Message - Più incalzante */}
               <Fade in={showNudge}>
                 <Alert
-                  severity="info"
+                  severity="warning"
                   sx={{
-                    mb: 3,
-                    backgroundColor: '#E0F2FE',
-                    fontSize: '1rem',
+                    mb: 2,
+                    backgroundColor: '#FFF7ED',
+                    border: '1px solid #FED7AA',
+                    fontSize: '0.95rem',
+                    fontWeight: 500,
                     '& .MuiAlert-icon': {
-                      color: '#0891B2',
+                      color: '#F97316',
                     }
                   }}
                   onClose={() => setShowNudge(false)}
@@ -246,116 +229,154 @@ export default function AIPricingSection() {
                 </Alert>
               </Fade>
 
-              <TextField
-                fullWidth
-                multiline
-                rows={8}
-                variant="outlined"
-                placeholder={t('pricing.placeholder')}
-                value={prompt}
-                onChange={(e) => setPrompt(e.target.value)}
-                onFocus={() => setIsFocused(true)}
-                onBlur={() => setIsFocused(false)}
-                sx={{
-                  mb: 3,
-                  '& .MuiOutlinedInput-root': {
-                    fontSize: '1.15rem',
-                    backgroundColor: 'white',
-                    transition: 'all 0.3s ease',
-                    borderRadius: 3,
-                    '& fieldset': {
-                      borderWidth: 2,
-                      borderColor: isFocused ? '#F97316' : 'rgba(0,0,0,0.23)',
-                    },
-                    '&:hover fieldset': {
-                      borderColor: '#F97316',
-                    },
-                  },
-                  '& .MuiInputBase-input': {
-                    lineHeight: 1.8,
-                  }
-                }}
-              />
+              <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '2fr 1fr' }, gap: 3 }}>
+                {/* Textarea - Più largo */}
+                <Box>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1.5 }}>
+                    <SmartToy sx={{ fontSize: 24, color: '#F97316' }} />
+                    <Typography variant="h6" sx={{ fontWeight: 600, color: 'text.primary' }}>
+                      {t('pricing.input.placeholder')}
+                    </Typography>
+                  </Box>
+                  <TextField
+                    fullWidth
+                    multiline
+                    rows={4}
+                    variant="outlined"
+                    placeholder={t('pricing.placeholder')}
+                    value={prompt}
+                    onChange={(e) => setPrompt(e.target.value)}
+                    onFocus={() => setIsFocused(true)}
+                    onBlur={() => setIsFocused(false)}
+                    sx={{
+                      '& .MuiOutlinedInput-root': {
+                        fontSize: '1rem',
+                        backgroundColor: '#FAFBFC',
+                        transition: 'all 0.3s ease',
+                        borderRadius: 2,
+                        fontFamily: 'system-ui, -apple-system, sans-serif',
+                        '& fieldset': {
+                          borderWidth: 2,
+                          borderColor: isFocused ? '#F97316' : '#E5E7EB',
+                        },
+                        '&:hover fieldset': {
+                          borderColor: '#F97316',
+                        },
+                        '&.Mui-focused': {
+                          backgroundColor: 'white',
+                        }
+                      },
+                      '& .MuiInputBase-input': {
+                        lineHeight: 1.6,
+                      }
+                    }}
+                  />
+                </Box>
 
-              <Button
-                fullWidth
-                variant="contained"
-                size="large"
-                onClick={calculatePrice}
-                disabled={!prompt || isCalculating}
-                startIcon={isCalculating ? <SmartToy className="rotating" /> : <AttachMoney />}
-                sx={{
-                  py: 2.5,
-                  fontSize: '1.2rem',
-                  backgroundColor: '#F97316',
-                  fontWeight: 700,
-                  borderRadius: 3,
-                  boxShadow: '0 8px 24px rgba(249, 115, 22, 0.3)',
-                  '&:hover': {
-                    backgroundColor: '#EA580C',
-                    transform: 'translateY(-2px)',
-                    boxShadow: '0 12px 32px rgba(249, 115, 22, 0.4)',
-                  },
-                  '&:disabled': {
-                    backgroundColor: '#FED7AA',
-                  },
-                  transition: 'all 0.3s ease',
-                }}
-              >
-                {isCalculating ? t('pricing.button.calculating') : t('pricing.button.calculate')}
-              </Button>
+                {/* Sidebar con CTA e info */}
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                  <Paper
+                    elevation={0}
+                    sx={{
+                      p: 2.5,
+                      backgroundColor: '#FFF7ED',
+                      border: '2px dashed #F97316',
+                      borderRadius: 2,
+                      textAlign: 'center',
+                    }}
+                  >
+                    <Typography variant="body2" sx={{ fontWeight: 600, color: '#EA580C', mb: 1.5, fontSize: '0.9rem' }}>
+                      {t('pricing.input.label')}
+                    </Typography>
+                    <Button
+                      fullWidth
+                      variant="contained"
+                      size="large"
+                      onClick={calculatePrice}
+                      disabled={!prompt || isCalculating}
+                      startIcon={isCalculating ? <SmartToy className="rotating" /> : <AttachMoney />}
+                      sx={{
+                        py: 1.75,
+                        fontSize: '1.05rem',
+                        backgroundColor: '#F97316',
+                        fontWeight: 700,
+                        borderRadius: 2,
+                        boxShadow: '0 4px 14px rgba(249, 115, 22, 0.3)',
+                        '&:hover': {
+                          backgroundColor: '#EA580C',
+                          transform: 'translateY(-2px)',
+                          boxShadow: '0 6px 20px rgba(249, 115, 22, 0.4)',
+                        },
+                        '&:disabled': {
+                          backgroundColor: '#FED7AA',
+                        },
+                        transition: 'all 0.3s ease',
+                      }}
+                    >
+                      {isCalculating ? t('pricing.button.calculating') : t('pricing.button.calculate')}
+                    </Button>
+                  </Paper>
+
+                  {/* Quick benefits */}
+                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                    {[
+                      { icon: '⚡', text: t('pricing.benefit1') },
+                      { icon: '🤖', text: t('pricing.benefit2') },
+                      { icon: '🎯', text: t('pricing.benefit4') },
+                    ].map((benefit, idx) => (
+                      <Box key={idx} sx={{ display: 'flex', alignItems: 'center', gap: 1, px: 1 }}>
+                        <Typography sx={{ fontSize: '1.25rem' }}>{benefit.icon}</Typography>
+                        <Typography variant="caption" sx={{ color: 'text.secondary', fontSize: '0.8rem', lineHeight: 1.3 }}>
+                          {benefit.text}
+                        </Typography>
+                      </Box>
+                    ))}
+                  </Box>
+                </Box>
+              </Box>
             </Paper>
           </ScrollAnimation>
         </Box>
 
-        {/* Benefits Grid - Sotto la chat */}
+        {/* Benefits Grid - Compatta */}
         <Box sx={{ maxWidth: '1100px', mx: 'auto' }}>
           <ScrollAnimation delay={0.2}>
-            <Box sx={{
-              display: 'grid',
-              gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' },
-              gap: 3
-            }}>
-              {BENEFITS.map((benefit, index) => (
-                <Grow in={true} timeout={500 + index * 200} key={index}>
-                  <Paper
-                    elevation={2}
-                    sx={{
-                      p: 3,
-                      borderRadius: 3,
-                      textAlign: 'center',
-                      backgroundColor: 'white',
-                      border: '1px solid',
-                      borderColor: 'divider',
-                      '&:hover': {
-                        borderColor: 'primary.main',
-                        transform: 'translateY(-4px)',
-                      },
-                      transition: 'all 0.3s ease',
-                    }}
-                  >
-                    <Box sx={{ color: 'primary.main', mb: 2 }}>
-                      {benefit.icon}
+            <Paper
+              elevation={0}
+              sx={{
+                p: 3,
+                backgroundColor: '#FAFBFC',
+                borderRadius: 2,
+                border: '1px solid #E5E7EB',
+              }}
+            >
+              <Box sx={{
+                display: 'grid',
+                gridTemplateColumns: { xs: '1fr 1fr', sm: 'repeat(4, 1fr)' },
+                gap: 2
+              }}>
+                {BENEFITS.map((benefit, index) => (
+                  <Grow in={true} timeout={300 + index * 100} key={index}>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        textAlign: 'center',
+                        p: 1.5,
+                      }}
+                    >
+                      <Box sx={{ color: 'primary.main', mb: 1, fontSize: '1.5rem' }}>
+                        {benefit.icon}
+                      </Box>
+                      <Typography variant="caption" sx={{ fontWeight: 600, lineHeight: 1.4, fontSize: '0.8rem' }}>
+                        {benefit.text}
+                      </Typography>
                     </Box>
-                    <Typography variant="body2" sx={{ fontWeight: 600, lineHeight: 1.6 }}>
-                      {benefit.text}
-                    </Typography>
-                  </Paper>
-                </Grow>
-              ))}
-            </Box>
-          </ScrollAnimation>
-
-          {/* Special Offer */}
-          <ScrollAnimation delay={0.3}>
-            <Box sx={{ mt: 4, p: 4, backgroundColor: '#FFF7ED', borderRadius: 3, border: '2px solid #F97316', textAlign: 'center' }}>
-              <Typography variant="h6" sx={{ fontWeight: 700, color: '#EA580C', mb: 1 }}>
-                {t('pricing.special.title')}
-              </Typography>
-              <Typography variant="body1" sx={{ color: 'text.secondary' }}>
-                {t('pricing.special.desc')}
-              </Typography>
-            </Box>
+                  </Grow>
+                ))}
+              </Box>
+            </Paper>
           </ScrollAnimation>
         </Box>
       </Container>
@@ -364,46 +385,73 @@ export default function AIPricingSection() {
       <Dialog
         open={analysisDialogOpen}
         onClose={() => !isCalculating && setAnalysisDialogOpen(false)}
-        maxWidth="md"
+        maxWidth="lg"
         fullWidth
         PaperProps={{
           sx: {
-            borderRadius: 4,
-            maxHeight: '90vh',
-            minHeight: '500px',
+            borderRadius: 2,
+            maxHeight: '95vh',
+            minHeight: '600px',
+            boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
           },
         }}
       >
+        {/* Header stile Modal.tsx */}
         <DialogTitle
           sx={{
-            background: isCalculating
-              ? 'linear-gradient(135deg, #F97316 0%, #FB923C 100%)'
-              : 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
-            color: 'white',
             display: 'flex',
-            alignItems: 'center',
             justifyContent: 'space-between',
-            p: 3,
-            transition: 'background 0.5s ease',
+            alignItems: 'center',
+            borderBottom: '1px solid',
+            borderColor: 'divider',
+            backgroundColor: isCalculating ? '#FFF7ED' : '#ECFDF5',
+            py: 2.5,
+            px: 3,
+            transition: 'background-color 0.5s ease',
           }}
         >
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-            <SmartToy sx={{ fontSize: 32, animation: isCalculating ? 'rotate 2s linear infinite' : 'none' }} />
-            <Typography variant="h5" sx={{ fontWeight: 700 }}>
-              {isCalculating ? t('pricing.button.calculating') : t('pricing.result.title')}
+            <SmartToy
+              sx={{
+                fontSize: 28,
+                color: isCalculating ? '#F97316' : '#10B981',
+                animation: isCalculating ? 'rotate 2s linear infinite' : 'none',
+              }}
+            />
+            <Typography variant="h6" sx={{ fontWeight: 600, color: 'text.primary' }}>
+              {isCalculating ? '💭 Elaborazione in corso...' : '✨ Preventivo Pronto!'}
             </Typography>
           </Box>
           {!isCalculating && (
-            <IconButton onClick={() => setAnalysisDialogOpen(false)} sx={{ color: 'white' }}>
-              <Close />
+            <IconButton
+              onClick={() => setAnalysisDialogOpen(false)}
+              size="small"
+              sx={{
+                color: 'text.secondary',
+                '&:hover': {
+                  backgroundColor: 'rgba(0,0,0,0.04)',
+                  color: 'text.primary',
+                },
+              }}
+            >
+              <Close fontSize="small" />
             </IconButton>
           )}
         </DialogTitle>
 
-        <DialogContent sx={{ p: 4, backgroundColor: '#F0F9FF', minHeight: '400px', display: 'flex', flexDirection: 'column' }}>
+        <DialogContent sx={{ p: 3, backgroundColor: 'white', minHeight: '500px' }}>
           {isCalculating ? (
-            // Animazione di caricamento
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, flex: 1, justifyContent: 'center' }}>
+            // Animazione di caricamento con stile più simpatico
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, py: 2 }}>
+              <Box sx={{ textAlign: 'center', mb: 2 }}>
+                <Typography variant="h6" sx={{ fontWeight: 600, color: '#F97316', mb: 1 }}>
+                  {t('pricing.modal.thinking')}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {t('pricing.modal.thinking.sub')}
+                </Typography>
+              </Box>
+
               {([
                 'pricing.loading.step1',
                 'pricing.loading.step2',
@@ -418,69 +466,140 @@ export default function AIPricingSection() {
               ] as const).map((stepKey, step) => (
                 <Fade in={loadingStep >= step} timeout={500} key={step}>
                   <Paper
-                    elevation={loadingStep === step ? 8 : 2}
+                    elevation={loadingStep === step ? 4 : 0}
                     sx={{
-                      p: 2,
-                      backgroundColor: loadingStep === step ? '#FFF7ED' : 'white',
-                      borderLeft: loadingStep === step ? '4px solid #F97316' : '4px solid transparent',
-                      transform: loadingStep === step ? 'scale(1.02)' : 'scale(1)',
+                      p: 2.5,
+                      backgroundColor: loadingStep === step ? '#FFF7ED' : '#F9FAFB',
+                      borderLeft: loadingStep === step ? '4px solid #F97316' : '4px solid #E5E7EB',
+                      transform: loadingStep === step ? 'translateX(4px)' : 'translateX(0)',
                       transition: 'all 0.3s ease',
+                      border: loadingStep === step ? '1px solid #FED7AA' : '1px solid #F3F4F6',
                     }}
                   >
                     <Typography
                       variant="body1"
                       sx={{
                         fontWeight: loadingStep === step ? 600 : 400,
-                        color: loadingStep === step ? '#F97316' : 'text.secondary',
+                        color: loadingStep === step ? '#EA580C' : 'text.secondary',
                         fontFamily: 'monospace',
+                        fontSize: '0.95rem',
                       }}
                     >
+                      {loadingStep === step && '⚡ '}
                       {t(stepKey)}
+                      {loadingStep > step && ' ✓'}
                     </Typography>
                   </Paper>
                 </Fade>
               ))}
             </Box>
           ) : (
-            // Risultato finale
+            // Risultato finale - stile pricing moderno
             <Fade in={!isCalculating} timeout={800}>
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                {/* Prezzo */}
-                <Paper
-                  elevation={8}
+              <Box>
+                {/* Header con prezzo grande */}
+                <Box sx={{ textAlign: 'center', py: 4, px: 2 }}>
+                  <Typography variant="overline" sx={{ color: 'text.secondary', fontWeight: 600, letterSpacing: 1 }}>
+                    {t('pricing.result.yourtitle')}
+                  </Typography>
+                  <Box sx={{ display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: 0.5, my: 2 }}>
+                    <Typography variant="h2" sx={{ fontWeight: 800, color: '#F97316' }}>
+                      €{estimatedPrice?.toLocaleString()}
+                    </Typography>
+                    <Typography variant="h5" sx={{ color: 'text.secondary', fontWeight: 500 }}>
+                      {t('pricing.result.month')}
+                    </Typography>
+                  </Box>
+                  <Box
+                    sx={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: 1,
+                      px: 2,
+                      py: 0.75,
+                      borderRadius: 10,
+                      backgroundColor: '#FFF7ED',
+                      border: '1px solid #FED7AA',
+                    }}
+                  >
+                    <Typography variant="caption" sx={{ color: '#EA580C', fontWeight: 600 }}>
+                      💰 {t('pricing.result.disclaimer')}
+                    </Typography>
+                  </Box>
+                </Box>
+
+                {/* Griglia con vantaggi inclusi nel prezzo */}
+                <Box
                   sx={{
-                    p: 4,
-                    background: 'linear-gradient(135deg, #F97316 0%, #FB923C 100%)',
-                    color: 'white',
-                    borderRadius: 3,
-                    textAlign: 'center',
+                    display: 'grid',
+                    gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)' },
+                    gap: 2,
+                    mb: 4,
+                    px: 2,
                   }}
                 >
-                  <Typography variant="h6" sx={{ mb: 2, opacity: 0.9 }}>
-                    {t('pricing.result.title')}
-                  </Typography>
-                  <Typography variant="h2" sx={{ fontWeight: 800, mb: 1 }}>
-                    €{estimatedPrice?.toLocaleString()}<Typography component="span" variant="h5">{t('pricing.result.month')}</Typography>
-                  </Typography>
-                  <Typography variant="body2" sx={{ opacity: 0.9, fontSize: '0.9rem' }}>
-                    {t('pricing.result.disclaimer')}
-                  </Typography>
-                </Paper>
+                  {[
+                    { icon: '🚀', label: 'Deploy Istantaneo*', note: '*Circa' },
+                    { icon: '🤖', label: 'AI Inclusa**', note: '**Forse' },
+                    { icon: '🛡️', label: 'Sicurezza 128-bit***', note: '***O giù di lì' },
+                    { icon: '☁️', label: 'Cloud Illimitato', note: 'Letteralmente' },
+                    { icon: '⚡', label: 'Performance 10X', note: 'Trust us' },
+                    { icon: '🎯', label: 'Support 24/7****', note: '****Anche di notte' },
+                  ].map((feature, index) => (
+                    <Paper
+                      key={index}
+                      elevation={0}
+                      sx={{
+                        p: 2,
+                        textAlign: 'center',
+                        backgroundColor: '#F9FAFB',
+                        border: '1px solid #E5E7EB',
+                        borderRadius: 2,
+                        '&:hover': {
+                          backgroundColor: '#FFF7ED',
+                          borderColor: '#FED7AA',
+                          transform: 'translateY(-2px)',
+                        },
+                        transition: 'all 0.2s ease',
+                      }}
+                    >
+                      <Typography sx={{ fontSize: '2rem', mb: 0.5 }}>{feature.icon}</Typography>
+                      <Typography variant="body2" sx={{ fontWeight: 600, mb: 0.25 }}>
+                        {feature.label}
+                      </Typography>
+                      <Typography variant="caption" sx={{ color: 'text.secondary', fontSize: '0.7rem' }}>
+                        {feature.note}
+                      </Typography>
+                    </Paper>
+                  ))}
+                </Box>
 
                 {/* Analisi AI */}
                 <Paper
                   elevation={0}
                   sx={{
                     p: 3,
-                    backgroundColor: 'white',
-                    borderRadius: 3,
-                    border: '2px solid #06B6D4',
+                    backgroundColor: '#F0F9FF',
+                    borderRadius: 2,
+                    border: '2px solid #BAE6FD',
                   }}
                 >
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-                    <Lightbulb sx={{ color: '#F97316' }} />
-                    <Typography variant="h6" sx={{ fontWeight: 600, color: '#0891B2' }}>
-                      {t('pricing.result.analysis')}
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 2 }}>
+                    <Box
+                      sx={{
+                        width: 36,
+                        height: 36,
+                        borderRadius: '50%',
+                        backgroundColor: '#0EA5E9',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      <Lightbulb sx={{ color: 'white', fontSize: 20 }} />
+                    </Box>
+                    <Typography variant="h6" sx={{ fontWeight: 600, color: '#0369A1' }}>
+                      💡 {t('pricing.result.analysis')}
                     </Typography>
                   </Box>
                   <Typography
@@ -489,11 +608,28 @@ export default function AIPricingSection() {
                       whiteSpace: 'pre-wrap',
                       lineHeight: 1.8,
                       color: 'text.primary',
-                      fontSize: '1.05rem',
+                      fontSize: '1rem',
+                      fontStyle: 'italic',
                     }}
                   >
                     {aiAnalysis}
                   </Typography>
+                  <Box
+                    sx={{
+                      mt: 2,
+                      pt: 2,
+                      borderTop: '1px dashed #BAE6FD',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 1,
+                    }}
+                  >
+                    <Typography variant="caption" sx={{ color: 'text.secondary', fontSize: '0.75rem' }}>
+                      ⚠️ Disclaimer: Questa analisi è stata generata da un'AI che ha bevuto troppo caffè.
+                      I risultati potrebbero variare. Le performance passate non garantiscono quelle future.
+                      Non costituisce consulenza finanziaria. O forse sì. Chi può dirlo? 🤷
+                    </Typography>
+                  </Box>
                 </Paper>
               </Box>
             </Fade>
@@ -501,24 +637,58 @@ export default function AIPricingSection() {
         </DialogContent>
 
         {!isCalculating && (
-          <DialogActions sx={{ p: 3, backgroundColor: 'white' }}>
+          <DialogActions
+            sx={{
+              borderTop: '1px solid',
+              borderColor: 'divider',
+              backgroundColor: '#FAFBFC',
+              px: 3,
+              py: 2,
+              gap: 1.5,
+            }}
+          >
             <Button
               onClick={() => setAnalysisDialogOpen(false)}
-              variant="contained"
+              variant="outlined"
               size="large"
               sx={{
-                backgroundColor: '#10B981',
-                px: 4,
+                px: 3,
+                borderColor: '#E5E7EB',
+                color: 'text.secondary',
                 '&:hover': {
-                  backgroundColor: '#059669',
+                  borderColor: '#D1D5DB',
+                  backgroundColor: '#F9FAFB',
                 },
               }}
             >
-              {t('demo.close')}
+              Chiudi
+            </Button>
+            <Button
+              variant="contained"
+              size="large"
+              onClick={() => {
+                setAnalysisDialogOpen(false);
+                setPaymentDialogOpen(true);
+              }}
+              sx={{
+                px: 4,
+                backgroundColor: '#F97316',
+                '&:hover': {
+                  backgroundColor: '#EA580C',
+                },
+              }}
+            >
+              🎉 Voglio Questo Prezzo!
             </Button>
           </DialogActions>
         )}
       </Dialog>
+
+      {/* Payment Dialog */}
+      <PaymentDialog
+        open={paymentDialogOpen}
+        onClose={() => setPaymentDialogOpen(false)}
+      />
 
       {/* Rotating animation CSS */}
       <style jsx global>{`

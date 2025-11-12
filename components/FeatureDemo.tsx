@@ -31,6 +31,7 @@ import {
 } from '@mui/icons-material';
 import { motion, AnimatePresence } from 'framer-motion';
 import Modal from './Modal';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { Line, Doughnut } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -184,6 +185,7 @@ const AnimatedTerminal = ({ lines }: { lines: string[] }) => {
 
 // Demo Deploy
 const DeployDemo = () => {
+  const { t } = useLanguage();
   const [step, setStep] = useState(0);
   const [progress, setProgress] = useState(0);
 
@@ -242,7 +244,7 @@ const DeployDemo = () => {
         <Box sx={{ mt: 2 }}>
           <LinearProgress variant="determinate" value={progress} sx={{ height: 8, borderRadius: 4 }} />
           <Typography variant="caption" sx={{ mt: 1, display: 'block', textAlign: 'center' }}>
-            {progress}% completato
+            {t('demo.deploy.progress.percent', { progress })}
           </Typography>
         </Box>
       </Box>
@@ -308,7 +310,7 @@ const DeployDemo = () => {
           <Paper sx={{ p: 3, mt: 3, bgcolor: '#FFF7ED' }}>
             <Typography variant="h6" sx={{ mb: 2, display: 'flex', alignItems: 'center' }}>
               <Speed sx={{ mr: 1, color: '#F97316' }} />
-              📊 Confronto Performance (Dati Assolutamente Reali™)
+              {t('demo.security.comparison')}
             </Typography>
             <Line
               data={{
@@ -548,6 +550,7 @@ const AIDemo = () => {
 
 // Demo Security
 const SecurityDemo = () => {
+  const { t } = useLanguage();
   const [scanning, setScanning] = useState(true);
   const [threats, setThreats] = useState(0);
   const [blocked, setBlocked] = useState(0);
@@ -599,20 +602,20 @@ const SecurityDemo = () => {
           <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
             <Card sx={{ flex: 1, background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)', color: 'white' }}>
               <CardContent>
-                <Typography variant="h6">Minacce Rilevate</Typography>
+                <Typography variant="h6">{t('demo.security.threats.detected')}</Typography>
                 <Typography variant="h3" sx={{ fontWeight: 700, my: 1 }}>
                   {threats}
                 </Typography>
-                <Typography variant="caption">Nelle ultime 24h</Typography>
+                <Typography variant="caption">{t('demo.security.last24h')}</Typography>
               </CardContent>
             </Card>
             <Card sx={{ flex: 1, background: 'linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)', color: 'white' }}>
               <CardContent>
-                <Typography variant="h6">Attacchi Bloccati</Typography>
+                <Typography variant="h6">{t('demo.security.blocked')}</Typography>
                 <Typography variant="h3" sx={{ fontWeight: 700, my: 1 }}>
                   {blocked}
                 </Typography>
-                <Typography variant="caption">100% successo</Typography>
+                <Typography variant="caption">{t('demo.security.success')}</Typography>
               </CardContent>
             </Card>
           </Box>
@@ -620,10 +623,10 @@ const SecurityDemo = () => {
           <Paper sx={{ p: 2, mb: 3, backgroundColor: '#ECFDF5', border: '2px solid #10B981' }}>
             <Typography variant="h6" sx={{ color: '#059669', mb: 1, display: 'flex', alignItems: 'center' }}>
               <CheckCircle sx={{ mr: 1 }} />
-              Sistema Protetto
+              {t('demo.security.protected')}
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              Tutti i controlli di sicurezza sono attivi e funzionanti correttamente.
+              {t('demo.security.protected.desc')}
             </Typography>
           </Paper>
 
@@ -674,11 +677,13 @@ const SecurityDemo = () => {
 };
 
 export default function FeatureDemo({ open, onClose, feature, onOpenPricing }: FeatureDemoProps) {
+  const { t } = useLanguage();
+
   const getTitle = () => {
     switch (feature) {
-      case 'deploy': return 'Deploy Istantaneo - Demo';
-      case 'ai': return 'AI-Powered - Demo';
-      case 'security': return 'Security First - Demo';
+      case 'deploy': return t('demo.title.deploy');
+      case 'ai': return t('demo.title.ai');
+      case 'security': return t('demo.title.security');
       default: return 'Demo';
     }
   };
@@ -699,7 +704,7 @@ export default function FeatureDemo({ open, onClose, feature, onOpenPricing }: F
       actions={
         <>
           <Button onClick={onClose} variant="outlined" color="inherit">
-            Chiudi
+            {t('demo.close')}
           </Button>
           <Button
             variant="contained"

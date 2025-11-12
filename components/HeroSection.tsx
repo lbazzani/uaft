@@ -24,12 +24,7 @@ import FeatureCard from './FeatureCard';
 import PaymentDialog from './PaymentDialog';
 import { useLanguage } from '@/contexts/LanguageContext';
 
-const stats = [
-  { value: '99.99%', label: 'Uptime' },
-  { value: '24/7', label: 'Support' },
-  { value: '∞', label: 'Scalabilità' },
-  { value: '0', label: 'Limiti' },
-];
+// Stats will use translations dynamically in component
 
 export default function HeroSection() {
   const { t, language } = useLanguage();

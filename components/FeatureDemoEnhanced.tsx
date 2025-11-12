@@ -40,6 +40,7 @@ import {
   Legend,
   ArcElement,
 } from 'chart.js';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 ChartJS.register(
   CategoryScale,
@@ -115,17 +116,18 @@ const IronicGauge = ({ value, label, subtitle }: { value: number; label: string;
 
 // Demo Deploy Arricchito
 const DeployDemoEnhanced = () => {
+  const { t } = useLanguage();
   const [progress, setProgress] = useState(0);
   const [currentStep, setCurrentStep] = useState(0);
   const [showStats, setShowStats] = useState(false);
   const [deployTime, setDeployTime] = useState(0);
 
   const steps = [
-    { label: '🔍 Analisi Quantistica', time: 0.3 },
-    { label: '🧬 Compilazione DNA Codice', time: 1.2 },
-    { label: '🚀 Lancio Razzi Virtuali', time: 0.8 },
-    { label: '⚡ Ottimizzazione Iper-Spaziale', time: 0.5 },
-    { label: '🎉 Deploy Completato!', time: 0.2 },
+    { label: t('featuredemo.deploy.step1'), time: 0.3 },
+    { label: t('featuredemo.deploy.step2'), time: 1.2 },
+    { label: t('featuredemo.deploy.step3'), time: 0.8 },
+    { label: t('featuredemo.deploy.step4'), time: 0.5 },
+    { label: t('featuredemo.deploy.step5'), time: 0.2 },
   ];
 
   useEffect(() => {
@@ -150,14 +152,14 @@ const DeployDemoEnhanced = () => {
     labels: ['0s', '5s', '10s', '15s', '18s'],
     datasets: [
       {
-        label: 'Performance Score',
+        label: t('featuredemo.deploy.chart.label1'),
         data: [0, 45, 78, 92, 98],
         borderColor: '#F97316',
         backgroundColor: 'rgba(249, 115, 22, 0.1)',
         tension: 0.4,
       },
       {
-        label: 'Competitor Average',
+        label: t('featuredemo.deploy.chart.label2'),
         data: [0, 10, 25, 40, 55],
         borderColor: '#9CA3AF',
         backgroundColor: 'rgba(156, 163, 175, 0.1)',
@@ -173,7 +175,7 @@ const DeployDemoEnhanced = () => {
         <>
           <Alert severity="info" icon={<Rocket />} sx={{ mb: 3 }}>
             <Typography variant="body2" sx={{ fontWeight: 600 }}>
-              Stiamo attivando i razzi quantici... Questo potrebbe richiedere circa {(18 - deployTime).toFixed(1)}s!
+              {t('featuredemo.deploy.alert', { time: (18 - deployTime).toFixed(1) })}
             </Typography>
           </Alert>
 
@@ -203,24 +205,24 @@ const DeployDemoEnhanced = () => {
               }}
             />
             <Typography variant="caption" sx={{ mt: 1, display: 'block' }}>
-              {progress}% completato - Molto più veloce di quanto pensassi!
+              {t('featuredemo.deploy.progress', { progress })}
             </Typography>
           </Paper>
 
           <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-            <IronicGauge value={Math.min(progress, 98)} label="Magia" subtitle="(alias tecnologia)" />
-            <IronicGauge value={Math.min(progress * 0.9, 95)} label="Buzzword Density" subtitle="Altissima!" />
-            <IronicGauge value={Math.min(progress * 1.1, 99)} label="Hype Level" subtitle="Oltre 9000!" />
+            <IronicGauge value={Math.min(progress, 98)} label={t('featuredemo.deploy.gauge1.label')} subtitle={t('featuredemo.deploy.gauge1.subtitle')} />
+            <IronicGauge value={Math.min(progress * 0.9, 95)} label={t('featuredemo.deploy.gauge2.label')} subtitle={t('featuredemo.deploy.gauge2.subtitle')} />
+            <IronicGauge value={Math.min(progress * 1.1, 99)} label={t('featuredemo.deploy.gauge3.label')} subtitle={t('featuredemo.deploy.gauge3.subtitle')} />
           </Box>
         </>
       ) : (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
           <Alert severity="success" icon={<CheckCircle />} sx={{ mb: 3 }}>
             <Typography variant="body1" sx={{ fontWeight: 700 }}>
-              🎉 Deploy completato in {deployTime.toFixed(1)}s!
+              {t('featuredemo.deploy.success', { time: deployTime.toFixed(1) })}
             </Typography>
             <Typography variant="body2">
-              Il 92% più veloce della media. O forse abbiamo inventato questa statistica. Chi lo sa? 🤷
+              {t('featuredemo.deploy.success.desc')}
             </Typography>
           </Alert>
 
@@ -232,10 +234,10 @@ const DeployDemoEnhanced = () => {
                   {deployTime.toFixed(1)}s
                 </Typography>
                 <Typography variant="caption" color="text.secondary">
-                  Deploy Time*
+                  {t('featuredemo.deploy.stat1.label')}
                 </Typography>
                 <Typography variant="caption" display="block" sx={{ fontSize: '0.6rem', mt: 0.5 }}>
-                  *Più veloce di un caffè espresso
+                  {t('featuredemo.deploy.stat1.note')}
                 </Typography>
               </CardContent>
             </Card>
@@ -246,10 +248,10 @@ const DeployDemoEnhanced = () => {
                   98/100
                 </Typography>
                 <Typography variant="caption" color="text.secondary">
-                  Performance Score
+                  {t('featuredemo.deploy.stat2.label')}
                 </Typography>
                 <Typography variant="caption" display="block" sx={{ fontSize: '0.6rem', mt: 0.5 }}>
-                  I 2 punti mancanti? Humility.
+                  {t('featuredemo.deploy.stat2.note')}
                 </Typography>
               </CardContent>
             </Card>
@@ -260,10 +262,10 @@ const DeployDemoEnhanced = () => {
                   ∞
                 </Typography>
                 <Typography variant="caption" color="text.secondary">
-                  Scalabilità
+                  {t('featuredemo.deploy.stat3.label')}
                 </Typography>
                 <Typography variant="caption" display="block" sx={{ fontSize: '0.6rem', mt: 0.5 }}>
-                  Letteralmente infinito. Trust us.
+                  {t('featuredemo.deploy.stat3.note')}
                 </Typography>
               </CardContent>
             </Card>
@@ -271,7 +273,7 @@ const DeployDemoEnhanced = () => {
 
           <Paper sx={{ p: 3 }}>
             <Typography variant="h6" sx={{ mb: 2 }}>
-              📊 Performance Comparison (Dati Assolutamente Reali™)
+              {t('featuredemo.deploy.chart.title')}
             </Typography>
             <Line
               data={performanceData}
@@ -290,7 +292,7 @@ const DeployDemoEnhanced = () => {
               }}
             />
             <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block', textAlign: 'center' }}>
-              *Grafici generati da AI addestrata su data scientists che hanno bevuto troppo caffè
+              {t('featuredemo.deploy.chart.note')}
             </Typography>
           </Paper>
         </motion.div>
@@ -300,14 +302,16 @@ const DeployDemoEnhanced = () => {
 };
 
 export default function FeatureDemoEnhanced({ open, onClose, feature }: FeatureDemoProps) {
+  const { t } = useLanguage();
+
   const getTitle = () => {
     switch (feature) {
       case 'deploy':
-        return '🚀 Deploy Istantaneo (O Quasi)';
+        return t('featuredemo.deploy.title');
       case 'ai':
-        return '🤖 AI Ultra-Precisa (Maybe)';
+        return t('featuredemo.ai.title');
       case 'security':
-        return '🛡️ Sicurezza Esagerata';
+        return t('featuredemo.security.title');
       default:
         return 'Demo';
     }
@@ -316,11 +320,11 @@ export default function FeatureDemoEnhanced({ open, onClose, feature }: FeatureD
   const getSubtitle = () => {
     switch (feature) {
       case 'deploy':
-        return 'Guarda come deployiamo alla velocità della luce (o almeno ci proviamo)';
+        return t('featuredemo.deploy.subtitle');
       case 'ai':
-        return 'La nostra AI è così intelligente che a volte ci spaventa';
+        return t('featuredemo.ai.subtitle');
       case 'security':
-        return 'Così sicuro che neanche tu puoi entrare!';
+        return t('featuredemo.security.subtitle');
       default:
         return '';
     }
@@ -334,10 +338,10 @@ export default function FeatureDemoEnhanced({ open, onClose, feature }: FeatureD
 
       {feature === 'deploy' && <DeployDemoEnhanced />}
       {feature === 'ai' && (
-        <Typography>AI Demo Coming Soon (sta ancora imparando a programmare)</Typography>
+        <Typography>{t('featuredemo.ai.comingsoon')}</Typography>
       )}
       {feature === 'security' && (
-        <Typography>Security Demo Coming Soon (è così sicuro che non possiamo mostrarlo)</Typography>
+        <Typography>{t('featuredemo.security.comingsoon')}</Typography>
       )}
     </Modal>
   );
