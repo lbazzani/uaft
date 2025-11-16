@@ -3,10 +3,11 @@ import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import theme from '@/lib/theme';
-import CookieBanner from '@/components/CookieBanner';
-import SalesAgent from '@/components/SalesAgent';
+import CookieBanner from '@/components/shared/CookieBanner';
+import SalesAgent from '@/components/shared/SalesAgent';
 import GoogleAnalytics from './GoogleAnalytics';
 import { LanguageProvider } from '@/contexts/LanguageContext';
+import { AuthProvider } from '@/components/Providers';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -98,16 +99,18 @@ export default function RootLayout({
       </head>
       <body style={{ margin: 0 }}>
         <GoogleAnalytics />
-        <AppRouterCacheProvider>
-          <ThemeProvider theme={theme}>
-            <LanguageProvider>
-              <CssBaseline />
-              {children}
-              <CookieBanner />
-              <SalesAgent />
-            </LanguageProvider>
-          </ThemeProvider>
-        </AppRouterCacheProvider>
+        <AuthProvider>
+          <AppRouterCacheProvider>
+            <ThemeProvider theme={theme}>
+              <LanguageProvider>
+                <CssBaseline />
+                {children}
+                <CookieBanner />
+                <SalesAgent />
+              </LanguageProvider>
+            </ThemeProvider>
+          </AppRouterCacheProvider>
+        </AuthProvider>
       </body>
     </html>
   );

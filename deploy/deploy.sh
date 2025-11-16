@@ -1,131 +1,152 @@
 #!/bin/bash
 
-# Script di deploy per UAFT Docker Application
-# Colori per output
+###############################################################################
+# UAFT Deployment Script
+#
+# This script deploys the UAFT application and mail server to production
+#
+# Usage:
+#   sudo ./deploy/deploy.sh
+#
+# Prerequisites:
+#   - Node.js 18+ installed
+#   - PostgreSQL database configured
+#   - TLS certificates in place
+#   - DNS records configured
+###############################################################################
+
+set -e  # Exit on error
+
+echo "🚀 UAFT Deployment Script"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo ""
+
+# Configuration
+APP_DIR="/var/www/uaft"
+APP_USER="www-data"
+APP_GROUP="www-data"
+
+# Colors
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
-echo -e "${GREEN}=== UAFT Docker Deployment ===${NC}"
-
-# Verifica che Docker sia installato
-if ! command -v docker &> /dev/null; then
-    echo -e "${RED}Errore: Docker non è installato${NC}"
-    exit 1
-fi
-
-if ! command -v docker-compose &> /dev/null && ! docker compose version &> /dev/null 2>&1; then
-    echo -e "${RED}Errore: Docker Compose non è installato${NC}"
-    exit 1
-fi
-
-# Determina il comando docker compose
-if docker compose version &> /dev/null 2>&1; then
-    DOCKER_COMPOSE="docker compose"
-else
-    DOCKER_COMPOSE="docker-compose"
-fi
-
-# Directory di lavoro
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
-
-echo -e "${YELLOW}Directory del progetto: ${PROJECT_DIR}${NC}"
-
-# Funzione per trovare una porta libera tra 3000 e 4000
-find_free_port() {
-    for port in {3000..4000}; do
-        if ! ss -tuln | grep -q ":${port} "; then
-            echo "$port"
-            return 0
-        fi
-    done
-    echo -e "${RED}Errore: Nessuna porta libera trovata tra 3000 e 4000${NC}"
-    exit 1
+# Helper functions
+print_step() {
+    echo -e "${GREEN}[STEP]${NC} $1"
 }
 
-# Trova una porta libera se UAFT_PORT non è già impostata
-if [ -z "$UAFT_PORT" ]; then
-    UAFT_PORT=$(find_free_port)
-    export UAFT_PORT
-    echo -e "${GREEN}Porta libera trovata: ${UAFT_PORT}${NC}"
-else
-    echo -e "${GREEN}Utilizzo porta specificata: ${UAFT_PORT}${NC}"
+print_warn() {
+    echo -e "${YELLOW}[WARN]${NC} $1"
+}
+
+print_error() {
+    echo -e "${RED}[ERROR]${NC} $1"
+}
+
+# Check if running as root
+if [ "$EUID" -ne 0 ]; then
+    print_error "Please run as root or with sudo"
+    exit 1
 fi
 
-# Verifica che esista il file .env.local
-if [ ! -f "$PROJECT_DIR/.env.local" ]; then
-    echo -e "${YELLOW}Attenzione: File .env.local non trovato${NC}"
-    echo -e "${YELLOW}Vuoi crearlo ora dal template .env.example? (y/n)${NC}"
-    read -r response
-    if [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
-        if [ -f "$PROJECT_DIR/.env.example" ]; then
-            cp "$PROJECT_DIR/.env.example" "$PROJECT_DIR/.env.local"
-            echo -e "${GREEN}File .env.local creato. Modifica le variabili necessarie e rilancia lo script.${NC}"
-            exit 0
-        else
-            echo -e "${RED}File .env.example non trovato${NC}"
-            exit 1
-        fi
-    fi
+# 1. Pre-deployment checks
+print_step "Running pre-deployment checks..."
+
+if ! command -v node &> /dev/null; then
+    print_error "Node.js not found. Please install Node.js 18+"
+    exit 1
 fi
 
-# Naviga nella directory deploy
-cd "$SCRIPT_DIR" || exit 1
+if ! command -v npm &> /dev/null; then
+    print_error "npm not found. Please install npm"
+    exit 1
+fi
 
-# Opzioni di deploy
-echo ""
-echo "Scegli un'opzione:"
-echo "1) Build e avvio (prima volta o dopo modifiche)"
-echo "2) Solo avvio (usa immagini esistenti)"
-echo "3) Stop e rimozione container"
-echo "4) Rebuild completo (pulisci cache)"
-echo "5) Visualizza logs"
-read -p "Scelta: " choice
+# 2. Create application directory
+print_step "Setting up application directory..."
 
-case $choice in
-    1)
-        echo -e "${GREEN}Building e avvio dei container...${NC}"
-        $DOCKER_COMPOSE up -d --build
-        ;;
-    2)
-        echo -e "${GREEN}Avvio dei container...${NC}"
-        $DOCKER_COMPOSE up -d
-        ;;
-    3)
-        echo -e "${YELLOW}Stop e rimozione dei container...${NC}"
-        $DOCKER_COMPOSE down
-        echo -e "${GREEN}Container fermati e rimossi${NC}"
-        exit 0
-        ;;
-    4)
-        echo -e "${YELLOW}Rebuild completo con pulizia cache...${NC}"
-        $DOCKER_COMPOSE down
-        $DOCKER_COMPOSE build --no-cache
-        $DOCKER_COMPOSE up -d
-        ;;
-    5)
-        echo -e "${GREEN}Visualizzazione logs...${NC}"
-        $DOCKER_COMPOSE logs -f
-        exit 0
-        ;;
-    *)
-        echo -e "${RED}Scelta non valida${NC}"
-        exit 1
-        ;;
-esac
+mkdir -p $APP_DIR
+mkdir -p $APP_DIR/uploads
+mkdir -p /var/log/uaft
 
-# Verifica lo stato
-echo ""
-echo -e "${GREEN}Verifica stato container...${NC}"
+# 3. Build application
+print_step "Building Next.js application..."
+
+cd "$(dirname "$0")/.."  # Go to project root
+
+npm ci --production=false
+npm run build
+
+# 4. Copy files
+print_step "Copying files to production directory..."
+
+rsync -av --delete \
+    --exclude 'node_modules' \
+    --exclude '.git' \
+    --exclude '.env' \
+    --exclude '.next/cache' \
+    ./ $APP_DIR/
+
+# 5. Install production dependencies
+print_step "Installing production dependencies..."
+
+cd $APP_DIR
+npm ci --production
+
+# 6. Set permissions
+print_step "Setting file permissions..."
+
+chown -R $APP_USER:$APP_GROUP $APP_DIR
+chmod -R 755 $APP_DIR
+chmod 700 $APP_DIR/.env.production || true
+chmod 755 $APP_DIR/uploads
+chmod 755 /var/log/uaft
+
+# 7. Copy systemd services
+print_step "Installing systemd services..."
+
+cp $APP_DIR/deploy/systemd/uaft-web.service /etc/systemd/system/
+cp $APP_DIR/deploy/systemd/uaft-smtp.service /etc/systemd/system/
+
+systemctl daemon-reload
+
+# 8. Run verification
+print_step "Verifying mail server configuration..."
+
+cd $APP_DIR
+sudo -u $APP_USER npm run mail:verify || {
+    print_warn "Mail server verification had warnings."
+}
+
+# 9. Enable and start services
+print_step "Enabling and starting services..."
+
+systemctl enable uaft-web
+systemctl enable uaft-smtp
+
+systemctl restart uaft-web
+systemctl restart uaft-smtp
+
+# 10. Check service status
 sleep 3
-$DOCKER_COMPOSE ps
 
 echo ""
-echo -e "${GREEN}=== Applicazione disponibile su: http://localhost:${UAFT_PORT} ===${NC}"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "🎉 Deployment completed!"
 echo ""
+echo "Service Status:"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
-# Mostra i logs
-echo -e "${GREEN}Ultimi logs (premi Ctrl+C per uscire):${NC}"
-$DOCKER_COMPOSE logs -f --tail=50
+systemctl status uaft-web --no-pager -l | head -10
+echo ""
+systemctl status uaft-smtp --no-pager -l | head -10
+
+echo ""
+echo "📚 Useful Commands:"
+echo "  - View web logs:    sudo journalctl -u uaft-web -f"
+echo "  - View SMTP logs:   sudo journalctl -u uaft-smtp -f"
+echo "  - Restart web:      sudo systemctl restart uaft-web"
+echo "  - Restart SMTP:     sudo systemctl restart uaft-smtp"
+echo ""

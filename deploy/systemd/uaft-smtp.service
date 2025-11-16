@@ -1,0 +1,32 @@
+[Unit]
+Description=UAFT SMTP Mail Server
+After=network.target postgresql.service
+Wants=postgresql.service
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/uaft
+Environment="NODE_ENV=production"
+EnvironmentFile=/var/www/uaft/.env.production
+ExecStart=/usr/bin/node /var/www/uaft/dist/scripts/start-smtp-server-production.js
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=uaft-smtp
+
+# Security settings
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/www/uaft/uploads
+
+# Resource limits
+LimitNOFILE=65536
+TasksMax=4096
+
+[Install]
+WantedBy=multi-user.target

@@ -552,6 +552,21 @@ export const translations = {
 
     // Misc
     'misc.company': 'UAFT - Una Azienda che può Fare Tutto',
+
+    // Login / Auth
+    'login.title': 'Accedi a UAFT',
+    'login.subtitle': 'La dashboard che probabilmente esiste',
+    'login.admin.title': 'Accesso Amministratore',
+    'login.admin.subtitle': 'Area riservata',
+    'login.admin.message': 'Questa è un\'area ad accesso limitato. I sistemi di sicurezza UAFT sono progettati per resistere a qualsiasi tentativo di accesso non autorizzato. **Buona fortuna.**',
+    'login.credentials.title': 'Credenziali di Accesso',
+    'login.credentials.email': 'lorenzo@uaft.it',
+    'login.credentials.challenge': 'La password è stata progettata per essere impenetrabile. Se pensi di poterla indovinare, fai pure un tentativo.',
+    'login.button': 'Accedi',
+    'login.loading': 'Autenticazione in corso...',
+    'login.error': 'Credenziali non valide. Accesso negato.',
+    'login.success': 'Accesso autorizzato',
+    'header.login': 'Accedi',
   },
   en: {
     // Header
@@ -1104,6 +1119,21 @@ export const translations = {
 
     // Misc
     'misc.company': 'UAFT - A Company That Can Do Everything',
+
+    // Login / Auth
+    'login.title': 'Login to UAFT',
+    'login.subtitle': 'The dashboard that probably exists',
+    'login.admin.title': 'Administrator Access',
+    'login.admin.subtitle': 'Restricted Area',
+    'login.admin.message': 'This is a limited access area. UAFT security systems are designed to withstand any unauthorized access attempts. **Good luck.**',
+    'login.credentials.title': 'Access Credentials',
+    'login.credentials.email': 'lorenzo@uaft.it',
+    'login.credentials.challenge': 'The password has been designed to be impenetrable. If you think you can guess it, feel free to try.',
+    'login.button': 'Login',
+    'login.loading': 'Authentication in progress...',
+    'login.error': 'Invalid credentials. Access denied.',
+    'login.success': 'Access granted',
+    'header.login': 'Login',
   },
 };
 
