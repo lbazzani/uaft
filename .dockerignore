@@ -4,11 +4,19 @@ node_modules
 .gitignore
 README.md
 *.md
-.env
-.env.local
-.env.*.local
+# Tutti i file d'ambiente e le loro copie. Prima c'erano solo .env, .env.local
+# e .env.*.local: .env.production (con le credenziali vere) entrava nel
+# contesto di build sul server e Next lo copia nell'output standalone, quindi
+# era DENTRO l'immagine finale (/app/.env.production in uaft-app, visto
+# l'8/10/2026). Nel cluster le variabili arrivano dal Deployment: l'immagine,
+# che sta su Harbor, non deve contenerne nessuna.
+.env*
+*.bak*
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .DS_Store
 *.pem
+certs
+tsconfig.tsbuildinfo
+.claude
