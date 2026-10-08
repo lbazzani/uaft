@@ -21,17 +21,17 @@ Una landing page professionale (ma ironica) per un'azienda di servizi IT globale
 npm install
 ```
 
-### Configurazione API OpenAI
+### Configurazione dell'AI (claude-runner)
 
-1. Ottieni una API key da [OpenAI Platform](https://platform.openai.com/api-keys)
-2. Copia il file `.env.example` in `.env.local`:
+La chat (Sales Agent e AI Pricing Engine) usa il servizio claude-runner della
+piattaforma SparkTech, non più OpenAI (`lib/claude-runner.ts`).
+
+1. Copia il file `.env.example` in `.env.local`:
    ```bash
    cp .env.example .env.local
    ```
-3. Inserisci la tua chiave API in `.env.local`:
-   ```
-   OPENAI_API_KEY=sk-proj-your-actual-key-here
-   ```
+2. Inserisci `CLAUDE_RUNNER_URLS` e `CLAUDE_RUNNER_TOKEN` in `.env.local`.
+   Senza, la chat risponde con le frasi di riserva.
 
 ### Avvio in Development
 
