@@ -67,7 +67,11 @@ export async function POST(request: NextRequest) {
     const domain = await prisma.mailDomain.create({
       data: {
         domain: validatedData.domain,
+        mailSubdomain: dnsRecords.mailSubdomain,
+        serverIp: dnsRecords.serverIP,
+        aRecord: dnsRecords.aRecord || null,
         mxRecord: dnsRecords.mxRecord,
+        ptrRecord: dnsRecords.ptrRecord,
         spfRecord: dnsRecords.spfRecord,
         dkimPublicKey: dnsRecords.dkimPublicKey,
         dkimPrivateKey: dnsRecords.dkimPrivateKey,
@@ -83,7 +87,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(domain, { status: 201 });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return NextResponse.json({ error: 'Invalid data', details: error.errors }, { status: 400 });
+      return NextResponse.json({ error: 'Invalid data', details: error.issues }, { status: 400 });
     }
     console.error('Error creating domain:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });

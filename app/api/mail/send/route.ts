@@ -3,7 +3,18 @@ import { getSmtpClient } from '@/lib/mail/smtp-client';
 
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json();
+    // Parse JSON con gestione errori
+    let body;
+    try {
+      body = await req.json();
+    } catch (parseError) {
+      console.error('Failed to parse JSON:', parseError);
+      return NextResponse.json(
+        { error: 'Invalid JSON in request body' },
+        { status: 400 }
+      );
+    }
+
     const { from, to, cc, bcc, subject, text, html, userId } = body;
 
     // Validazione base

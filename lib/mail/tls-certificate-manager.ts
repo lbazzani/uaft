@@ -25,7 +25,9 @@ export class TLSCertificateManager {
   private certificatesDir: string;
 
   constructor() {
-    this.certificatesDir = process.env.CERTIFICATES_DIR || '/etc/ssl/mail-certs';
+    // Usa la directory certs/ nel progetto invece di /etc/ssl/mail-certs
+    const defaultCertsDir = path.join(process.cwd(), 'certs');
+    this.certificatesDir = process.env.CERTIFICATES_DIR || defaultCertsDir;
     this.ensureCertificatesDirectory();
   }
 
@@ -49,6 +51,7 @@ export class TLSCertificateManager {
       where: { isActive: true },
       select: {
         domain: true,
+        mailSubdomain: true,
         tlsKeyPath: true,
         tlsCertPath: true,
       },
@@ -56,7 +59,9 @@ export class TLSCertificateManager {
 
     for (const domain of domains) {
       if (domain.tlsKeyPath && domain.tlsCertPath) {
-        await this.loadCertificate(domain.domain, domain.tlsKeyPath, domain.tlsCertPath);
+        // Usa mailSubdomain se disponibile, altrimenti domain (per retrocompatibilità)
+        const certDomain = domain.mailSubdomain || domain.domain;
+        await this.loadCertificate(certDomain, domain.tlsKeyPath, domain.tlsCertPath);
       }
     }
 
@@ -72,18 +77,40 @@ export class TLSCertificateManager {
     certPath: string
   ): Promise<boolean> {
     try {
-      if (!fs.existsSync(keyPath)) {
-        console.warn(`⚠️  TLS key not found for ${domain}: ${keyPath}`);
-        return false;
+      const { execSync } = require('child_process');
+      const isLetsEncrypt = keyPath.includes('/etc/letsencrypt/');
+
+      // Verifica esistenza file
+      if (isLetsEncrypt) {
+        // Per Let's Encrypt usa sudo test
+        try {
+          execSync(`sudo test -f "${keyPath}"`, { stdio: 'ignore' });
+          execSync(`sudo test -f "${certPath}"`, { stdio: 'ignore' });
+        } catch {
+          console.warn(`⚠️  TLS files not found for ${domain}: ${keyPath}`);
+          return false;
+        }
+      } else {
+        // Per certificati locali usa fs.existsSync
+        if (!fs.existsSync(keyPath) || !fs.existsSync(certPath)) {
+          console.warn(`⚠️  TLS files not found for ${domain}: ${keyPath}`);
+          return false;
+        }
       }
 
-      if (!fs.existsSync(certPath)) {
-        console.warn(`⚠️  TLS cert not found for ${domain}: ${certPath}`);
-        return false;
-      }
+      // Leggi i file
+      let key: Buffer;
+      let cert: Buffer;
 
-      const key = fs.readFileSync(keyPath);
-      const cert = fs.readFileSync(certPath);
+      if (isLetsEncrypt) {
+        // Per Let's Encrypt usa sudo cat
+        key = execSync(`sudo cat "${keyPath}"`);
+        cert = execSync(`sudo cat "${certPath}"`);
+      } else {
+        // Per certificati locali usa fs.readFileSync
+        key = fs.readFileSync(keyPath);
+        cert = fs.readFileSync(certPath);
+      }
 
       // Verifica validità certificato
       const expiresAt = this.getCertificateExpiration(cert);
@@ -192,45 +219,149 @@ export class TLSCertificateManager {
 
   /**
    * Genera certificato self-signed per testing
+   * @param domain - Il dominio principale (es: uaft.it)
+   * @param mailSubdomain - Il sottodominio mail (es: mail.uaft.it) - opzionale, se non specificato usa domain
    */
-  async generateSelfSignedCertificate(domain: string): Promise<{
+  async generateSelfSignedCertificate(
+    domain: string,
+    mailSubdomain?: string
+  ): Promise<{
     keyPath: string;
     certPath: string;
   }> {
     const { execSync } = require('child_process');
 
-    const keyPath = path.join(this.certificatesDir, `${domain}.key`);
-    const certPath = path.join(this.certificatesDir, `${domain}.crt`);
+    // Usa mailSubdomain se fornito, altrimenti domain
+    const certDomain = mailSubdomain || domain;
+    const keyPath = path.join(this.certificatesDir, `${certDomain}.key`);
+    const certPath = path.join(this.certificatesDir, `${certDomain}.crt`);
 
-    console.log(`🔧 Generating self-signed certificate for: ${domain}`);
+    console.log(`🔧 Generating self-signed certificate for: ${certDomain}`);
 
     // Genera certificato self-signed
     execSync(
       `openssl req -x509 -nodes -days 365 -newkey rsa:2048 ` +
       `-keyout "${keyPath}" ` +
       `-out "${certPath}" ` +
-      `-subj "/C=IT/ST=Italy/L=Rome/O=UAFT/CN=${domain}"`
+      `-subj "/C=IT/ST=Italy/L=Rome/O=UAFT Mail Server/CN=${certDomain}"`
     );
 
     // Imposta permessi
     fs.chmodSync(keyPath, 0o600);
     fs.chmodSync(certPath, 0o644);
 
-    console.log(`✅ Self-signed certificate generated for: ${domain}`);
+    console.log(`✅ Self-signed certificate generated for: ${certDomain}`);
 
-    // Carica il certificato
-    await this.loadCertificate(domain, keyPath, certPath);
+    // Carica il certificato usando il certDomain
+    await this.loadCertificate(certDomain, keyPath, certPath);
 
-    // Aggiorna database
+    // Aggiorna database (usa il domain principale come chiave)
     await prisma.mailDomain.update({
       where: { domain },
       data: {
         tlsKeyPath: keyPath,
         tlsCertPath: certPath,
+        tlsCertStatus: 'valid',
+        tlsCertExpiry: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000), // 1 anno
       },
     });
 
     return { keyPath, certPath };
+  }
+
+  /**
+   * Genera certificato Let's Encrypt per produzione
+   * @param domain - Il dominio principale (es: uaft.it)
+   * @param email - Email per Let's Encrypt
+   * @param autoRenew - Abilita auto-rinnovo
+   */
+  async generateLetsEncryptCertificate(
+    domain: string,
+    email: string,
+    autoRenew: boolean = true
+  ): Promise<{
+    keyPath: string;
+    certPath: string;
+  }> {
+    const { execSync } = require('child_process');
+
+    // Recupera il mailSubdomain dal database
+    const domainInfo = await prisma.mailDomain.findUnique({
+      where: { domain },
+      select: { mailSubdomain: true },
+    });
+
+    if (!domainInfo) {
+      throw new Error(`Domain ${domain} not found in database`);
+    }
+
+    const certDomain = domainInfo.mailSubdomain || domain;
+
+    console.log(`🔐 Generating Let's Encrypt certificate for: ${certDomain}`);
+    console.log(`📧 Using email: ${email}`);
+
+    try {
+      // Usa certbot per generare il certificato
+      // IMPORTANTE: Questo richiede che certDomain punti all'IP del server
+      // e che nginx sia configurato con un server block per il dominio
+      const certbotCommand =
+        `sudo certbot certonly --nginx ` +
+        `--non-interactive --agree-tos ` +
+        `--email ${email} ` +
+        `-d ${certDomain}`;
+
+      console.log(`Running: ${certbotCommand}`);
+      execSync(certbotCommand, { stdio: 'inherit' });
+
+      // I certificati Let's Encrypt vengono salvati in /etc/letsencrypt/live/{domain}/
+      const letsencryptDir = `/etc/letsencrypt/live/${certDomain}`;
+      const keyPath = path.join(letsencryptDir, 'privkey.pem');
+      const certPath = path.join(letsencryptDir, 'fullchain.pem');
+
+      // Verifica che i file esistano usando sudo (i file sono in directory root-only)
+      try {
+        execSync(`sudo test -f "${keyPath}"`, { stdio: 'ignore' });
+        execSync(`sudo test -f "${certPath}"`, { stdio: 'ignore' });
+      } catch {
+        throw new Error('Certificate files not found after certbot execution');
+      }
+
+      console.log(`✅ Let's Encrypt certificate generated for: ${certDomain}`);
+
+      // Carica il certificato
+      await this.loadCertificate(certDomain, keyPath, certPath);
+
+      // Calcola data di scadenza (Let's Encrypt: 90 giorni)
+      const expiryDate = new Date(Date.now() + 90 * 24 * 60 * 60 * 1000);
+
+      // Aggiorna database
+      await prisma.mailDomain.update({
+        where: { domain },
+        data: {
+          tlsKeyPath: keyPath,
+          tlsCertPath: certPath,
+          tlsAutoRenew: autoRenew,
+          tlsCertStatus: 'valid',
+          tlsCertExpiry: expiryDate,
+          tlsCertEmail: email,
+        },
+      });
+
+      return { keyPath, certPath };
+    } catch (error) {
+      console.error(`❌ Failed to generate Let's Encrypt certificate:`, error);
+
+      // Aggiorna stato nel database
+      await prisma.mailDomain.update({
+        where: { domain },
+        data: {
+          tlsCertStatus: 'failed',
+          tlsCertEmail: email,
+        },
+      });
+
+      throw error;
+    }
   }
 
   /**

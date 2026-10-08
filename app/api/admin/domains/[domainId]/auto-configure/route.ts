@@ -9,7 +9,7 @@ import { createGoDaddyClient } from '@/lib/dns/godaddy-client';
  */
 export async function POST(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ domainId: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -18,7 +18,7 @@ export async function POST(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { id } = await params;
+    const { domainId: id } = await params;
 
     // Ottieni il dominio dal database
     const domain = await prisma.mailDomain.findUnique({

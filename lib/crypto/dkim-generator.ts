@@ -88,18 +88,14 @@ export async function generateDNSRecords(domain: string, selector: string = 'def
   // In produzione: mail.dominio.com punta all'IP del server
   // In sviluppo: localhost
   const mxHostname = serverIP === 'localhost' ? 'localhost' : `mail.${domain}`;
+  const mailSubdomain = serverIP === 'localhost' ? null : `mail.${domain}`;
+
+  // Genera il reverse DNS (PTR) per l'IP
+  // Nota: Il PTR deve essere configurato dal provider hosting/ISP
+  // Generiamo il valore consigliato
+  const reverseDnsValue = mxHostname;
 
   return {
-    // Record MX
-    mxRecord: `10 ${mxHostname}`,
-    mxRecordDetails: {
-      type: 'MX',
-      name: '@',
-      priority: 10,
-      value: mxHostname,
-      ttl: 3600,
-    },
-
     // Record A per mail.dominio.com (se non localhost)
     ...(serverIP !== 'localhost' && {
       aRecord: serverIP,
@@ -110,6 +106,26 @@ export async function generateDNSRecords(domain: string, selector: string = 'def
         ttl: 3600,
       },
     }),
+
+    // Record MX
+    mxRecord: `10 ${mxHostname}`,
+    mxRecordDetails: {
+      type: 'MX',
+      name: '@',
+      priority: 10,
+      value: mxHostname,
+      ttl: 3600,
+    },
+
+    // Record PTR (Reverse DNS)
+    // IMPORTANTE: Questo deve essere configurato dal provider hosting/ISP
+    ptrRecord: reverseDnsValue,
+    ptrRecordDetails: {
+      type: 'PTR',
+      ip: serverIP,
+      value: reverseDnsValue,
+      note: 'Deve essere configurato dal provider hosting/ISP, non nel pannello DNS del dominio',
+    },
 
     // Record SPF
     spfRecord: `v=spf1 mx ip4:${serverIP} ~all`,
@@ -143,5 +159,6 @@ export async function generateDNSRecords(domain: string, selector: string = 'def
     // Informazioni server
     serverIP,
     mxHostname,
+    mailSubdomain,
   };
 }

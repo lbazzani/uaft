@@ -21,21 +21,25 @@ export class UaftSmtpClient {
   private transporter: Transporter;
 
   constructor() {
-    // Configurazione SMTP per invio
-    // In produzione, configura con il tuo SMTP server reale
+    console.log('🔧 Initializing UaftSmtpClient...');
+
+    // Usa sempre il server SMTP locale per l'invio
+    // Il server locale gestirà il relay verso destinatari esterni
+    const smtpHost = process.env.SMTP_HOST || 'localhost';
+    const smtpPort = parseInt(process.env.SMTP_PORT || '587');
+
+    console.log(`📬 Using SMTP server: ${smtpHost}:${smtpPort}`);
+
     this.transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST || 'localhost',
-      port: parseInt(process.env.SMTP_PORT || '587'),
-      secure: process.env.SMTP_SECURE === 'true', // true for 465, false for other ports
-      auth: process.env.SMTP_USER
-        ? {
-            user: process.env.SMTP_USER,
-            pass: process.env.SMTP_PASS,
-          }
-        : undefined,
-      // Per sviluppo locale senza auth
-      ignoreTLS: process.env.NODE_ENV === 'development',
-      requireTLS: process.env.NODE_ENV === 'production',
+      host: smtpHost,
+      port: smtpPort,
+      secure: false, // STARTTLS su porta 587
+      auth: undefined, // Nessuna autenticazione per localhost
+      requireTLS: true,
+      ignoreTLS: false,
+      tls: {
+        rejectUnauthorized: false, // Accetta certificati self-signed
+      },
     });
   }
 
@@ -163,6 +167,16 @@ export class UaftSmtpClient {
           : [options.bcc]
         : [];
 
+      // Check if message already exists (duplicate prevention)
+      const existing = await prisma.mailMessage.findUnique({
+        where: { messageId },
+      });
+
+      if (existing) {
+        console.log('⚠️  Message already saved in database, skipping:', messageId);
+        return;
+      }
+
       await prisma.mailMessage.create({
         data: {
           messageId,
@@ -184,6 +198,7 @@ export class UaftSmtpClient {
       });
     } catch (dbError) {
       console.error('Failed to save email to database:', dbError);
+      // Non propagare l'errore - l'email è comunque stata inviata
     }
   }
 

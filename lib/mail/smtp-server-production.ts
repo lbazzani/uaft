@@ -64,8 +64,8 @@ export class UaftSmtpServerProduction {
     }
 
     this.server = new SMTPServer({
-      // Autenticazione OBBLIGATORIA in produzione
-      authOptional: false,
+      // Autenticazione opzionale per localhost, obbligatoria per connessioni esterne
+      authOptional: true,
       onAuth: this.handleAuthentication.bind(this),
 
       // TLS/SSL Configuration with SNI support
@@ -177,8 +177,11 @@ export class UaftSmtpServerProduction {
 
     console.log('📡 New connection from:', clientIP);
 
-    // Rate limiting per IP
-    if (!this.checkRateLimit(clientIP)) {
+    // Escludi localhost dal rate limiting
+    const isLocalhost = clientIP === '127.0.0.1' || clientIP === '::1' || clientIP === '::ffff:127.0.0.1';
+
+    // Rate limiting per IP (solo per connessioni esterne)
+    if (!isLocalhost && !this.checkRateLimit(clientIP)) {
       console.log('🚫 Rate limit exceeded for IP:', clientIP);
       callback(new Error('Rate limit exceeded. Try again later.'));
       return;
@@ -263,15 +266,38 @@ export class UaftSmtpServerProduction {
       // Estrai dati email
       const emailData = this.extractEmailData(parsed, session);
 
-      // Salva nel database
-      await this.saveToDatabase(emailData, userId);
+      // Determina se i destinatari sono locali o esterni
+      const localDomains = await this.getLocalDomains();
+      const externalRecipients: string[] = [];
+      const localRecipients: string[] = [];
 
-      console.log('✅ Email saved successfully:', emailData.messageId);
+      for (const recipient of emailData.to) {
+        const domain = recipient.split('@')[1];
+        if (localDomains.includes(domain)) {
+          localRecipients.push(recipient);
+        } else {
+          externalRecipients.push(recipient);
+        }
+      }
 
-      // Log nel database
-      await this.logEmail('incoming', emailData, 'success');
+      // Salva nel database solo se ci sono destinatari locali
+      if (localRecipients.length > 0) {
+        await this.saveToDatabase(emailData, userId);
+        console.log('✅ Email saved successfully:', emailData.messageId);
+        await this.logEmail('incoming', emailData, 'success');
+      }
 
+      // Callback immediato per non bloccare il client
       callback(); // Success
+
+      // Relay verso destinatari esterni (asincrono, dopo il callback)
+      if (externalRecipients.length > 0) {
+        console.log('📨 Relaying to external recipients:', externalRecipients);
+        // Non await qui - lascia che il relay avvenga in background
+        this.relayToExternal(emailData, externalRecipients).catch((err) => {
+          console.error('❌ Background relay failed:', err);
+        });
+      }
     } catch (error) {
       console.error('❌ Error processing email:', error);
 
@@ -279,6 +305,57 @@ export class UaftSmtpServerProduction {
       await this.logEmail('incoming', null, 'failed', error as Error);
 
       callback(error as Error);
+    }
+  }
+
+  /**
+   * Ottieni la lista dei domini locali gestiti dal server
+   */
+  private async getLocalDomains(): Promise<string[]> {
+    const domains = await prisma.mailDomain.findMany({
+      where: { isActive: true },
+      select: { domain: true },
+    });
+    return domains.map(d => d.domain);
+  }
+
+  /**
+   * Relay email verso destinatari esterni usando direct MX
+   */
+  private async relayToExternal(emailData: EmailData, recipients: string[]): Promise<void> {
+    try {
+      const nodemailer = require('nodemailer');
+
+      // Crea transporter per direct MX relay
+      const transporter = nodemailer.createTransport({
+        name: 'uaft.it',
+        direct: true,
+        tls: {
+          rejectUnauthorized: false,
+        },
+      });
+
+      // Invia email
+      const info = await transporter.sendMail({
+        from: emailData.from,
+        to: recipients,
+        subject: emailData.subject,
+        text: emailData.text,
+        html: emailData.html,
+        messageId: emailData.messageId,
+        headers: emailData.headers,
+      });
+
+      console.log('✅ Email relayed to external recipients:', info.messageId);
+      console.log('   Accepted:', info.accepted);
+      console.log('   Rejected:', info.rejected);
+
+      // Log successo
+      await this.logEmail('outgoing', emailData, 'success');
+    } catch (error) {
+      console.error('❌ Failed to relay email:', error);
+      await this.logEmail('outgoing', emailData, 'failed', error as Error);
+      throw error;
     }
   }
 

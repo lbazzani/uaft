@@ -178,7 +178,7 @@ export default function LoginPage() {
         <Box sx={{ textAlign: 'center' }}>
           <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
             <MuiLink component={Link} href="/" sx={{ fontWeight: 600 }}>
-              {t('header.home')}
+              Torna alla Home
             </MuiLink>
           </Typography>
         </Box>

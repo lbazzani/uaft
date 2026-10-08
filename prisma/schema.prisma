@@ -77,18 +77,27 @@ model VerificationToken {
 // Domini configurabili per il mail server
 model MailDomain {
   id              String   @id @default(cuid())
-  domain          String   @unique
-  mxRecord        String?
+  domain          String   @unique // es: uaft.it
+  mailSubdomain   String?  // es: mail.uaft.it (per separare web e mail)
+
+  // DNS Records
+  serverIp        String?  // IP pubblico del server
+  aRecord         String?  // Record A per mail.domain.com
+  mxRecord        String?  // Record MX
+  ptrRecord       String?  // Reverse DNS (PTR)
   spfRecord       String?
   dkimPublicKey   String?  @db.Text
   dkimPrivateKey  String?  @db.Text
   dkimSelector    String?  @default("default")
   dmarcRecord     String?
 
-  // TLS/SSL Certificates
+  // TLS/SSL Certificates (solo per mail, separati dal web)
   tlsKeyPath      String?  // Path to TLS private key
   tlsCertPath     String?  // Path to TLS certificate
   tlsAutoRenew    Boolean  @default(false) // Auto-renew with Let's Encrypt
+  tlsCertStatus   String?  @default("missing") // missing, valid, expiring, expired
+  tlsCertExpiry   DateTime? // Certificate expiration date
+  tlsCertEmail    String?  // Email used for Let's Encrypt
 
   isActive        Boolean  @default(true)
   createdAt       DateTime @default(now())

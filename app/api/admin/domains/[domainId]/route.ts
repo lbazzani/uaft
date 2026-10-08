@@ -15,7 +15,7 @@ const updateDomainSchema = z.object({
 // GET - Ottieni un singolo dominio
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ domainId: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -24,7 +24,7 @@ export async function GET(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { id } = await params;
+    const { domainId: id } = await params;
 
     const domain = await prisma.mailDomain.findUnique({
       where: { id },
@@ -57,7 +57,7 @@ export async function GET(
 // PATCH - Aggiorna un dominio
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ domainId: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -66,7 +66,7 @@ export async function PATCH(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { id } = await params;
+    const { domainId: id } = await params;
     const body = await request.json();
     const validatedData = updateDomainSchema.parse(body);
 
@@ -91,7 +91,7 @@ export async function PATCH(
 // DELETE - Elimina un dominio
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ domainId: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -100,7 +100,7 @@ export async function DELETE(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { id } = await params;
+    const { domainId: id } = await params;
 
     // Verifica che il dominio esista
     const domain = await prisma.mailDomain.findUnique({
