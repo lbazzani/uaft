@@ -13,7 +13,7 @@
 - ✅ Open Graph e Twitter Card con l'immagine di `app/opengraph-image.tsx`
 - ✅ Canonical e og:url relativi (`./`): ogni pagina punta a sé stessa
 - ✅ Niente hreflang: italiano e inglese stanno sullo stesso URL
-- ✅ /login e /register noindex (con la posta spenta sono 404); il 404 è noindex
+- ✅ Il 404 è noindex (/login e /register non esistono più)
 - ✅ www.uaft.it → uaft.it con redirect 308, `/api/` escluso (`next.config.ts`)
 - ✅ robots.txt configurato
 - ✅ Sitemap.xml dinamico, senza lastModified

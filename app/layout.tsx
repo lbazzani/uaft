@@ -8,7 +8,6 @@ import CookieBanner from '@/components/shared/CookieBanner';
 import SalesAgent from '@/components/shared/SalesAgent';
 import GoogleAnalytics from './GoogleAnalytics';
 import { LanguageProvider } from '@/contexts/LanguageContext';
-import { AuthProvider } from '@/components/Providers';
 import './globals.css';
 
 // Tre voci: Archivo largo per i titoloni "da grande azienda", Inter per leggere, Instrument Serif
@@ -83,18 +82,16 @@ export default function RootLayout({
       </head>
       <body style={{ margin: 0 }}>
         <GoogleAnalytics />
-        <AuthProvider>
-          <AppRouterCacheProvider>
-            <ThemeProvider theme={theme}>
-              <LanguageProvider>
-                <CssBaseline />
-                {children}
-                <CookieBanner />
-                <SalesAgent />
-              </LanguageProvider>
-            </ThemeProvider>
-          </AppRouterCacheProvider>
-        </AuthProvider>
+        <AppRouterCacheProvider>
+          <ThemeProvider theme={theme}>
+            <LanguageProvider>
+              <CssBaseline />
+              {children}
+              <CookieBanner />
+              <SalesAgent />
+            </LanguageProvider>
+          </ThemeProvider>
+        </AppRouterCacheProvider>
       </body>
     </html>
   );

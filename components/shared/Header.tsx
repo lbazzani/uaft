@@ -18,7 +18,6 @@ import Link from 'next/link';
 import Logo from './Logo';
 import ContactDialog from '../dialogs/ContactDialog';
 import PaymentDialog from '../dialogs/PaymentDialog';
-import LoginDialog from '../dialogs/LoginDialog';
 import LanguageSwitcher from './LanguageSwitcher';
 import { useLanguage } from '@/contexts/LanguageContext';
 
@@ -27,7 +26,6 @@ export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [contactDialogOpen, setContactDialogOpen] = useState(false);
   const [paymentDialogOpen, setPaymentDialogOpen] = useState(false);
-  const [loginDialogOpen, setLoginDialogOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
@@ -64,13 +62,10 @@ export default function Header() {
         open={paymentDialogOpen}
         onClose={() => setPaymentDialogOpen(false)}
       />
-      <LoginDialog
-        open={loginDialogOpen}
-        onClose={() => setLoginDialogOpen(false)}
-      />
-      {/* barra navy alla Blumea: logo a sinistra, nav corta, lingua, accesso. Desktop e telefono si
-          scambiano col CSS (da md in su), non con useMediaQuery: l'HTML arriva dal server, che lo
-          schermo non lo conosce, e il telefono vedrebbe la barra desktop fino all'idratazione */}
+      {/* barra navy alla Blumea: logo a sinistra, nav corta e lingua a destra (niente «Accedi»: l'area
+          riservata non c'è più). Desktop e telefono si scambiano col CSS (da md in su), non con
+          useMediaQuery: l'HTML arriva dal server, che lo schermo non lo conosce, e il telefono vedrebbe
+          la barra desktop fino all'idratazione */}
       <AppBar
         position="fixed"
         elevation={0}
@@ -132,23 +127,6 @@ export default function Header() {
             <Box sx={{ ml: 1 }}>
               <LanguageSwitcher />
             </Box>
-            <Button
-              variant="contained"
-              onClick={() => setLoginDialogOpen(true)}
-              endIcon={<ArrowForward />}
-              sx={{
-                ml: 1.5,
-                px: 2.75,
-                py: 1,
-                backgroundColor: 'var(--corallo)',
-                color: 'var(--inchiostro)',
-                fontWeight: 700,
-                fontSize: '0.95rem',
-                '&:hover': { backgroundColor: 'var(--chiaro)' },
-              }}
-            >
-              {t('header.login')}
-            </Button>
           </Box>
 
           <IconButton
@@ -222,27 +200,6 @@ export default function Header() {
           ))}
           <ListItem disablePadding sx={{ mt: 3, mb: 2, justifyContent: 'center' }}>
             <LanguageSwitcher />
-          </ListItem>
-          <ListItem disablePadding sx={{ mt: 1 }}>
-            <Button
-              fullWidth
-              variant="contained"
-              onClick={() => {
-                handleDrawerToggle();
-                setLoginDialogOpen(true);
-              }}
-              endIcon={<ArrowForward />}
-              sx={{
-                backgroundColor: 'var(--corallo)',
-                color: 'var(--inchiostro)',
-                py: 1.5,
-                fontSize: '1.05rem',
-                fontWeight: 700,
-                '&:hover': { backgroundColor: 'var(--chiaro)' },
-              }}
-            >
-              {t('header.login')}
-            </Button>
           </ListItem>
         </List>
         <Box sx={{ mt: 'auto', p: 3, borderTop: '1px solid var(--chiaro-filo)' }}>

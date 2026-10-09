@@ -3,14 +3,13 @@
 ###############################################################################
 # UAFT Deployment Script
 #
-# This script deploys the UAFT application and mail server to production
+# This script deploys the UAFT application to production
 #
 # Usage:
 #   sudo ./deploy/deploy.sh
 #
 # Prerequisites:
 #   - Node.js 18+ installed
-#   - PostgreSQL database configured
 #   - TLS certificates in place
 #   - DNS records configured
 ###############################################################################
@@ -29,16 +28,11 @@ APP_GROUP="www-data"
 # Colors
 RED='\033[0;31m'
 GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
 # Helper functions
 print_step() {
     echo -e "${GREEN}[STEP]${NC} $1"
-}
-
-print_warn() {
-    echo -e "${YELLOW}[WARN]${NC} $1"
 }
 
 print_error() {
@@ -104,32 +98,20 @@ chmod 700 $APP_DIR/.env.production || true
 chmod 755 $APP_DIR/uploads
 chmod 755 /var/log/uaft
 
-# 7. Copy systemd services
-print_step "Installing systemd services..."
+# 7. Copy systemd service
+print_step "Installing systemd service..."
 
 cp $APP_DIR/deploy/systemd/uaft-web.service /etc/systemd/system/
-cp $APP_DIR/deploy/systemd/uaft-smtp.service /etc/systemd/system/
 
 systemctl daemon-reload
 
-# 8. Run verification
-print_step "Verifying mail server configuration..."
-
-cd $APP_DIR
-sudo -u $APP_USER npm run mail:verify || {
-    print_warn "Mail server verification had warnings."
-}
-
-# 9. Enable and start services
-print_step "Enabling and starting services..."
+# 8. Enable and start service
+print_step "Enabling and starting service..."
 
 systemctl enable uaft-web
-systemctl enable uaft-smtp
-
 systemctl restart uaft-web
-systemctl restart uaft-smtp
 
-# 10. Check service status
+# 9. Check service status
 sleep 3
 
 echo ""
@@ -140,13 +122,9 @@ echo "Service Status:"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
 systemctl status uaft-web --no-pager -l | head -10
-echo ""
-systemctl status uaft-smtp --no-pager -l | head -10
 
 echo ""
 echo "📚 Useful Commands:"
 echo "  - View web logs:    sudo journalctl -u uaft-web -f"
-echo "  - View SMTP logs:   sudo journalctl -u uaft-smtp -f"
 echo "  - Restart web:      sudo systemctl restart uaft-web"
-echo "  - Restart SMTP:     sudo systemctl restart uaft-smtp"
 echo ""

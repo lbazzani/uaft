@@ -1,7 +1,6 @@
 [Unit]
 Description=UAFT Web Application (Next.js)
-After=network.target postgresql.service
-Wants=postgresql.service
+After=network.target
 
 [Service]
 Type=simple

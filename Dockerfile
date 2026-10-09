@@ -12,11 +12,8 @@
 #   l'8/9/2026 con QuickSmart). Con alpine servirebbero in più le varianti musl
 #   (@next/swc-linux-x64-musl, sharp, lightningcss), che un lock fatto su glibc
 #   non garantisce. Stessa base di sparktech-web nella piattaforma.
-# - openssl installato PRIMA di `prisma generate`: senza, Prisma sbaglia il
-#   rilevamento e genera il query engine per openssl 1.1, mentre a runtime c'è
-#   la 3.0; l'app parte ma ogni query fallisce. Oggi uaft nel cluster gira
-#   senza database (login e webmail falliscono pagina per pagina), ma il giorno
-#   che il database tornerà le query devono funzionare.
+# - niente Prisma e niente openssl (serviva solo a `prisma generate`) dal
+#   9/10/2026: posta, login, pannello admin e database sono usciti dal codice.
 # - `npm ci` completo nel primo stadio (prima era `--only=production`): la
 #   build ha bisogno di typescript e dei @types, che sono devDependencies.
 #   L'immagine finale non ne risente: copia solo l'output `standalone`.
@@ -27,7 +24,7 @@
 # Stadio 1: dipendenze
 FROM node:24-bookworm-slim AS deps
 WORKDIR /app
-RUN apt-get update && apt-get install -y --no-install-recommends openssl ca-certificates \
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates \
  && rm -rf /var/lib/apt/lists/*
 COPY package.json package-lock.json ./
 RUN npm ci --no-audit --no-fund
@@ -35,7 +32,7 @@ RUN npm ci --no-audit --no-fund
 # Stadio 2: build
 FROM node:24-bookworm-slim AS builder
 WORKDIR /app
-RUN apt-get update && apt-get install -y --no-install-recommends openssl ca-certificates \
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates \
  && rm -rf /var/lib/apt/lists/*
 COPY --from=deps /app/node_modules ./node_modules
 # Il contesto arriva filtrato da .dockerignore: niente .env*, certificati,
@@ -45,19 +42,14 @@ COPY . .
 
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
-# DATABASE_URL fittizio: prisma.config.ts fa env("DATABASE_URL") e senza la
-# variabile `prisma generate` si ferma. Non si collega a niente; a runtime vale
-# quella del Deployment (o nessuna: l'app parte lo stesso).
-ENV DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy"
 
-RUN npx prisma generate
 RUN npm run build
 
 # Stadio 3: immagine finale
 FROM node:24-bookworm-slim AS runner
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y --no-install-recommends openssl ca-certificates \
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates \
  && rm -rf /var/lib/apt/lists/*
 
 ENV NODE_ENV=production
@@ -73,12 +65,10 @@ RUN groupadd -g 10001 app && useradd -u 10001 -g app -M -s /usr/sbin/nologin app
 COPY --from=builder --chown=10001:10001 /app/public ./public
 COPY --from=builder --chown=10001:10001 /app/.next/standalone ./
 COPY --from=builder --chown=10001:10001 /app/.next/static ./.next/static
-COPY --from=builder --chown=10001:10001 /app/node_modules/.prisma ./node_modules/.prisma
-COPY --from=builder --chown=10001:10001 /app/prisma ./prisma
 
 USER 10001:10001
 
 EXPOSE 3000
 
-# Sonda leggera, senza database né AI: app/api/healthz/route.ts
+# Sonda leggera, senza AI: app/api/healthz/route.ts
 CMD ["node", "server.js"]

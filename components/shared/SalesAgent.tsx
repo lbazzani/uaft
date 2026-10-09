@@ -1,7 +1,5 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
-import { useSession } from 'next-auth/react';
-import { usePathname } from 'next/navigation';
 import {
   Box,
   Paper,
@@ -31,8 +29,6 @@ interface Message {
 
 export default function SalesAgent() {
   const { t, language } = useLanguage();
-  const { data: session } = useSession();
-  const pathname = usePathname();
 
   const REOPEN_MESSAGES = [
     t('chat.reopen1'),
@@ -286,11 +282,6 @@ export default function SalesAgent() {
     }, randomDelay);
   };
 
-  // Non mostrare l'assistant se l'utente è loggato o se è in una pagina /mail o /admin
-  if (session || pathname?.startsWith('/mail') || pathname?.startsWith('/admin')) {
-    return null;
-  }
-
   if (!isOpen) return null;
 
   return (
@@ -299,7 +290,7 @@ export default function SalesAgent() {
         <Box
           sx={{
             position: 'fixed',
-            // sotto la testata (64px su mobile, 72px da 900px): non copre più accesso e menu
+            // sotto la testata (64px su mobile, 72px da 900px): non copre più lingua e menu
             top: { xs: 72, md: 84 },
             right: 20,
             zIndex: 9998,

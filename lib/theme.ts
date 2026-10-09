@@ -2,7 +2,6 @@
 import { createTheme } from '@mui/material/styles';
 
 // Identità UAFT "l'asterisco": corallo come unico accento, navy per le pagine scure, carta per le chiare.
-// Le chiavi della palette restano tutte: admin e mail condividono il tema.
 const corallo = '#FF6B35';
 const coralloScuro = '#C2410C';
 const navy = '#0B1F33';
