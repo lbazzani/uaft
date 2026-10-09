@@ -17,6 +17,7 @@ import {
 } from '@mui/material';
 import { Close, Cookie } from '@mui/icons-material';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { CHIAVE_CONSENSO, EVENTO_CONSENSO } from '@/lib/consenso';
 import { TransitionProps } from '@mui/material/transitions';
 import { forwardRef } from 'react';
 
@@ -47,7 +48,7 @@ export default function CookieBanner() {
 
   useEffect(() => {
     // Check if user has already made a choice
-    const cookieConsent = localStorage.getItem('cookieConsent');
+    const cookieConsent = localStorage.getItem(CHIAVE_CONSENSO);
     if (!cookieConsent) {
       // Show banner after a short delay
       setTimeout(() => setShowBanner(true), 1000);
@@ -69,7 +70,7 @@ export default function CookieBanner() {
         setPreferences(newPreferences);
         applyPreferences(newPreferences);
         // Save in new format
-        localStorage.setItem('cookieConsent', JSON.stringify(newPreferences));
+        localStorage.setItem(CHIAVE_CONSENSO, JSON.stringify(newPreferences));
       }
     }
   }, []);
@@ -77,7 +78,7 @@ export default function CookieBanner() {
   const applyPreferences = (prefs: CookiePreferences) => {
     // Apply Google Analytics based on preferences
     if (prefs.analytics) {
-      // Analytics already loaded in GoogleAnalytics component
+      // lo carica app/GoogleAnalytics.tsx, che sente EVENTO_CONSENSO (vedi savePreferences)
       console.log('Analytics enabled');
     } else {
       // Disable analytics if possible
@@ -118,7 +119,9 @@ export default function CookieBanner() {
   };
 
   const savePreferences = (prefs: CookiePreferences) => {
-    localStorage.setItem('cookieConsent', JSON.stringify(prefs));
+    localStorage.setItem(CHIAVE_CONSENSO, JSON.stringify(prefs));
+    // GoogleAnalytics parte adesso, se gli analitici sono stati accettati: senza ricaricare la pagina
+    window.dispatchEvent(new Event(EVENTO_CONSENSO));
     applyPreferences(prefs);
     setShowBanner(false);
   };

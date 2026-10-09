@@ -4,58 +4,37 @@
 
 ### 1. Google Analytics
 - ✅ Google Analytics installato (ID: G-Q5DPM3JLG6)
-- ✅ Script caricato in modo ottimizzato con Next.js Script component
-- ✅ Strategia "afterInteractive" per performance ottimali
+- ✅ Parte solo dopo il consenso agli analitici nel banner dei cookie (`app/GoogleAnalytics.tsx`, `lib/consenso.ts`): prima di una scelta non si scarica nemmeno lo script
 
 ### 2. Meta Tags e SEO Base
-- ✅ Title dinamici con template
-- ✅ Description ottimizzata
-- ✅ Keywords rilevanti
-- ✅ Open Graph tags per social media
-- ✅ Twitter Cards
-- ✅ Canonical URLs
+- ✅ L'HTML arriva intero dal server, in italiano: l'inglese c'è solo se scelto col selettore (resta in localStorage), mai dalla lingua del browser
+- ✅ Title con template (`%s | UAFT`); /privacy e /terms hanno title e description propri
+- ✅ Description nella voce del sito, entro 155 caratteri
+- ✅ Open Graph e Twitter Card con l'immagine di `app/opengraph-image.tsx`
+- ✅ Canonical e og:url relativi (`./`): ogni pagina punta a sé stessa
+- ✅ Niente hreflang: italiano e inglese stanno sullo stesso URL
+- ✅ /login e /register noindex (con la posta spenta sono 404); il 404 è noindex
+- ✅ www.uaft.it → uaft.it con redirect 308, `/api/` escluso (`next.config.ts`)
 - ✅ robots.txt configurato
-- ✅ Sitemap.xml dinamico
+- ✅ Sitemap.xml dinamico, senza lastModified
 
 ### 3. Structured Data (JSON-LD)
-- ✅ Schema Organization
-- ✅ Schema WebSite
-- ✅ Offers markup
-- ✅ ContactPoint
+- ✅ Organization: UAFT, nome per esteso, logo PNG (`app/apple-icon.tsx`), founder Lorenzo Bazzani
+- ✅ WebSite, inLanguage it-IT
+- Nell'HTML del server (`app/(landing)/page.tsx`). Niente Offers, sameAs o SearchAction: sarebbero dati inventati
 
 ### 4. PWA Ready
-- ✅ manifest.json configurato
+- ✅ manifest configurato (`app/manifest.ts`)
 - ✅ Theme color impostato
-- ✅ Icons placeholder pronti
+- ✅ Icona SVG (`app/icon.svg`) e apple-touch-icon PNG (`app/apple-icon.tsx`)
 
 ---
 
 ## 📋 Azioni da completare manualmente
 
-### 1. Immagini da creare
+### 1. Immagini
 
-Crea le seguenti immagini nella cartella `/public`:
-
-#### Open Graph Image
-- **Nome file**: `og-image.png`
-- **Dimensioni**: 1200 x 630 px
-- **Contenuto suggerito**:
-  - Logo UAFT
-  - Testo: "UAFT - Una Azienda che può Fare Tutto"
-  - Sottotitolo: "Servizi IT Innovativi"
-  - Colori: #F97316 (arancione) e bianco
-
-#### Favicon e Icons
-- **favicon.ico**: 32x32 px o 16x16 px
-- **apple-touch-icon.png**: 180x180 px
-- **icon-192.png**: 192x192 px (per manifest)
-- **icon-512.png**: 512x512 px (per manifest)
-- **logo.png**: Logo aziendale ad alta risoluzione
-
-**Strumenti consigliati**:
-- [Favicon Generator](https://realfavicongenerator.net/)
-- [Canva](https://www.canva.com/) per OG image
-- [DALL-E](https://openai.com/dall-e-3) per generare grafiche AI
+Niente file da creare in `/public`: immagine OG (1200×630) e logo/apple-touch-icon (180×180) li genera il codice (`app/opengraph-image.tsx`, `app/apple-icon.tsx`). Se servono PNG 192/512 per il manifest, si fanno allo stesso modo.
 
 ### 2. Google Search Console
 
@@ -69,7 +48,7 @@ Crea le seguenti immagini nella cartella `/public`:
 
 ### 3. Google Verification Code
 
-Nel file `app/layout.tsx`, sostituisci:
+Nel `metadata` di `app/layout.tsx`, aggiungi:
 
 ```typescript
 verification: {
@@ -81,14 +60,7 @@ Con il tuo codice di verifica Google Search Console.
 
 ### 4. Social Media Links
 
-Aggiorna i link social in `app/page.tsx` (linee 25-28):
-
-```typescript
-sameAs: [
-  'https://twitter.com/uaft_it',  // Sostituisci con il tuo account Twitter
-  'https://linkedin.com/company/uaft',  // Sostituisci con il tuo LinkedIn
-],
-```
+UAFT non ha profili social (i pulsanti nel piede sono una battuta), quindi niente `sameAs` né `twitter:creator`. Se un giorno ci saranno profili veri, vanno nel JSON-LD di `app/(landing)/page.tsx`.
 
 ### 5. Performance Optimization
 
@@ -142,22 +114,7 @@ gtag('event', 'ai_pricing_click', {
 
 ## 🌐 Ottimizzazioni Avanzate
 
-### 1. Sitemap aggiuntiva per immagini
-
-Se aggiungi molte immagini, crea `app/image-sitemap.ts`:
-
-```typescript
-export default function imageSitemap() {
-  return [
-    {
-      url: 'https://uaft.it/og-image.png',
-      lastModified: new Date(),
-    },
-  ];
-}
-```
-
-### 2. Configurazione next.config.ts
+### 1. Configurazione next.config.ts
 
 Aggiungi compressione e ottimizzazioni:
 
@@ -174,18 +131,17 @@ const nextConfig = {
 
 ## ✅ Checklist finale prima del lancio
 
-- [ ] Tutte le immagini (og-image, favicon, icons) create e caricate
+- [ ] `/opengraph-image` e `/apple-icon` rispondono 200 con un PNG
 - [ ] Google Search Console configurato e sitemap inviata
 - [ ] Google Analytics funzionante (verifica in tempo reale)
 - [ ] Test Rich Results superato
 - [ ] PageSpeed > 90
 - [ ] Mobile-friendly test superato
-- [ ] Link social aggiornati
 - [ ] robots.txt accessibile
 - [ ] sitemap.xml accessibile
 - [ ] HTTPS configurato correttamente
 - [ ] Tutti i link interni funzionanti
-- [ ] Meta description < 160 caratteri
+- [ ] Meta description ≤ 155 caratteri
 - [ ] Title < 60 caratteri
 
 ---
@@ -216,7 +172,7 @@ const nextConfig = {
 
 **Meta tags non appaiono**: Controlla che il build di Next.js sia aggiornato.
 
-**Immagini OG non si vedono**: Usa URL assoluti (`https://uaft.it/og-image.png`).
+**Immagini OG non si vedono**: controlla che `/opengraph-image` risponda 200 con `image/png`; l'URL assoluto lo compone Next da `metadataBase`.
 
 ---
 

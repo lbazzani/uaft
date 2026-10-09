@@ -11,8 +11,6 @@ import {
   ListItem,
   ListItemButton,
   ListItemText,
-  useMediaQuery,
-  useTheme,
   Typography,
 } from '@mui/material';
 import { Menu as MenuIcon, Close, ArrowForward } from '@mui/icons-material';
@@ -31,8 +29,6 @@ export default function Header() {
   const [paymentDialogOpen, setPaymentDialogOpen] = useState(false);
   const [loginDialogOpen, setLoginDialogOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   useEffect(() => {
     const handleScroll = () => {
@@ -72,7 +68,9 @@ export default function Header() {
         open={loginDialogOpen}
         onClose={() => setLoginDialogOpen(false)}
       />
-      {/* barra navy alla Blumea: logo a sinistra, nav corta, lingua, accesso */}
+      {/* barra navy alla Blumea: logo a sinistra, nav corta, lingua, accesso. Desktop e telefono si
+          scambiano col CSS (da md in su), non con useMediaQuery: l'HTML arriva dal server, che lo
+          schermo non lo conosce, e il telefono vedrebbe la barra desktop fino all'idratazione */}
       <AppBar
         position="fixed"
         elevation={0}
@@ -91,82 +89,77 @@ export default function Header() {
             <Box component={Link} href="/" aria-label={t('aria.home')} sx={{ color: 'inherit', textDecoration: 'none', display: 'inline-flex', borderRadius: '8px' }}>
               <Logo size={36} color="var(--chiaro)" />
             </Box>
-            {!isMobile && (
-              <Typography
-                component="span"
-                sx={{
-                  fontFamily: 'var(--f-note)',
-                  fontStyle: 'italic',
-                  fontSize: '0.95rem',
-                  color: 'var(--chiaro-tenue)',
-                  pl: 2.5,
-                  borderLeft: '1px solid var(--chiaro-filo)',
-                  whiteSpace: 'nowrap',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                }}
-              >
-                {t('header.tagline')}*
-              </Typography>
-            )}
+            <Typography
+              component="span"
+              sx={{
+                display: { xs: 'none', md: 'block' },
+                fontFamily: 'var(--f-note)',
+                fontStyle: 'italic',
+                fontSize: '0.95rem',
+                color: 'var(--chiaro-tenue)',
+                pl: 2.5,
+                borderLeft: '1px solid var(--chiaro-filo)',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+              }}
+            >
+              {t('header.tagline')}*
+            </Typography>
           </Box>
 
-          {!isMobile && (
-            <>
-              <Box component="nav" sx={{ display: 'flex', alignItems: 'center' }}>
-                {menuItems.map((item) => (
-                  <Button
-                    key={item.label}
-                    color="inherit"
-                    component={Link}
-                    href={item.href}
-                    sx={{
-                      mx: 0.25,
-                      px: 1.75,
-                      fontWeight: 500,
-                      fontSize: '0.95rem',
-                      color: 'var(--chiaro-tenue)',
-                      '&:hover': { color: 'var(--chiaro)', backgroundColor: 'var(--chiaro-filo)' },
-                    }}
-                  >
-                    {item.label}
-                  </Button>
-                ))}
-              </Box>
-              <Box sx={{ ml: 1 }}>
-                <LanguageSwitcher />
-              </Box>
-              <Button
-                variant="contained"
-                onClick={() => setLoginDialogOpen(true)}
-                endIcon={<ArrowForward />}
-                sx={{
-                  ml: 1.5,
-                  px: 2.75,
-                  py: 1,
-                  backgroundColor: 'var(--corallo)',
-                  color: 'var(--inchiostro)',
-                  fontWeight: 700,
-                  fontSize: '0.95rem',
-                  '&:hover': { backgroundColor: 'var(--chiaro)' },
-                }}
-              >
-                {t('header.login')}
-              </Button>
-            </>
-          )}
-
-          {isMobile && (
-            <IconButton
-              color="inherit"
-              edge="end"
-              onClick={handleDrawerToggle}
-              aria-label={t('aria.menu')}
-              sx={{ ml: 1, border: '1px solid var(--chiaro-filo)' }}
+          <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
+            <Box component="nav" sx={{ display: 'flex', alignItems: 'center' }}>
+              {menuItems.map((item) => (
+                <Button
+                  key={item.label}
+                  color="inherit"
+                  component={Link}
+                  href={item.href}
+                  sx={{
+                    mx: 0.25,
+                    px: 1.75,
+                    fontWeight: 500,
+                    fontSize: '0.95rem',
+                    color: 'var(--chiaro-tenue)',
+                    '&:hover': { color: 'var(--chiaro)', backgroundColor: 'var(--chiaro-filo)' },
+                  }}
+                >
+                  {item.label}
+                </Button>
+              ))}
+            </Box>
+            <Box sx={{ ml: 1 }}>
+              <LanguageSwitcher />
+            </Box>
+            <Button
+              variant="contained"
+              onClick={() => setLoginDialogOpen(true)}
+              endIcon={<ArrowForward />}
+              sx={{
+                ml: 1.5,
+                px: 2.75,
+                py: 1,
+                backgroundColor: 'var(--corallo)',
+                color: 'var(--inchiostro)',
+                fontWeight: 700,
+                fontSize: '0.95rem',
+                '&:hover': { backgroundColor: 'var(--chiaro)' },
+              }}
             >
-              <MenuIcon />
-            </IconButton>
-          )}
+              {t('header.login')}
+            </Button>
+          </Box>
+
+          <IconButton
+            color="inherit"
+            edge="end"
+            onClick={handleDrawerToggle}
+            aria-label={t('aria.menu')}
+            sx={{ display: { xs: 'inline-flex', md: 'none' }, ml: 1, border: '1px solid var(--chiaro-filo)' }}
+          >
+            <MenuIcon />
+          </IconButton>
         </Toolbar>
       </AppBar>
 

@@ -16,7 +16,7 @@ export default function TermsPage() {
       <Header />
 
       <Container maxWidth="md" sx={{ py: 8 }}>
-        <Typography variant="h2" gutterBottom sx={{ fontWeight: 700 }}>
+        <Typography variant="h2" component="h1" gutterBottom sx={{ fontWeight: 700 }}>
           {language === 'it' ? 'Termini e Condizioni' : 'Terms and Conditions'}
         </Typography>
         <Typography variant="subtitle1" color="text.secondary" sx={{ mb: 4 }}>
@@ -28,7 +28,7 @@ export default function TermsPage() {
           <>
 
         <Paper elevation={2} sx={{ p: 4, mb: 3 }}>
-          <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
+          <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: 600 }}>
             1. Accettazione dei Termini
           </Typography>
           <Typography variant="body1" paragraph>
@@ -43,7 +43,7 @@ export default function TermsPage() {
         </Paper>
 
         <Paper elevation={2} sx={{ p: 4, mb: 3 }}>
-          <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
+          <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: 600 }}>
             2. Descrizione del Servizio
           </Typography>
           <Typography variant="body1" paragraph>
@@ -59,7 +59,7 @@ export default function TermsPage() {
         </Paper>
 
         <Paper elevation={2} sx={{ p: 4, mb: 3 }}>
-          <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
+          <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: 600 }}>
             3. Uso Accettabile
           </Typography>
           <Typography variant="body1" paragraph>
@@ -90,7 +90,7 @@ export default function TermsPage() {
         </Paper>
 
         <Paper elevation={2} sx={{ p: 4, mb: 3 }}>
-          <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
+          <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: 600 }}>
             4. Proprietà Intellettuale
           </Typography>
           <Typography variant="body1" paragraph>
@@ -105,7 +105,7 @@ export default function TermsPage() {
         </Paper>
 
         <Paper elevation={2} sx={{ p: 4, mb: 3 }}>
-          <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
+          <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: 600 }}>
             5. Limitazione di Responsabilità
           </Typography>
           <Typography variant="body1" paragraph>
@@ -141,7 +141,7 @@ export default function TermsPage() {
         </Paper>
 
         <Paper elevation={2} sx={{ p: 4, mb: 3 }}>
-          <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
+          <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: 600 }}>
             6. Disclaimer sull'AI
           </Typography>
           <Typography variant="body1" paragraph>
@@ -157,7 +157,7 @@ export default function TermsPage() {
         </Paper>
 
         <Paper elevation={2} sx={{ p: 4, mb: 3 }}>
-          <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
+          <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: 600 }}>
             7. Modifiche ai Termini
           </Typography>
           <Typography variant="body1" paragraph>
@@ -171,7 +171,7 @@ export default function TermsPage() {
         </Paper>
 
         <Paper elevation={2} sx={{ p: 4, mb: 3 }}>
-          <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
+          <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: 600 }}>
             8. Legge Applicabile
           </Typography>
           <Typography variant="body1" paragraph>
@@ -185,7 +185,7 @@ export default function TermsPage() {
         </Paper>
 
         <Paper elevation={2} sx={{ p: 4, mb: 3 }}>
-          <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
+          <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: 600 }}>
             9. Severabilità
           </Typography>
           <Typography variant="body1" paragraph>
@@ -200,7 +200,7 @@ export default function TermsPage() {
         </Paper>
 
         <Paper elevation={2} sx={{ p: 4 }}>
-          <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
+          <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: 600 }}>
             10. Contatti
           </Typography>
           <Typography variant="body1" paragraph>
@@ -219,7 +219,7 @@ export default function TermsPage() {
         </Paper>
 
         <Box sx={{ mt: 6, p: 4, backgroundColor: '#f5f5f5', borderRadius: 2 }}>
-          <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
+          <Typography variant="h6" component="h2" gutterBottom sx={{ fontWeight: 600 }}>
             📝 Nota Finale
           </Typography>
           <Typography variant="body1">
@@ -234,7 +234,7 @@ export default function TermsPage() {
           // VERSIONE INGLESE
           <>
         <Paper elevation={2} sx={{ p: 4, mb: 3 }}>
-          <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
+          <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: 600 }}>
             1. Acceptance of Terms
           </Typography>
           <Typography variant="body1" paragraph>
@@ -249,7 +249,7 @@ export default function TermsPage() {
         </Paper>
 
         <Paper elevation={2} sx={{ p: 4, mb: 3 }}>
-          <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
+          <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: 600 }}>
             2. Service Description
           </Typography>
           <Typography variant="body1" paragraph>
@@ -265,7 +265,7 @@ export default function TermsPage() {
         </Paper>
 
         <Paper elevation={2} sx={{ p: 4, mb: 3 }}>
-          <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
+          <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: 600 }}>
             3. Acceptable Use
           </Typography>
           <Typography variant="body1" paragraph>
@@ -296,7 +296,7 @@ export default function TermsPage() {
         </Paper>
 
         <Paper elevation={2} sx={{ p: 4, mb: 3 }}>
-          <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
+          <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: 600 }}>
             4. Intellectual Property
           </Typography>
           <Typography variant="body1" paragraph>
@@ -311,7 +311,7 @@ export default function TermsPage() {
         </Paper>
 
         <Paper elevation={2} sx={{ p: 4, mb: 3 }}>
-          <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
+          <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: 600 }}>
             5. Limitation of Liability
           </Typography>
           <Typography variant="body1" paragraph>
@@ -347,7 +347,7 @@ export default function TermsPage() {
         </Paper>
 
         <Paper elevation={2} sx={{ p: 4, mb: 3 }}>
-          <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
+          <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: 600 }}>
             6. AI Disclaimer
           </Typography>
           <Typography variant="body1" paragraph>
@@ -363,7 +363,7 @@ export default function TermsPage() {
         </Paper>
 
         <Paper elevation={2} sx={{ p: 4, mb: 3 }}>
-          <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
+          <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: 600 }}>
             7. Changes to Terms
           </Typography>
           <Typography variant="body1" paragraph>
@@ -377,7 +377,7 @@ export default function TermsPage() {
         </Paper>
 
         <Paper elevation={2} sx={{ p: 4, mb: 3 }}>
-          <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
+          <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: 600 }}>
             8. Applicable Law
           </Typography>
           <Typography variant="body1" paragraph>
@@ -391,7 +391,7 @@ export default function TermsPage() {
         </Paper>
 
         <Paper elevation={2} sx={{ p: 4, mb: 3 }}>
-          <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
+          <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: 600 }}>
             9. Severability
           </Typography>
           <Typography variant="body1" paragraph>
@@ -406,7 +406,7 @@ export default function TermsPage() {
         </Paper>
 
         <Paper elevation={2} sx={{ p: 4 }}>
-          <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
+          <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: 600 }}>
             10. Contact
           </Typography>
           <Typography variant="body1" paragraph>
@@ -425,7 +425,7 @@ export default function TermsPage() {
         </Paper>
 
         <Box sx={{ mt: 6, p: 4, backgroundColor: '#f5f5f5', borderRadius: 2 }}>
-          <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
+          <Typography variant="h6" component="h2" gutterBottom sx={{ fontWeight: 600 }}>
             📝 Final Note
           </Typography>
           <Typography variant="body1">

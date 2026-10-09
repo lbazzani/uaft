@@ -23,48 +23,34 @@ const primo = `(function(){try{var h=document.documentElement;if(window.matchMed
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://uaft.it'),
+  // il marchio prima di tutto: da Google si arriva cercando «uaft» o il nome per esteso
   title: {
-    default: 'UAFT - Una Azienda che può Fare Tutto | Servizi IT Innovativi',
+    default: 'UAFT – Una Azienda che può Fare Tutto*',
     template: '%s | UAFT',
   },
-  description: 'UAFT offre servizi IT innovativi con un tocco ironico ma professionale. Cloud, AI, automazione e soluzioni as-a-Service per ogni esigenza. Scopri il futuro della tecnologia.',
-  keywords: [
-    'servizi IT',
-    'cloud computing',
-    'intelligenza artificiale',
-    'AI pricing',
-    'automation',
-    'as a service',
-    'sviluppo software',
-    'consulenza IT',
-    'trasformazione digitale',
-    'blockchain',
-    'microservizi',
-    'DevOps',
-    'Italia',
-  ],
-  authors: [{ name: 'UAFT Team' }],
-  creator: 'UAFT',
+  // entro i 155 caratteri e con la voce del sito: la promessa, l'asterisco, e cos'è davvero
+  description: "UAFT promette tutto*: cloud, AI, preventivo in due secondi e un venditore AI che non molla. *Mantiene quasi tutto: è la parodia di un'azienda IT.",
+  keywords: ['UAFT', 'Una Azienda che può Fare Tutto', 'parodia', 'preventivo AI'],
+  authors: [{ name: 'Lorenzo Bazzani', url: 'https://bazzani.info' }],
+  creator: 'Lorenzo Bazzani',
   publisher: 'UAFT',
   formatDetection: {
     email: false,
     address: false,
     telephone: false,
   },
+  // './' si risolve sul percorso di ogni pagina: og:url e canonical puntano alla pagina stessa, non
+  // alla home. Titolo e descrizione Next li prende da ogni pagina; l'immagine da app/opengraph-image.tsx.
+  // Niente en_US alternativo: l'inglese non ha un URL suo, esiste solo se scelto nel browser.
   openGraph: {
     type: 'website',
     locale: 'it_IT',
-    alternateLocale: ['en_US'],
-    url: 'https://uaft.it',
-    siteName: 'UAFT - Una Azienda che può Fare Tutto',
-    title: 'UAFT - Servizi IT Innovativi con un Tocco Ironico',
-    description: 'Cloud, AI, automazione e soluzioni as-a-Service. UAFT è la tua azienda IT che può fare tutto (o quasi). Preventivi AI, servizi scalabili e supporto 24/7.',
+    url: './',
+    siteName: 'UAFT',
   },
+  // niente @account: UAFT non ha profili social (i pulsanti nel piede sono una battuta)
   twitter: {
     card: 'summary_large_image',
-    title: 'UAFT - Servizi IT Innovativi',
-    description: 'Cloud, AI, automazione e soluzioni as-a-Service con un tocco ironico ma professionale.',
-    creator: '@uaft_it',
   },
   robots: {
     index: true,
@@ -77,12 +63,9 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
+  // niente hreflang: italiano e inglese stanno sullo stesso URL, e l'italiano è quello che si indicizza
   alternates: {
-    canonical: 'https://uaft.it',
-    languages: {
-      'it-IT': 'https://uaft.it',
-      'en-US': 'https://uaft.it',
-    },
+    canonical: './',
   },
 };
 

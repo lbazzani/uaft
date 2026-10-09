@@ -1246,17 +1246,3 @@ export const translations = {
 };
 
 export type TranslationKey = keyof typeof translations.it;
-
-export const detectBrowserLanguage = (): Language => {
-  if (typeof window === 'undefined') return 'en';
-
-  const browserLang = navigator.language.toLowerCase();
-
-  // Se la lingua del browser inizia con 'it' (it, it-IT, it-CH, etc), usa italiano
-  if (browserLang.startsWith('it')) {
-    return 'it';
-  }
-
-  // Altrimenti inglese
-  return 'en';
-};

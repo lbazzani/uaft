@@ -28,6 +28,19 @@ const nextConfig: NextConfig = {
   async headers() {
     return [{ source: '/:path*', headers: intestazioniSicurezza }];
   },
+  // www.uaft.it rispondeva 200 con lo stesso HTML: un doppione per Google. Redirect permanente
+  // (308) verso uaft.it con lo stesso percorso e la stessa query. /api/ resta fuori: sono chiamate,
+  // non pagine da indicizzare, e un client che non segue i redirect resterebbe senza risposta.
+  async redirects() {
+    return [
+      {
+        source: '/:path((?!api/).*)',
+        has: [{ type: 'host', value: 'www.uaft.it' }],
+        destination: 'https://uaft.it/:path',
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

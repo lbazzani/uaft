@@ -16,7 +16,7 @@ export default function PrivacyPage() {
       <Header />
 
       <Container maxWidth="md" sx={{ py: 8 }}>
-        <Typography variant="h2" gutterBottom sx={{ fontWeight: 700 }}>
+        <Typography variant="h2" component="h1" gutterBottom sx={{ fontWeight: 700 }}>
           Privacy Policy
         </Typography>
         <Typography variant="subtitle1" color="text.secondary" sx={{ mb: 4 }}>
@@ -28,7 +28,7 @@ export default function PrivacyPage() {
           <>
 
         <Paper elevation={2} sx={{ p: 4, mb: 3 }}>
-          <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
+          <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: 600 }}>
             1. Introduzione
           </Typography>
           <Typography variant="body1" paragraph>
@@ -43,7 +43,7 @@ export default function PrivacyPage() {
         </Paper>
 
         <Paper elevation={2} sx={{ p: 4, mb: 3 }}>
-          <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
+          <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: 600 }}>
             2. Dati che Raccogliamo
           </Typography>
           <Typography variant="body1" paragraph>
@@ -73,7 +73,7 @@ export default function PrivacyPage() {
         </Paper>
 
         <Paper elevation={2} sx={{ p: 4, mb: 3 }}>
-          <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
+          <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: 600 }}>
             3. Come Usiamo i Tuoi Dati
           </Typography>
           <Typography variant="body1" paragraph>
@@ -104,7 +104,7 @@ export default function PrivacyPage() {
         </Paper>
 
         <Paper elevation={2} sx={{ p: 4, mb: 3 }}>
-          <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
+          <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: 600 }}>
             4. Condivisione dei Dati
           </Typography>
           <Typography variant="body1" paragraph>
@@ -129,7 +129,7 @@ export default function PrivacyPage() {
         </Paper>
 
         <Paper elevation={2} sx={{ p: 4, mb: 3 }}>
-          <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
+          <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: 600 }}>
             5. I Tuoi Diritti
           </Typography>
           <Typography variant="body1" paragraph>
@@ -165,7 +165,7 @@ export default function PrivacyPage() {
         </Paper>
 
         <Paper elevation={2} sx={{ p: 4, mb: 3 }}>
-          <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
+          <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: 600 }}>
             6. Sicurezza
           </Typography>
           <Typography variant="body1" paragraph>
@@ -180,7 +180,7 @@ export default function PrivacyPage() {
         </Paper>
 
         <Paper elevation={2} sx={{ p: 4, mb: 3 }}>
-          <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
+          <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: 600 }}>
             7. Cookie
           </Typography>
           <Typography variant="body1" paragraph>
@@ -195,7 +195,7 @@ export default function PrivacyPage() {
         </Paper>
 
         <Paper elevation={2} sx={{ p: 4, mb: 3 }}>
-          <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
+          <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: 600 }}>
             8. Modifiche a Questa Policy
           </Typography>
           <Typography variant="body1" paragraph>
@@ -209,7 +209,7 @@ export default function PrivacyPage() {
         </Paper>
 
         <Paper elevation={2} sx={{ p: 4 }}>
-          <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
+          <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: 600 }}>
             9. Contatti
           </Typography>
           <Typography variant="body1" paragraph>
@@ -231,7 +231,7 @@ export default function PrivacyPage() {
           // VERSIONE INGLESE
           <>
         <Paper elevation={2} sx={{ p: 4, mb: 3 }}>
-          <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
+          <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: 600 }}>
             1. Introduction
           </Typography>
           <Typography variant="body1" paragraph>
@@ -246,7 +246,7 @@ export default function PrivacyPage() {
         </Paper>
 
         <Paper elevation={2} sx={{ p: 4, mb: 3 }}>
-          <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
+          <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: 600 }}>
             2. Data We Collect
           </Typography>
           <Typography variant="body1" paragraph>
@@ -275,7 +275,7 @@ export default function PrivacyPage() {
         </Paper>
 
         <Paper elevation={2} sx={{ p: 4, mb: 3 }}>
-          <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
+          <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: 600 }}>
             3. How We Use Your Data
           </Typography>
           <Typography variant="body1" paragraph>
@@ -306,7 +306,7 @@ export default function PrivacyPage() {
         </Paper>
 
         <Paper elevation={2} sx={{ p: 4, mb: 3 }}>
-          <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
+          <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: 600 }}>
             4. Data Sharing
           </Typography>
           <Typography variant="body1" paragraph>
@@ -331,7 +331,7 @@ export default function PrivacyPage() {
         </Paper>
 
         <Paper elevation={2} sx={{ p: 4, mb: 3 }}>
-          <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
+          <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: 600 }}>
             5. Your Rights
           </Typography>
           <Typography variant="body1" paragraph>
@@ -367,7 +367,7 @@ export default function PrivacyPage() {
         </Paper>
 
         <Paper elevation={2} sx={{ p: 4, mb: 3 }}>
-          <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
+          <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: 600 }}>
             6. Security
           </Typography>
           <Typography variant="body1" paragraph>
@@ -382,7 +382,7 @@ export default function PrivacyPage() {
         </Paper>
 
         <Paper elevation={2} sx={{ p: 4, mb: 3 }}>
-          <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
+          <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: 600 }}>
             7. Cookies
           </Typography>
           <Typography variant="body1" paragraph>
@@ -397,7 +397,7 @@ export default function PrivacyPage() {
         </Paper>
 
         <Paper elevation={2} sx={{ p: 4, mb: 3 }}>
-          <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
+          <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: 600 }}>
             8. Changes to This Policy
           </Typography>
           <Typography variant="body1" paragraph>
@@ -411,7 +411,7 @@ export default function PrivacyPage() {
         </Paper>
 
         <Paper elevation={2} sx={{ p: 4 }}>
-          <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
+          <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: 600 }}>
             9. Contact
           </Typography>
           <Typography variant="body1" paragraph>
