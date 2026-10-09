@@ -46,14 +46,14 @@ export default function ContactDialog({ open, onClose, onOpenPayment }: ContactD
       fullWidth
       PaperProps={{
         sx: {
-          borderRadius: 4,
+          borderRadius: '18px',
         },
       }}
     >
       <DialogTitle
         sx={{
-          background: 'linear-gradient(135deg, #FF6B35 0%, #FF8C5A 100%)',
-          color: 'white',
+          background: '#0B1F33',
+          color: '#F3EFE8',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
@@ -61,21 +61,21 @@ export default function ContactDialog({ open, onClose, onOpenPayment }: ContactD
         }}
       >
         <Box>
-          <Typography variant="h5" sx={{ fontWeight: 700, mb: 0.5 }}>
+          <Typography variant="h5" sx={{ fontFamily: 'var(--f-titoli)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.01em', mb: 0.5 }}>
             {t('contact.title')}
           </Typography>
-          <Typography variant="body2" sx={{ opacity: 0.95 }}>
+          <Typography variant="body2" sx={{ fontFamily: 'var(--f-note)', fontStyle: 'italic', fontSize: '1rem', color: 'rgba(243,239,232,0.7)' }}>
             {t('contact.subtitle')}
           </Typography>
         </Box>
-        <IconButton onClick={onClose} sx={{ color: 'white' }}>
+        <IconButton onClick={onClose} aria-label={t('aria.chiudi')} sx={{ color: '#F3EFE8' }}>
           <Close />
         </IconButton>
       </DialogTitle>
 
-      <DialogContent sx={{ p: 4, backgroundColor: '#FAFBFC' }}>
+      <DialogContent sx={{ p: 4, backgroundColor: '#F7F4EF' }}>
         <Paper
-          elevation={3}
+          elevation={0}
           sx={{
             p: 4,
             textAlign: 'center',
@@ -97,7 +97,7 @@ export default function ContactDialog({ open, onClose, onOpenPayment }: ContactD
             <Lock sx={{ fontSize: 40, color: '#DC2626' }} />
           </Box>
 
-          <Typography variant="h5" sx={{ fontWeight: 700, mb: 2 }}>
+          <Typography variant="h5" sx={{ fontFamily: 'var(--f-titoli)', fontWeight: 800, mb: 2 }}>
             {t('contact.access.title')}
           </Typography>
 
@@ -124,18 +124,21 @@ export default function ContactDialog({ open, onClose, onOpenPayment }: ContactD
           <Paper
             sx={{
               p: 2,
-              backgroundColor: '#FFF7ED',
-              border: '2px dashed #FF6B35',
+              backgroundColor: '#F7F4EF',
+              border: 'none',
+              borderLeft: '3px solid #FF6B35',
+              borderRadius: 0,
+              textAlign: 'left',
             }}
           >
-            <Typography variant="body2" sx={{ fontStyle: 'italic', color: 'text.secondary' }}>
+            <Typography variant="body2" sx={{ fontFamily: 'var(--f-note)', fontStyle: 'italic', fontSize: '1.05rem', color: 'text.secondary' }}>
               {t('contact.funfact')}
             </Typography>
           </Paper>
         </Paper>
       </DialogContent>
 
-      <DialogActions sx={{ p: 3, backgroundColor: 'white', borderTop: '1px solid #E5E7EB' }}>
+      <DialogActions sx={{ p: 3, backgroundColor: 'white', borderTop: '1px solid #DCD5C9' }}>
         <Button
           onClick={onClose}
           sx={{
@@ -155,11 +158,9 @@ export default function ContactDialog({ open, onClose, onOpenPayment }: ContactD
             px: 4,
             fontWeight: 600,
             '&:hover': {
-              backgroundColor: '#E8552E',
-              transform: 'translateY(-2px)',
-              boxShadow: '0 8px 24px rgba(255,107,53,0.4)',
+              backgroundColor: '#FF8C5A',
             },
-            transition: 'all 0.3s ease',
+            transition: 'background-color 0.2s ease',
           }}
         >
           {t('contact.buy')}

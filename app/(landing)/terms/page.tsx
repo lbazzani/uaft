@@ -4,29 +4,16 @@ import {
   Container,
   Typography,
   Paper,
-  AppBar,
-  Toolbar,
-  Button,
 } from '@mui/material';
-import Link from 'next/link';
 import { useLanguage } from '@/contexts/LanguageContext';
+import Header from '@/components/shared/Header';
+import Footer from '@/components/shared/Footer';
 
 export default function TermsPage() {
   const { language } = useLanguage();
   return (
     <>
-      <AppBar position="static" elevation={0} sx={{ backgroundColor: 'white', color: 'primary.main' }}>
-        <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1, fontWeight: 700 }}>
-            <Link href="/" style={{ textDecoration: 'none', color: 'inherit' }}>
-              🚀 UAFT
-            </Link>
-          </Typography>
-          <Button color="inherit" component={Link} href="/">
-            {language === 'it' ? 'Torna alla Home' : 'Back to Home'}
-          </Button>
-        </Toolbar>
-      </AppBar>
+      <Header />
 
       <Container maxWidth="md" sx={{ py: 8 }}>
         <Typography variant="h2" gutterBottom sx={{ fontWeight: 700 }}>
@@ -451,6 +438,7 @@ export default function TermsPage() {
         </>
         )}
       </Container>
+      <Footer />
     </>
   );
 }

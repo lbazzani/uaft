@@ -1,10 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { soloAdmin } from '@/lib/mail/guardie';
 import { prisma } from '@/lib/prisma';
-import { execSync } from 'child_process';
+import { execFileSync } from 'child_process';
 import fs from 'fs';
+import os from 'os';
 import path from 'path';
+import { nomeHostValido } from '@/lib/mail/validazione';
+
+// Prima: stringhe di shell con sudo e il nome del sottodominio dentro
+// (`sudo cp /tmp/${mailSubdomain}.conf …`): un valore nel database con
+// `;`, spazi o `$(…)` diventava un comando eseguito come root. Ora ogni
+// comando è execFileSync con argomenti separati (nessuna shell), e i nomi
+// passano da nomeHostValido prima di entrare in comandi o nel file nginx.
+const SITES_AVAILABLE = '/etc/nginx/sites-available';
+const SITES_ENABLED = '/etc/nginx/sites-enabled';
+
+function sudo(args: string[], stdio: 'inherit' | 'ignore' = 'inherit') {
+  execFileSync('sudo', args, { stdio });
+}
 
 /**
  * POST - Configura automaticamente nginx per il mail subdomain
@@ -19,11 +32,9 @@ export async function POST(
   { params }: { params: Promise<{ domainId: string }> }
 ) {
   try {
-    const session = await getServerSession(authOptions);
-
-    if (!session?.user || !(session.user as any).isAdmin) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    // posta accesa, sessione valida e ruolo admin (lib/mail/guardie.ts)
+    const accesso = await soloAdmin();
+    if (!accesso.ok) return accesso.risposta;
 
     const { domainId } = await params;
 
@@ -47,6 +58,9 @@ export async function POST(
     }
 
     const mailSubdomain = domain.mailSubdomain;
+    if (!nomeHostValido(mailSubdomain) || !nomeHostValido(domain.domain)) {
+      return NextResponse.json({ error: 'Invalid domain name' }, { status: 400 });
+    }
 
     console.log(`🔧 Setting up nginx for ${mailSubdomain}...`);
 
@@ -75,42 +89,42 @@ server {
 }
 `;
 
-    // 2. Scrivi il file in una directory temporanea
-    const tempConfigPath = `/tmp/${mailSubdomain}.conf`;
-    fs.writeFileSync(tempConfigPath, nginxConfig);
+    // 2. Scrivi il file in una cartella temporanea privata (mkdtemp): un
+    //    nome fisso in /tmp si poteva far trovare già pronto, o come symlink
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'uaft-nginx-'));
+    const tempConfigPath = path.join(tempDir, `${mailSubdomain}.conf`);
+    fs.writeFileSync(tempConfigPath, nginxConfig, { mode: 0o600 });
 
     try {
       // 3. Crea la directory per ACME challenge se non esiste
-      execSync('sudo mkdir -p /var/www/letsencrypt', { stdio: 'inherit' });
-      execSync('sudo chown -R www-data:www-data /var/www/letsencrypt', { stdio: 'inherit' });
+      sudo(['mkdir', '-p', '/var/www/letsencrypt']);
+      sudo(['chown', '-R', 'www-data:www-data', '/var/www/letsencrypt']);
 
       // 4. Copia la configurazione in sites-available
-      const nginxSitePath = `/etc/nginx/sites-available/${mailSubdomain}`;
-      execSync(`sudo cp ${tempConfigPath} ${nginxSitePath}`, { stdio: 'inherit' });
+      const nginxSitePath = path.join(SITES_AVAILABLE, mailSubdomain);
+      const nginxEnabledPath = path.join(SITES_ENABLED, mailSubdomain);
+      sudo(['cp', '--', tempConfigPath, nginxSitePath]);
 
       // 5. Rimuovi symlink esistente se presente
       try {
-        execSync(`sudo rm /etc/nginx/sites-enabled/${mailSubdomain}`, { stdio: 'ignore' });
+        sudo(['rm', '--', nginxEnabledPath], 'ignore');
       } catch {
         // Symlink non esisteva, ok
       }
 
       // 6. Crea symlink in sites-enabled
-      execSync(
-        `sudo ln -s ${nginxSitePath} /etc/nginx/sites-enabled/${mailSubdomain}`,
-        { stdio: 'inherit' }
-      );
+      sudo(['ln', '-s', '--', nginxSitePath, nginxEnabledPath]);
 
       // 7. Testa la configurazione nginx
       console.log('✅ Testing nginx configuration...');
-      execSync('sudo nginx -t', { stdio: 'inherit' });
+      sudo(['nginx', '-t']);
 
       // 8. Ricarica nginx
       console.log('🔄 Reloading nginx...');
-      execSync('sudo systemctl reload nginx', { stdio: 'inherit' });
+      sudo(['systemctl', 'reload', 'nginx']);
 
       // 9. Pulisci il file temporaneo
-      fs.unlinkSync(tempConfigPath);
+      fs.rmSync(tempDir, { recursive: true, force: true });
 
       console.log(`✅ Nginx configured successfully for ${mailSubdomain}`);
 
@@ -122,14 +136,14 @@ server {
     } catch (error: any) {
       // Pulisci il file temporaneo in caso di errore
       try {
-        fs.unlinkSync(tempConfigPath);
+        fs.rmSync(tempDir, { recursive: true, force: true });
       } catch {}
 
+      // l'output di sudo/nginx resta nei log, non va al browser
       console.error('Error configuring nginx:', error);
       return NextResponse.json(
         {
           error: 'Failed to configure nginx',
-          message: error.message || 'Unknown error',
         },
         { status: 500 }
       );
@@ -139,7 +153,6 @@ server {
     return NextResponse.json(
       {
         error: 'Internal server error',
-        message: error.message || 'Unknown error',
       },
       { status: 500 }
     );
@@ -154,11 +167,9 @@ export async function DELETE(
   { params }: { params: Promise<{ domainId: string }> }
 ) {
   try {
-    const session = await getServerSession(authOptions);
-
-    if (!session?.user || !(session.user as any).isAdmin) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    // posta accesa, sessione valida e ruolo admin (lib/mail/guardie.ts)
+    const accesso = await soloAdmin();
+    if (!accesso.ok) return accesso.risposta;
 
     const { domainId } = await params;
 
@@ -174,18 +185,22 @@ export async function DELETE(
     }
 
     const mailSubdomain = domain.mailSubdomain;
+    // un nome con ../ qui farebbe cancellare a root un file qualsiasi
+    if (!nomeHostValido(mailSubdomain)) {
+      return NextResponse.json({ error: 'Invalid domain name' }, { status: 400 });
+    }
 
     console.log(`🗑️  Removing nginx configuration for ${mailSubdomain}...`);
 
     try {
       // Rimuovi symlink
-      execSync(`sudo rm -f /etc/nginx/sites-enabled/${mailSubdomain}`, { stdio: 'ignore' });
+      sudo(['rm', '-f', '--', path.join(SITES_ENABLED, mailSubdomain)], 'ignore');
 
       // Rimuovi configurazione
-      execSync(`sudo rm -f /etc/nginx/sites-available/${mailSubdomain}`, { stdio: 'ignore' });
+      sudo(['rm', '-f', '--', path.join(SITES_AVAILABLE, mailSubdomain)], 'ignore');
 
       // Ricarica nginx
-      execSync('sudo systemctl reload nginx', { stdio: 'inherit' });
+      sudo(['systemctl', 'reload', 'nginx']);
 
       console.log(`✅ Nginx configuration removed for ${mailSubdomain}`);
 
@@ -198,7 +213,6 @@ export async function DELETE(
       return NextResponse.json(
         {
           error: 'Failed to remove nginx configuration',
-          message: error.message || 'Unknown error',
         },
         { status: 500 }
       );
@@ -208,7 +222,6 @@ export async function DELETE(
     return NextResponse.json(
       {
         error: 'Internal server error',
-        message: error.message || 'Unknown error',
       },
       { status: 500 }
     );

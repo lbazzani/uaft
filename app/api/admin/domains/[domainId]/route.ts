@@ -1,14 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { soloAdmin } from '@/lib/mail/guardie';
 import { prisma } from '@/lib/prisma';
 import { z } from 'zod';
 
+// La chiave privata DKIM non esce mai verso il browser.
+const SENZA_SEGRETI = { dkimPrivateKey: true } as const;
+
+// Valori che finiscono nei record DNS (auto-configure): lunghezze da record
+// TXT e, per il selettore, una sola etichetta DNS.
 const updateDomainSchema = z.object({
-  mxRecord: z.string().optional(),
-  spfRecord: z.string().optional(),
-  dkimSelector: z.string().optional(),
-  dmarcRecord: z.string().optional(),
+  mxRecord: z.string().max(255).optional(),
+  spfRecord: z.string().max(2048).optional(),
+  dkimSelector: z.string().regex(/^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/i).optional(),
+  dmarcRecord: z.string().max(2048).optional(),
   isActive: z.boolean().optional(),
 });
 
@@ -18,16 +22,15 @@ export async function GET(
   { params }: { params: Promise<{ domainId: string }> }
 ) {
   try {
-    const session = await getServerSession(authOptions);
-
-    if (!session?.user || !(session.user as any).isAdmin) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    // posta accesa, sessione valida e ruolo admin (lib/mail/guardie.ts)
+    const accesso = await soloAdmin();
+    if (!accesso.ok) return accesso.risposta;
 
     const { domainId: id } = await params;
 
     const domain = await prisma.mailDomain.findUnique({
       where: { id },
+      omit: SENZA_SEGRETI,
       include: {
         addresses: {
           include: {
@@ -60,11 +63,9 @@ export async function PATCH(
   { params }: { params: Promise<{ domainId: string }> }
 ) {
   try {
-    const session = await getServerSession(authOptions);
-
-    if (!session?.user || !(session.user as any).isAdmin) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    // posta accesa, sessione valida e ruolo admin (lib/mail/guardie.ts)
+    const accesso = await soloAdmin();
+    if (!accesso.ok) return accesso.risposta;
 
     const { domainId: id } = await params;
     const body = await request.json();
@@ -72,6 +73,7 @@ export async function PATCH(
 
     const domain = await prisma.mailDomain.update({
       where: { id },
+      omit: SENZA_SEGRETI,
       data: validatedData,
       include: {
         addresses: true,
@@ -81,7 +83,7 @@ export async function PATCH(
     return NextResponse.json(domain);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return NextResponse.json({ error: 'Invalid data', details: error.errors }, { status: 400 });
+      return NextResponse.json({ error: 'Invalid data', details: error.issues }, { status: 400 });
     }
     console.error('Error updating domain:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
@@ -94,11 +96,9 @@ export async function DELETE(
   { params }: { params: Promise<{ domainId: string }> }
 ) {
   try {
-    const session = await getServerSession(authOptions);
-
-    if (!session?.user || !(session.user as any).isAdmin) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    // posta accesa, sessione valida e ruolo admin (lib/mail/guardie.ts)
+    const accesso = await soloAdmin();
+    if (!accesso.ok) return accesso.risposta;
 
     const { domainId: id } = await params;
 
@@ -135,7 +135,7 @@ export async function DELETE(
     return NextResponse.json(
       {
         error: 'Internal server error',
-        message: error.message || 'Errore durante l\'eliminazione del dominio',
+        message: 'Errore durante l\'eliminazione del dominio',
       },
       { status: 500 }
     );

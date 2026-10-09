@@ -1,13 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { soloAdmin } from '@/lib/mail/guardie';
+
+// Anche qui mancava il controllo admin: chiunque disattivava o cancellava
+// caselle conoscendone gli id.
 
 export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ domainId: string; addressId: string }> }
 ) {
   try {
+    const accesso = await soloAdmin();
+    if (!accesso.ok) return accesso.risposta;
+
     const { domainId, addressId } = await params;
     const { isActive } = await request.json();
+    if (typeof isActive !== 'boolean') {
+      return NextResponse.json({ error: 'isActive deve essere true o false' }, { status: 400 });
+    }
 
     const address = await prisma.mailAddress.update({
       where: {
@@ -41,6 +51,9 @@ export async function DELETE(
   { params }: { params: Promise<{ domainId: string; addressId: string }> }
 ) {
   try {
+    const accesso = await soloAdmin();
+    if (!accesso.ok) return accesso.risposta;
+
     const { domainId, addressId } = await params;
 
     await prisma.mailAddress.delete({

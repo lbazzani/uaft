@@ -70,7 +70,7 @@ const IronicGauge = ({ value, label, subtitle }: { value: number; label: string;
           value={100}
           size={120}
           thickness={4}
-          sx={{ color: '#E5E7EB' }}
+          sx={{ color: '#DCD5C9' }}
         />
         <CircularProgress
           variant="determinate"
@@ -99,7 +99,7 @@ const IronicGauge = ({ value, label, subtitle }: { value: number; label: string;
             flexDirection: 'column',
           }}
         >
-          <Typography variant="h4" component="div" sx={{ fontWeight: 700 }}>
+          <Typography variant="h4" component="div" sx={{ fontFamily: 'var(--f-titoli)', fontWeight: 700 }}>
             {value}%
           </Typography>
         </Box>
@@ -154,14 +154,14 @@ const DeployDemoEnhanced = () => {
       {
         label: t('featuredemo.deploy.chart.label1'),
         data: [0, 45, 78, 92, 98],
-        borderColor: '#F97316',
+        borderColor: '#FF6B35',
         backgroundColor: 'rgba(249, 115, 22, 0.1)',
         tension: 0.4,
       },
       {
         label: t('featuredemo.deploy.chart.label2'),
         data: [0, 10, 25, 40, 55],
-        borderColor: '#9CA3AF',
+        borderColor: '#8A8F99',
         backgroundColor: 'rgba(156, 163, 175, 0.1)',
         tension: 0.4,
         borderDash: [5, 5],
@@ -183,13 +183,13 @@ const DeployDemoEnhanced = () => {
             sx={{
               p: 3,
               mb: 3,
-              background: 'linear-gradient(135deg, #F97316 0%, #FB923C 100%)',
-              color: 'white',
+              background: '#0B1F33',
+              color: '#F3EFE8',
             }}
           >
             <Typography variant="h6" sx={{ mb: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <span>{steps[currentStep].label}</span>
-              <Chip label={`${deployTime.toFixed(1)}s`} sx={{ bgcolor: 'rgba(255,255,255,0.3)', color: 'white', fontWeight: 700 }} />
+              <Chip label={`${deployTime.toFixed(1)}s`} sx={{ bgcolor: 'rgba(255,255,255,0.3)', color: '#F3EFE8', fontWeight: 700 }} />
             </Typography>
             <LinearProgress
               variant="determinate"
@@ -229,8 +229,8 @@ const DeployDemoEnhanced = () => {
           <Box sx={{ display: 'flex', gap: 2, mb: 3, flexWrap: 'wrap' }}>
             <Card sx={{ flex: 1, minWidth: 150 }}>
               <CardContent>
-                <CloudUpload sx={{ color: '#F97316', fontSize: 40, mb: 1 }} />
-                <Typography variant="h5" sx={{ fontWeight: 700 }}>
+                <CloudUpload sx={{ color: '#C2410C', fontSize: 40, mb: 1 }} />
+                <Typography variant="h5" sx={{ fontFamily: 'var(--f-titoli)', fontWeight: 700 }}>
                   {deployTime.toFixed(1)}s
                 </Typography>
                 <Typography variant="caption" color="text.secondary">
@@ -244,7 +244,7 @@ const DeployDemoEnhanced = () => {
             <Card sx={{ flex: 1, minWidth: 150 }}>
               <CardContent>
                 <Speed sx={{ color: '#10B981', fontSize: 40, mb: 1 }} />
-                <Typography variant="h5" sx={{ fontWeight: 700 }}>
+                <Typography variant="h5" sx={{ fontFamily: 'var(--f-titoli)', fontWeight: 700 }}>
                   98/100
                 </Typography>
                 <Typography variant="caption" color="text.secondary">
@@ -257,8 +257,8 @@ const DeployDemoEnhanced = () => {
             </Card>
             <Card sx={{ flex: 1, minWidth: 150 }}>
               <CardContent>
-                <TrendingUp sx={{ color: '#06B6D4', fontSize: 40, mb: 1 }} />
-                <Typography variant="h5" sx={{ fontWeight: 700 }}>
+                <TrendingUp sx={{ color: '#12304D', fontSize: 40, mb: 1 }} />
+                <Typography variant="h5" sx={{ fontFamily: 'var(--f-titoli)', fontWeight: 700 }}>
                   ∞
                 </Typography>
                 <Typography variant="caption" color="text.secondary">

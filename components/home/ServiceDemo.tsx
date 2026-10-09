@@ -96,8 +96,8 @@ const CloudDemo = () => {
 
   return (
     <Box>
-      <Paper sx={{ p: 3, mb: 3, background: 'linear-gradient(135deg, #F97316 0%, #FB923C 100%)', color: 'white', position: 'relative', overflow: 'hidden', minHeight: 250 }}>
-        <Typography variant="h5" sx={{ mb: 2, fontWeight: 700 }}>
+      <Paper sx={{ p: 3, mb: 3, background: '#0B1F33', color: '#F3EFE8', position: 'relative', overflow: 'hidden', minHeight: 250 }}>
+        <Typography variant="h5" sx={{ fontFamily: 'var(--f-titoli)', mb: 2, fontWeight: 700 }}>
           {t('demo.cloud.intensifier')}
         </Typography>
         <Typography variant="body2" sx={{ mb: 3, opacity: 0.9 }}>
@@ -127,7 +127,7 @@ const CloudDemo = () => {
             value={backupLevel}
             sx={{
               height: 8,
-              borderRadius: 4,
+              borderRadius: '18px',
               backgroundColor: 'rgba(255,255,255,0.3)',
               '& .MuiLinearProgress-bar': { backgroundColor: 'white' }
             }}
@@ -140,38 +140,38 @@ const CloudDemo = () => {
 
       <Grid container spacing={2}>
         <Grid size={{ xs: 6, md: 3 }}>
-          <Card sx={{ background: 'linear-gradient(135deg, #F97316 0%, #FB923C 50%)' }}>
+          <Card sx={{ background: '#0B1F33' }}>
             <CardContent>
-              <Typography variant="h4" sx={{ color: 'white', fontWeight: 700 }}>∞</Typography>
-              <Typography variant="body2" sx={{ color: 'white', opacity: 0.9 }}>{t('demo.cloud.clouds')}</Typography>
+              <Typography variant="h4" sx={{ fontFamily: 'var(--f-titoli)', color: '#F3EFE8', fontWeight: 700 }}>∞</Typography>
+              <Typography variant="body2" sx={{ color: '#F3EFE8', opacity: 0.9 }}>{t('demo.cloud.clouds')}</Typography>
             </CardContent>
           </Card>
         </Grid>
         <Grid size={{ xs: 6, md: 3 }}>
-          <Card sx={{ background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 50%)' }}>
+          <Card sx={{ background: '#12304D' }}>
             <CardContent>
-              <Typography variant="h4" sx={{ color: 'white', fontWeight: 700 }}>999%</Typography>
-              <Typography variant="body2" sx={{ color: 'white', opacity: 0.9 }}>{t('demo.cloud.cloudiness')}</Typography>
+              <Typography variant="h4" sx={{ fontFamily: 'var(--f-titoli)', color: '#F3EFE8', fontWeight: 700 }}>999%</Typography>
+              <Typography variant="body2" sx={{ color: '#F3EFE8', opacity: 0.9 }}>{t('demo.cloud.cloudiness')}</Typography>
             </CardContent>
           </Card>
         </Grid>
         <Grid size={{ xs: 6, md: 3 }}>
-          <Card sx={{ background: 'linear-gradient(135deg, #06B6D4 0%, #0891B2 50%)' }}>
+          <Card sx={{ background: '#0B1F33' }}>
             <CardContent>
-              <Dns sx={{ color: 'white', fontSize: 30, mb: 1 }} />
-              <Typography variant="h5" sx={{ color: 'white', fontWeight: 700 }}>24/7</Typography>
-              <Typography variant="caption" sx={{ color: 'white', opacity: 0.9 }}>Uptime*</Typography>
-              <Typography variant="caption" display="block" sx={{ color: 'white', opacity: 0.7, fontSize: '0.6rem' }}>*Anche di notte</Typography>
+              <Dns sx={{ color: '#F3EFE8', fontSize: 30, mb: 1 }} />
+              <Typography variant="h5" sx={{ fontFamily: 'var(--f-titoli)', color: '#F3EFE8', fontWeight: 700 }}>24/7</Typography>
+              <Typography variant="caption" sx={{ color: '#F3EFE8', opacity: 0.9 }}>Uptime*</Typography>
+              <Typography variant="caption" display="block" sx={{ color: '#F3EFE8', opacity: 0.7, fontSize: '0.6rem' }}>*Anche di notte</Typography>
             </CardContent>
           </Card>
         </Grid>
         <Grid size={{ xs: 6, md: 3 }}>
-          <Card sx={{ background: 'linear-gradient(135deg, #10B981 0%, #059669 50%)' }}>
+          <Card sx={{ background: '#047857' }}>
             <CardContent>
-              <Storage sx={{ color: 'white', fontSize: 30, mb: 1 }} />
-              <Typography variant="h5" sx={{ color: 'white', fontWeight: 700 }}>∞ TB</Typography>
-              <Typography variant="caption" sx={{ color: 'white', opacity: 0.9 }}>Storage</Typography>
-              <Typography variant="caption" display="block" sx={{ color: 'white', opacity: 0.7, fontSize: '0.6rem' }}>Letteralmente</Typography>
+              <Storage sx={{ color: '#F3EFE8', fontSize: 30, mb: 1 }} />
+              <Typography variant="h5" sx={{ fontFamily: 'var(--f-titoli)', color: '#F3EFE8', fontWeight: 700 }}>∞ TB</Typography>
+              <Typography variant="caption" sx={{ color: '#F3EFE8', opacity: 0.9 }}>Storage</Typography>
+              <Typography variant="caption" display="block" sx={{ color: '#F3EFE8', opacity: 0.7, fontSize: '0.6rem' }}>Letteralmente</Typography>
             </CardContent>
           </Card>
         </Grid>
@@ -179,9 +179,9 @@ const CloudDemo = () => {
 
       {backupLevel === 100 && (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
-          <Paper sx={{ p: 3, mt: 3, bgcolor: '#FFF7ED' }}>
+          <Paper sx={{ p: 3, mt: 3, bgcolor: '#FFF1EA' }}>
             <Typography variant="h6" sx={{ mb: 2, display: 'flex', alignItems: 'center' }}>
-              <Analytics sx={{ mr: 1, color: '#F97316' }} />
+              <Analytics sx={{ mr: 1, color: '#C2410C' }} />
               📊 Cloud Performance in Tempo Reale (Forse)
             </Typography>
             <Line
@@ -191,7 +191,7 @@ const CloudDemo = () => {
                   {
                     label: 'Cloud Density',
                     data: [85, 92, 88, 95, 98, 94, 97],
-                    borderColor: '#F97316',
+                    borderColor: '#FF6B35',
                     backgroundColor: 'rgba(249, 115, 22, 0.1)',
                     tension: 0.4,
                     fill: true,
@@ -199,7 +199,7 @@ const CloudDemo = () => {
                   {
                     label: 'Cloudiness Level',
                     data: [90, 95, 93, 98, 99, 96, 99],
-                    borderColor: '#06B6D4',
+                    borderColor: '#12304D',
                     backgroundColor: 'rgba(6, 182, 212, 0.1)',
                     tension: 0.4,
                     fill: true,
@@ -258,7 +258,7 @@ const AIDemo = () => {
             animate={{ rotate: 360 }}
             transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
           >
-            <SmartToy sx={{ fontSize: 100, color: '#667eea' }} />
+            <SmartToy sx={{ fontSize: 100, color: '#12304D' }} />
           </motion.div>
           <Typography variant="h6" sx={{ mt: 3 }}>
             {t('demo.ai.thinking')}
@@ -269,7 +269,7 @@ const AIDemo = () => {
         </Box>
       ) : (
         <Box>
-          <Typography variant="h5" sx={{ mb: 3, fontWeight: 700 }}>
+          <Typography variant="h5" sx={{ fontFamily: 'var(--f-titoli)', mb: 3, fontWeight: 700 }}>
             {t('demo.ai.predictions')}
           </Typography>
 
@@ -280,7 +280,7 @@ const AIDemo = () => {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: index * 0.2 }}
             >
-              <Paper sx={{ p: 3, mb: 2, borderLeft: '4px solid #667eea' }}>
+              <Paper sx={{ p: 3, mb: 2, borderLeft: '4px solid #12304D' }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
                   <Typography variant="body1" sx={{ fontWeight: 600 }}>
                     {pred.text}
@@ -296,7 +296,7 @@ const AIDemo = () => {
                   value={pred.confidence}
                   sx={{
                     height: 6,
-                    borderRadius: 3,
+                    borderRadius: '16px',
                     backgroundColor: 'rgba(102, 126, 234, 0.2)',
                   }}
                 />
@@ -304,7 +304,7 @@ const AIDemo = () => {
             </motion.div>
           ))}
 
-          <Paper sx={{ p: 3, mt: 3, background: 'linear-gradient(135deg, #F97316 0%, #FB923C 100%)', color: 'white' }}>
+          <Paper sx={{ p: 3, mt: 3, background: '#0B1F33', color: '#F3EFE8' }}>
             <Typography variant="h6" sx={{ mb: 1 }}>
               {t('demo.ai.funfact.title')}
             </Typography>
@@ -315,50 +315,50 @@ const AIDemo = () => {
 
           <Grid container spacing={2} sx={{ mt: 2 }}>
             <Grid size={{ xs: 6, md: 3 }}>
-              <Card sx={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
+              <Card sx={{ background: '#0B1F33' }}>
                 <CardContent>
-                  <Memory sx={{ color: 'white', fontSize: 30, mb: 1 }} />
-                  <Typography variant="h5" sx={{ color: 'white', fontWeight: 700 }}>42</Typography>
-                  <Typography variant="caption" sx={{ color: 'white', opacity: 0.9 }}>Neural Layers</Typography>
-                  <Typography variant="caption" display="block" sx={{ color: 'white', opacity: 0.7, fontSize: '0.6rem' }}>La risposta a tutto</Typography>
+                  <Memory sx={{ color: '#F3EFE8', fontSize: 30, mb: 1 }} />
+                  <Typography variant="h5" sx={{ fontFamily: 'var(--f-titoli)', color: '#F3EFE8', fontWeight: 700 }}>42</Typography>
+                  <Typography variant="caption" sx={{ color: '#F3EFE8', opacity: 0.9 }}>Neural Layers</Typography>
+                  <Typography variant="caption" display="block" sx={{ color: '#F3EFE8', opacity: 0.7, fontSize: '0.6rem' }}>La risposta a tutto</Typography>
                 </CardContent>
               </Card>
             </Grid>
             <Grid size={{ xs: 6, md: 3 }}>
-              <Card sx={{ background: 'linear-gradient(135deg, #F97316 0%, #FB923C 100%)' }}>
+              <Card sx={{ background: '#0B1F33' }}>
                 <CardContent>
-                  <SmartToy sx={{ color: 'white', fontSize: 30, mb: 1 }} />
-                  <Typography variant="h5" sx={{ color: 'white', fontWeight: 700 }}>127%</Typography>
-                  <Typography variant="caption" sx={{ color: 'white', opacity: 0.9 }}>AI Confidence</Typography>
-                  <Typography variant="caption" display="block" sx={{ color: 'white', opacity: 0.7, fontSize: '0.6rem' }}>Più sicura di te</Typography>
+                  <SmartToy sx={{ color: '#F3EFE8', fontSize: 30, mb: 1 }} />
+                  <Typography variant="h5" sx={{ fontFamily: 'var(--f-titoli)', color: '#F3EFE8', fontWeight: 700 }}>127%</Typography>
+                  <Typography variant="caption" sx={{ color: '#F3EFE8', opacity: 0.9 }}>AI Confidence</Typography>
+                  <Typography variant="caption" display="block" sx={{ color: '#F3EFE8', opacity: 0.7, fontSize: '0.6rem' }}>Più sicura di te</Typography>
                 </CardContent>
               </Card>
             </Grid>
             <Grid size={{ xs: 6, md: 3 }}>
-              <Card sx={{ background: 'linear-gradient(135deg, #06B6D4 0%, #0891B2 100%)' }}>
+              <Card sx={{ background: '#0B1F33' }}>
                 <CardContent>
-                  <TrendingUp sx={{ color: 'white', fontSize: 30, mb: 1 }} />
-                  <Typography variant="h5" sx={{ color: 'white', fontWeight: 700 }}>∞</Typography>
-                  <Typography variant="caption" sx={{ color: 'white', opacity: 0.9 }}>Learning Rate</Typography>
-                  <Typography variant="caption" display="block" sx={{ color: 'white', opacity: 0.7, fontSize: '0.6rem' }}>Sempre in beta</Typography>
+                  <TrendingUp sx={{ color: '#F3EFE8', fontSize: 30, mb: 1 }} />
+                  <Typography variant="h5" sx={{ fontFamily: 'var(--f-titoli)', color: '#F3EFE8', fontWeight: 700 }}>∞</Typography>
+                  <Typography variant="caption" sx={{ color: '#F3EFE8', opacity: 0.9 }}>Learning Rate</Typography>
+                  <Typography variant="caption" display="block" sx={{ color: '#F3EFE8', opacity: 0.7, fontSize: '0.6rem' }}>Sempre in beta</Typography>
                 </CardContent>
               </Card>
             </Grid>
             <Grid size={{ xs: 6, md: 3 }}>
-              <Card sx={{ background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)' }}>
+              <Card sx={{ background: '#047857' }}>
                 <CardContent>
-                  <CheckCircle sx={{ color: 'white', fontSize: 30, mb: 1 }} />
-                  <Typography variant="h5" sx={{ color: 'white', fontWeight: 700 }}>99.9%</Typography>
-                  <Typography variant="caption" sx={{ color: 'white', opacity: 0.9 }}>Accuracy*</Typography>
-                  <Typography variant="caption" display="block" sx={{ color: 'white', opacity: 0.7, fontSize: '0.6rem' }}>*Forse più, forse meno</Typography>
+                  <CheckCircle sx={{ color: '#F3EFE8', fontSize: 30, mb: 1 }} />
+                  <Typography variant="h5" sx={{ fontFamily: 'var(--f-titoli)', color: '#F3EFE8', fontWeight: 700 }}>99.9%</Typography>
+                  <Typography variant="caption" sx={{ color: '#F3EFE8', opacity: 0.9 }}>Accuracy*</Typography>
+                  <Typography variant="caption" display="block" sx={{ color: '#F3EFE8', opacity: 0.7, fontSize: '0.6rem' }}>*Forse più, forse meno</Typography>
                 </CardContent>
               </Card>
             </Grid>
           </Grid>
 
-          <Paper sx={{ p: 3, mt: 3, bgcolor: '#F0F9FF' }}>
+          <Paper sx={{ p: 3, mt: 3, bgcolor: '#F7F4EF' }}>
             <Typography variant="h6" sx={{ mb: 3, display: 'flex', alignItems: 'center' }}>
-              <SmartToy sx={{ mr: 1, color: '#667eea' }} />
+              <SmartToy sx={{ mr: 1, color: '#12304D' }} />
               🧠 AI Capabilities Radar (Assolutamente Scientifico)
             </Typography>
             <Box sx={{ maxWidth: 500, mx: 'auto' }}>
@@ -370,23 +370,23 @@ const AIDemo = () => {
                       label: 'UAFT AI',
                       data: [95, 88, 147, 125, 12, 92],
                       backgroundColor: 'rgba(102, 126, 234, 0.2)',
-                      borderColor: '#667eea',
+                      borderColor: '#12304D',
                       borderWidth: 2,
-                      pointBackgroundColor: '#667eea',
+                      pointBackgroundColor: '#12304D',
                       pointBorderColor: '#fff',
                       pointHoverBackgroundColor: '#fff',
-                      pointHoverBorderColor: '#667eea',
+                      pointHoverBorderColor: '#12304D',
                     },
                     {
                       label: 'Competitor Average',
                       data: [60, 55, 80, 70, 45, 65],
                       backgroundColor: 'rgba(156, 163, 175, 0.2)',
-                      borderColor: '#9CA3AF',
+                      borderColor: '#8A8F99',
                       borderWidth: 2,
-                      pointBackgroundColor: '#9CA3AF',
+                      pointBackgroundColor: '#8A8F99',
                       pointBorderColor: '#fff',
                       pointHoverBackgroundColor: '#fff',
-                      pointHoverBorderColor: '#9CA3AF',
+                      pointHoverBorderColor: '#8A8F99',
                     },
                   ],
                 }}
@@ -439,8 +439,8 @@ const SecurityDemo = () => {
 
   return (
     <Box>
-      <Paper sx={{ p: 3, mb: 3, background: 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)', color: 'white' }}>
-        <Typography variant="h5" sx={{ mb: 2, fontWeight: 700, display: 'flex', alignItems: 'center' }}>
+      <Paper sx={{ p: 3, mb: 3, background: '#047857', color: '#F3EFE8' }}>
+        <Typography variant="h5" sx={{ fontFamily: 'var(--f-titoli)', mb: 2, fontWeight: 700, display: 'flex', alignItems: 'center' }}>
           <Lock sx={{ mr: 1 }} />
           {t('demo.security.system')}
         </Typography>
@@ -451,19 +451,19 @@ const SecurityDemo = () => {
         <Grid container spacing={2}>
           <Grid size={{ xs: 4 }}>
             <Box sx={{ textAlign: 'center' }}>
-              <Typography variant="h3" sx={{ fontWeight: 700 }}>{threats}</Typography>
+              <Typography variant="h3" sx={{ fontFamily: 'var(--f-titoli)', fontWeight: 700 }}>{threats}</Typography>
               <Typography variant="caption">{t('demo.security.threats.detected')}</Typography>
             </Box>
           </Grid>
           <Grid size={{ xs: 4 }}>
             <Box sx={{ textAlign: 'center' }}>
-              <Typography variant="h3" sx={{ fontWeight: 700 }}>{blocked}</Typography>
+              <Typography variant="h3" sx={{ fontFamily: 'var(--f-titoli)', fontWeight: 700 }}>{blocked}</Typography>
               <Typography variant="caption">{t('demo.security.blocked')}</Typography>
             </Box>
           </Grid>
           <Grid size={{ xs: 4 }}>
             <Box sx={{ textAlign: 'center' }}>
-              <Typography variant="h3" sx={{ fontWeight: 700 }}>{layers}</Typography>
+              <Typography variant="h3" sx={{ fontFamily: 'var(--f-titoli)', fontWeight: 700 }}>{layers}</Typography>
               <Typography variant="caption">{t('demo.security.layers')}</Typography>
             </Box>
           </Grid>
@@ -485,7 +485,7 @@ const SecurityDemo = () => {
           >
             <Paper sx={{ p: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <CheckCircle sx={{ color: '#38ef7d', mr: 2 }} />
+                <CheckCircle sx={{ color: '#10B981', mr: 2 }} />
                 <Typography variant="body1" sx={{ fontWeight: 500 }}>{feature}</Typography>
               </Box>
               <Chip label={t('demo.security.active')} size="small" sx={{ bgcolor: '#ECFDF5', color: '#059669', fontWeight: 600 }} />
@@ -518,9 +518,9 @@ const SecurityDemo = () => {
                     ],
                     borderColor: [
                       '#10B981',
-                      '#06B6D4',
-                      '#F97316',
-                      '#8B5CF6',
+                      '#12304D',
+                      '#FF6B35',
+                      '#12304D',
                       '#EF4444',
                       '#FBB F24',
                     ],
@@ -581,7 +581,7 @@ const SpeedDemo = () => {
 
   return (
     <Box>
-      <Paper sx={{ p: 4, mb: 3, background: 'linear-gradient(135deg, #FA8BFF 0%, #2BD2FF 90%)', color: 'white', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+      <Paper sx={{ p: 4, mb: 3, background: '#12304D', color: '#F3EFE8', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
         {/* Animated speed particles */}
         <Box sx={{ position: 'absolute', inset: 0, opacity: 0.1 }}>
           {[...Array(5)].map((_, i) => (
@@ -598,7 +598,7 @@ const SpeedDemo = () => {
 
         <Box sx={{ position: 'relative', zIndex: 1 }}>
           <FlashOn sx={{ fontSize: 80, mb: 2 }} />
-          <Typography variant="h3" sx={{ fontWeight: 700, mb: 1 }}>
+          <Typography variant="h3" sx={{ fontFamily: 'var(--f-titoli)', fontWeight: 700, mb: 1 }}>
             <animated.span>
               {springProps.number.to(n => `${n.toFixed(0)}`)}
             </animated.span>
@@ -612,7 +612,7 @@ const SpeedDemo = () => {
           </Typography>
           <Chip
             label={`${particles.toLocaleString()} Speed Particles™ Generated`}
-            sx={{ mt: 2, bgcolor: 'rgba(255,255,255,0.3)', color: 'white', fontWeight: 600 }}
+            sx={{ mt: 2, bgcolor: 'rgba(255,255,255,0.3)', color: '#F3EFE8', fontWeight: 600 }}
           />
         </Box>
       </Paper>
@@ -631,8 +631,8 @@ const SpeedDemo = () => {
             >
               <Card>
                 <CardContent sx={{ textAlign: 'center' }}>
-                  <Box sx={{ color: '#FA8BFF', mb: 1 }}>{stat.icon}</Box>
-                  <Typography variant="h5" sx={{ fontWeight: 700 }}>{stat.value}</Typography>
+                  <Box sx={{ color: '#FF8C5A', mb: 1 }}>{stat.icon}</Box>
+                  <Typography variant="h5" sx={{ fontFamily: 'var(--f-titoli)', fontWeight: 700 }}>{stat.value}</Typography>
                   <Typography variant="caption" color="text.secondary">{stat.label}</Typography>
                 </CardContent>
               </Card>
@@ -641,7 +641,7 @@ const SpeedDemo = () => {
         ))}
       </Grid>
 
-      <Paper sx={{ p: 2, mt: 3, backgroundColor: '#FFF7ED', border: '2px solid #FA8BFF' }}>
+      <Paper sx={{ p: 2, mt: 3, backgroundColor: '#FFF1EA', border: '1px solid #FF8C5A' }}>
         <Typography variant="body2" sx={{ fontStyle: 'italic', textAlign: 'center' }}>
           {t('demo.speed.note')}
         </Typography>
@@ -694,24 +694,24 @@ const CodeDemo = () => {
   return (
     <Box>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-        <Typography variant="h5" sx={{ fontWeight: 700 }}>
+        <Typography variant="h5" sx={{ fontFamily: 'var(--f-titoli)', fontWeight: 700 }}>
           {t('demo.code.generator')}
         </Typography>
         <Box sx={{ display: 'flex', gap: 1 }}>
           <Chip
             label={`CPU: ${cpuUsage}%`}
             size="small"
-            sx={{ bgcolor: cpuUsage > 80 ? '#EF4444' : '#10B981', color: 'white', fontFamily: 'monospace' }}
+            sx={{ bgcolor: cpuUsage > 80 ? '#EF4444' : '#10B981', color: '#F3EFE8', fontFamily: 'monospace' }}
           />
           <Chip
             label={`Hack Level: ${hackLevel}/100`}
             size="small"
-            sx={{ bgcolor: '#667eea', color: 'white', fontFamily: 'monospace' }}
+            sx={{ bgcolor: '#12304D', color: '#F3EFE8', fontFamily: 'monospace' }}
           />
         </Box>
       </Box>
 
-      <Paper sx={{ p: 3, backgroundColor: '#1e1e1e', color: '#d4d4d4', fontFamily: 'monospace', minHeight: 300, mb: 3, position: 'relative', overflow: 'hidden' }}>
+      <Paper sx={{ p: 3, backgroundColor: '#1e1e1e', color: '#DCD5C9', fontFamily: 'monospace', minHeight: 300, mb: 3, position: 'relative', overflow: 'hidden' }}>
         {/* Matrix rain effect in background */}
         <Box sx={{ position: 'absolute', inset: 0, opacity: 0.03, pointerEvents: 'none' }}>
           {[...Array(10)].map((_, i) => (
@@ -751,7 +751,7 @@ const CodeDemo = () => {
             <motion.span
               animate={{ opacity: [1, 0] }}
               transition={{ duration: 0.5, repeat: Infinity }}
-              style={{ color: '#d4d4d4' }}
+              style={{ color: '#DCD5C9' }}
             >
               ▊
             </motion.span>
@@ -761,26 +761,26 @@ const CodeDemo = () => {
 
       <Grid container spacing={2}>
         <Grid size={{ xs: 6, md: 3 }}>
-          <Paper sx={{ p: 2, textAlign: 'center', background: 'linear-gradient(135deg, #F97316 0%, #FB923C 100%)', color: 'white' }}>
-            <Typography variant="h4" sx={{ fontWeight: 700 }}>{lines.length * 1000}+</Typography>
+          <Paper sx={{ p: 2, textAlign: 'center', background: '#0B1F33', color: '#F3EFE8' }}>
+            <Typography variant="h4" sx={{ fontFamily: 'var(--f-titoli)', fontWeight: 700 }}>{lines.length * 1000}+</Typography>
             <Typography variant="caption">{t('demo.code.lines')}</Typography>
           </Paper>
         </Grid>
         <Grid size={{ xs: 6, md: 3 }}>
-          <Paper sx={{ p: 2, textAlign: 'center', background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)', color: 'white' }}>
-            <Typography variant="h4" sx={{ fontWeight: 700 }}>0</Typography>
+          <Paper sx={{ p: 2, textAlign: 'center', background: '#12304D', color: '#F3EFE8' }}>
+            <Typography variant="h4" sx={{ fontFamily: 'var(--f-titoli)', fontWeight: 700 }}>0</Typography>
             <Typography variant="caption">{t('demo.code.bugs')}</Typography>
           </Paper>
         </Grid>
         <Grid size={{ xs: 6, md: 3 }}>
-          <Paper sx={{ p: 2, textAlign: 'center', background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)', color: 'white' }}>
-            <Typography variant="h4" sx={{ fontWeight: 700 }}>42</Typography>
+          <Paper sx={{ p: 2, textAlign: 'center', background: '#047857', color: '#F3EFE8' }}>
+            <Typography variant="h4" sx={{ fontFamily: 'var(--f-titoli)', fontWeight: 700 }}>42</Typography>
             <Typography variant="caption">Tests Passed*</Typography>
           </Paper>
         </Grid>
         <Grid size={{ xs: 6, md: 3 }}>
-          <Paper sx={{ p: 2, textAlign: 'center', background: 'linear-gradient(135deg, #06B6D4 0%, #0891B2 100%)', color: 'white' }}>
-            <Typography variant="h4" sx={{ fontWeight: 700 }}>∞</Typography>
+          <Paper sx={{ p: 2, textAlign: 'center', background: '#0B1F33', color: '#F3EFE8' }}>
+            <Typography variant="h4" sx={{ fontFamily: 'var(--f-titoli)', fontWeight: 700 }}>∞</Typography>
             <Typography variant="caption">Refactors Needed</Typography>
           </Paper>
         </Grid>
@@ -819,7 +819,7 @@ const DeployDemo = () => {
 
   return (
     <Box>
-      <Paper sx={{ p: 4, textAlign: 'center', background: deployed ? 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)' : 'linear-gradient(135deg, #F97316 0%, #FB923C 100%)', color: 'white', mb: 3, position: 'relative', overflow: 'hidden' }}>
+      <Paper sx={{ p: 4, textAlign: 'center', background: deployed ? '#047857' : '#0B1F33', color: '#F3EFE8', mb: 3, position: 'relative', overflow: 'hidden' }}>
         {/* Rocket trail particles */}
         {!deployed && (
           <Box sx={{ position: 'absolute', inset: 0, opacity: 0.2 }}>
@@ -853,7 +853,7 @@ const DeployDemo = () => {
           >
             <Rocket sx={{ fontSize: 100 }} />
           </motion.div>
-          <Typography variant="h4" sx={{ fontWeight: 700, mt: 2, mb: 1 }}>
+          <Typography variant="h4" sx={{ fontFamily: 'var(--f-titoli)', fontWeight: 700, mt: 2, mb: 1 }}>
             {deployed ? t('demo.deploy.completed') : t('demo.deploy.inprogress')}
           </Typography>
           <Typography variant="body2" sx={{ opacity: 0.9 }}>
@@ -863,11 +863,11 @@ const DeployDemo = () => {
             <Box sx={{ mt: 2, display: 'flex', gap: 1, justifyContent: 'center' }}>
               <Chip
                 label={`⏱️ ${deployTime.toFixed(1)}s`}
-                sx={{ bgcolor: 'rgba(255,255,255,0.3)', color: 'white', fontWeight: 600 }}
+                sx={{ bgcolor: 'rgba(255,255,255,0.3)', color: '#F3EFE8', fontWeight: 600 }}
               />
               <Chip
                 label={`🖥️ ${serverCount} Servers`}
-                sx={{ bgcolor: 'rgba(255,255,255,0.3)', color: 'white', fontWeight: 600 }}
+                sx={{ bgcolor: 'rgba(255,255,255,0.3)', color: '#F3EFE8', fontWeight: 600 }}
               />
             </Box>
           )}
@@ -884,7 +884,7 @@ const DeployDemo = () => {
               borderRadius: 6,
               backgroundColor: 'rgba(102, 126, 234, 0.2)',
               '& .MuiLinearProgress-bar': {
-                background: 'linear-gradient(90deg, #F97316 0%, #FB923C 50%, #38ef7d 100%)',
+                background: '#FF6B35',
               },
             }}
           />
@@ -901,9 +901,9 @@ const DeployDemo = () => {
         >
           <Grid container spacing={2}>
             {[
-              { label: t('demo.deploy.stat1'), icon: <CheckCircle sx={{ color: '#38ef7d', fontSize: 40 }} /> },
-              { label: t('demo.deploy.stat2'), icon: <Rocket sx={{ color: '#F97316', fontSize: 40 }} /> },
-              { label: t('demo.deploy.stat3'), icon: <Speed sx={{ color: '#06B6D4', fontSize: 40 }} /> },
+              { label: t('demo.deploy.stat1'), icon: <CheckCircle sx={{ color: '#10B981', fontSize: 40 }} /> },
+              { label: t('demo.deploy.stat2'), icon: <Rocket sx={{ color: '#C2410C', fontSize: 40 }} /> },
+              { label: t('demo.deploy.stat3'), icon: <Speed sx={{ color: '#12304D', fontSize: 40 }} /> },
             ].map((stat, index) => (
               <Grid key={stat.label} size={{ xs: 4 }}>
                 <motion.div
@@ -920,7 +920,7 @@ const DeployDemo = () => {
             ))}
           </Grid>
 
-          <Paper sx={{ p: 3, mt: 3, background: 'linear-gradient(135deg, #FFF7ED 0%, #FED7AA 100%)', border: '2px dashed #FA8BFF' }}>
+          <Paper sx={{ p: 3, mt: 3, background: '#FFF1EA', border: '1px solid #FF8C5A' }}>
             <Typography variant="body1" sx={{ fontWeight: 600, textAlign: 'center', mb: 1 }}>
               {t('demo.deploy.complete.msg', { time: deployTime.toFixed(1), servers: serverCount })}
             </Typography>

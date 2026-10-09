@@ -44,8 +44,9 @@ export default function Modal({
       fullScreen={fullScreen || isMobile}
       sx={{
         '& .MuiDialog-paper': {
-          borderRadius: fullScreen || isMobile ? 0 : 2,
-          boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+          borderRadius: fullScreen || isMobile ? 0 : '18px',
+          border: fullScreen || isMobile ? 'none' : '1px solid var(--linea)',
+          boxShadow: '0 24px 60px rgba(11,31,51,0.18)',
         },
       }}
     >
@@ -58,12 +59,14 @@ export default function Modal({
             alignItems: 'center',
             borderBottom: '1px solid',
             borderColor: 'divider',
-            backgroundColor: '#FAFBFC',
+            backgroundColor: 'var(--carta)',
             py: 2.5,
             px: 3,
-            fontWeight: 600,
+            fontFamily: 'var(--f-titoli)',
+            fontWeight: 800,
             color: 'text.primary',
-            fontSize: '1.1rem',
+            fontSize: '1.15rem',
+            letterSpacing: '-0.01em',
           }}
         >
           {title}
@@ -115,7 +118,7 @@ export default function Modal({
         sx={{
           py: 3,
           px: 3,
-          backgroundColor: 'white',
+          backgroundColor: 'background.paper',
         }}
       >
         {children}
@@ -127,7 +130,7 @@ export default function Modal({
           sx={{
             borderTop: '1px solid',
             borderColor: 'divider',
-            backgroundColor: '#FAFBFC',
+            backgroundColor: 'var(--carta)',
             px: 3,
             py: 2,
             gap: 1.5,

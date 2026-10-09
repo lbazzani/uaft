@@ -299,35 +299,37 @@ export default function SalesAgent() {
         <Box
           sx={{
             position: 'fixed',
-            top: 0,
+            // sotto la testata (64px su mobile, 72px da 900px): non copre più accesso e menu
+            top: { xs: 72, md: 84 },
             right: 20,
             zIndex: 9998,
           }}
         >
           <Collapse in={!isMinimized}>
             <Paper
-              elevation={12}
+              elevation={0}
               sx={{
                 width: { xs: 'calc(100vw - 40px)', sm: 380 },
                 maxHeight: { xs: '80vh', sm: '70vh' },
                 display: 'flex',
                 flexDirection: 'column',
-                borderTopLeftRadius: 0,
-                borderTopRightRadius: 0,
-                borderBottomLeftRadius: 12,
-                borderBottomRightRadius: 12,
+                // staccata dalla testata: angoli tutti tondi
+                borderRadius: '18px',
                 overflow: 'hidden',
-                boxShadow: '0 0 0 2px rgba(249, 115, 22, 0.3), 0 12px 40px rgba(0,0,0,0.25)',
-                border: '2px solid #F97316',
+                // scheda navy con filo sottile: niente alone arancione
+                boxShadow: '0 24px 60px rgba(11,31,51,0.35)',
+                border: '1px solid #1E3A5A',
+                backgroundColor: '#0B1F33',
               }}
             >
         {/* Header - Stile più tecnico e compatto */}
         <Box
           sx={{
-            background: 'linear-gradient(135deg, #1e293b 0%, #334155 100%)',
-            borderBottom: '2px solid #F97316',
-            color: 'white',
-            p: 1.5,
+            background: '#0B1F33',
+            borderBottom: '1px solid rgba(243,239,232,0.16)',
+            color: '#F3EFE8',
+            px: 2,
+            py: 1.5,
             display: 'flex',
             alignItems: 'center',
             gap: 1.5,
@@ -335,10 +337,10 @@ export default function SalesAgent() {
         >
           <Avatar
             sx={{
-              bgcolor: '#F97316',
+              bgcolor: '#FF6B35',
+              color: '#14161C',
               width: 32,
               height: 32,
-              border: '2px solid rgba(255,255,255,0.2)',
             }}
           >
             <SmartToy sx={{ fontSize: 18 }} />
@@ -347,10 +349,11 @@ export default function SalesAgent() {
             <Typography
               variant="body2"
               sx={{
-                fontWeight: 700,
-                fontSize: '0.95rem',
-                fontFamily: 'monospace',
-                letterSpacing: '0.5px',
+                fontWeight: 800,
+                fontSize: '0.85rem',
+                fontFamily: 'var(--f-titoli)',
+                textTransform: 'uppercase',
+                letterSpacing: '0.04em',
               }}
             >
               {t('chat.title')}
@@ -362,16 +365,16 @@ export default function SalesAgent() {
                   height: 6,
                   borderRadius: '50%',
                   bgcolor: '#4ade80',
-                  boxShadow: '0 0 8px #4ade80',
                   animation: 'pulse 2s ease-in-out infinite',
                 }}
               />
               <Typography
                 variant="caption"
                 sx={{
-                  fontSize: '0.7rem',
-                  fontFamily: 'monospace',
-                  opacity: 0.9,
+                  fontSize: '0.85rem',
+                  fontFamily: 'var(--f-note)',
+                  fontStyle: 'italic',
+                  color: 'rgba(243,239,232,0.7)',
                 }}
               >
                 {t('chat.status')}
@@ -386,7 +389,7 @@ export default function SalesAgent() {
               padding: 0.5,
               '&:hover': {
                 color: 'white',
-                bgcolor: 'rgba(249, 115, 22, 0.2)',
+                bgcolor: 'rgba(243,239,232,0.16)',
               },
             }}
           >
@@ -415,8 +418,8 @@ export default function SalesAgent() {
             overflowY: 'auto',
             overflowX: 'hidden',
             p: 2,
-            backgroundColor: '#0f172a',
-            backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(249, 115, 22, 0.03) 2px, rgba(249, 115, 22, 0.03) 4px)',
+            backgroundColor: '#0B1F33',
+            backgroundImage: 'none',
             display: 'flex',
             flexDirection: 'column',
             gap: 2,
@@ -429,10 +432,10 @@ export default function SalesAgent() {
               backgroundColor: 'rgba(249, 115, 22, 0.1)',
             },
             '&::-webkit-scrollbar-thumb': {
-              backgroundColor: '#F97316',
+              backgroundColor: '#FF6B35',
               borderRadius: '3px',
               '&:hover': {
-                backgroundColor: '#EA580C',
+                backgroundColor: '#C2410C',
               },
             },
           }}
@@ -452,19 +455,18 @@ export default function SalesAgent() {
                   p: 1.5,
                   maxWidth: '80%',
                   backgroundColor:
-                    message.role === 'user' ? '#F97316' : '#1e293b',
-                  color: 'white',
+                    message.role === 'user' ? '#FF6B35' : '#12304D',
+                  // corallo con inchiostro: il bianco non sarebbe leggibile
+                  color: message.role === 'user' ? '#14161C' : '#F3EFE8',
                   border: message.role === 'user'
-                    ? '1px solid rgba(255, 255, 255, 0.2)'
-                    : '1px solid rgba(249, 115, 22, 0.5)',
+                    ? '1px solid #FF6B35'
+                    : '1px solid #1E3A5A',
                   borderRadius: message.role === 'user'
-                    ? '12px 12px 2px 12px'
-                    : '12px 12px 12px 2px',
+                    ? '16px 16px 4px 16px'
+                    : '16px 16px 16px 4px',
                   wordWrap: 'break-word',
                   overflowWrap: 'break-word',
-                  boxShadow: message.role === 'user'
-                    ? '0 2px 8px rgba(249, 115, 22, 0.3)'
-                    : '0 2px 8px rgba(0, 0, 0, 0.3)',
+                  boxShadow: 'none',
                 }}
               >
                 <Typography
@@ -488,11 +490,12 @@ export default function SalesAgent() {
                 elevation={0}
                 sx={{
                   p: 2,
-                  backgroundColor: '#1e293b',
-                  border: '1px solid rgba(249, 115, 22, 0.5)',
+                  backgroundColor: '#12304D',
+                  border: '1px solid #1E3A5A',
+                  borderRadius: '16px 16px 16px 4px',
                 }}
               >
-                <CircularProgress size={20} sx={{ color: '#F97316' }} />
+                <CircularProgress size={20} sx={{ color: '#FF6B35' }} />
               </Paper>
             </Box>
           )}
@@ -504,8 +507,8 @@ export default function SalesAgent() {
         <Box
           sx={{
             p: 2,
-            backgroundColor: '#1e293b',
-            borderTop: '2px solid #F97316',
+            backgroundColor: '#0B1F33',
+            borderTop: '1px solid rgba(243,239,232,0.16)',
           }}
         >
           {showPaymentButton && (
@@ -516,8 +519,8 @@ export default function SalesAgent() {
               onClick={() => setPaymentDialogOpen(true)}
               sx={{
                 mb: 2,
-                backgroundColor: '#10B981',
-                color: 'white',
+                backgroundColor: '#FF6B35',
+                color: '#14161C',
                 fontWeight: 600,
                 py: 1.5,
                 animation: 'slideIn 0.5s ease-out',
@@ -532,8 +535,7 @@ export default function SalesAgent() {
                   },
                 },
                 '&:hover': {
-                  backgroundColor: '#059669',
-                  transform: 'scale(1.02)',
+                  backgroundColor: '#F3EFE8',
                 },
               }}
             >
@@ -565,29 +567,29 @@ export default function SalesAgent() {
               }}
               sx={{
                 '& .MuiOutlinedInput-root': {
-                  backgroundColor: '#0f172a',
-                  color: 'white',
-                  fontFamily: 'monospace',
+                  backgroundColor: '#12304D',
+                  color: '#F3EFE8',
+                  borderRadius: '14px',
                   '& fieldset': {
-                    borderColor: 'rgba(249, 115, 22, 0.3)',
-                    borderWidth: '2px',
+                    borderColor: '#1E3A5A',
+                    borderWidth: '1px',
                   },
                   '&:hover fieldset': {
-                    borderColor: 'rgba(249, 115, 22, 0.6)',
+                    borderColor: 'rgba(243,239,232,0.4)',
                   },
                   '&.Mui-focused fieldset': {
-                    borderColor: '#F97316',
-                    borderWidth: '2px',
+                    borderColor: '#FF6B35',
+                    borderWidth: '1px',
                   },
                   '&.Mui-disabled': {
-                    backgroundColor: '#1e293b',
+                    backgroundColor: '#0B1F33',
                   },
                 },
                 '& .MuiInputBase-input': {
-                  color: 'white',
+                  color: '#F3EFE8',
                   WebkitTapHighlightColor: 'transparent',
                   '&::placeholder': {
-                    color: 'rgba(255, 255, 255, 0.5)',
+                    color: 'rgba(243,239,232,0.6)',
                     opacity: 1,
                   },
                 },
@@ -597,15 +599,14 @@ export default function SalesAgent() {
               onClick={handleSend}
               disabled={!input.trim() || isLoading}
               sx={{
-                backgroundColor: '#F97316',
-                color: 'white',
+                backgroundColor: '#FF6B35',
+                color: '#14161C',
                 '&:hover': {
-                  backgroundColor: '#EA580C',
-                  transform: 'scale(1.05)',
+                  backgroundColor: '#F3EFE8',
                 },
                 '&.Mui-disabled': {
-                  backgroundColor: 'rgba(249, 115, 22, 0.3)',
-                  color: 'rgba(255, 255, 255, 0.3)',
+                  backgroundColor: '#1E3A5A',
+                  color: 'rgba(243,239,232,0.4)',
                 },
                 transition: 'all 0.2s ease',
               }}
@@ -624,15 +625,15 @@ export default function SalesAgent() {
           onClick={() => setIsMinimized(false)}
           sx={{
             position: 'fixed',
-            top: 20,
+            top: { xs: 76, md: 88 },
             right: 20,
             zIndex: 9998,
-            backgroundColor: '#F97316',
-            color: 'white',
+            backgroundColor: '#FF6B35',
+            color: '#14161C',
             fontWeight: 600,
             cursor: 'pointer',
             '&:hover': {
-              backgroundColor: '#FDBA74',
+              backgroundColor: '#FF8C5A',
             },
             animation: 'pulse 2s infinite',
             '@keyframes pulse': {

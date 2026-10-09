@@ -177,3 +177,25 @@ Creato con ❤️ (e tanto caffè ☕)
 - **Responsive**: Funziona su mobile, tablet e desktop
 - **Performance**: Usa Turbopack per build veloci in development
 - **SEO Ready**: Metadata configurati per ottimizzazione motori di ricerca
+
+## 🔒 Sicurezza
+
+I segreti stanno solo nei Secret del cluster: mai nel repository, mai nell'immagine (`.dockerignore` esclude ogni `.env*`, chiave e certificato).
+
+**Posta spenta per default: `UAFT_POSTA`.** Webmail, pannello admin, login e registrazione hanno bisogno di database, SMTP e nginx, che nel cluster non ci sono. Finché `UAFT_POSTA` non vale `1`:
+
+- `proxy.ts` risponde 404 a `/admin`, `/mail`, `/login`, `/register` (e sotto-percorsi) e a `/api/admin/**`, `/api/mail/**`, `/api/auth/register`;
+- ogni route di quelle API rifiuta anche da sola (`lib/mail/guardie.ts`), se un percorso sfuggisse al matcher;
+- il login di NextAuth fallisce senza toccare il database (il LoginDialog della landing mostra il solito errore). `/api/auth/*` resta raggiungibile perché la landing usa `useSession`: con sessioni JWT non legge il database.
+
+Landing, `/privacy`, `/terms`, `/api/chat`, `/api/healthz`, file statici, icone e immagine OG non passano dal proxy.
+
+Con la posta accesa (`UAFT_POSTA=1`, dove ci sono DB e SMTP):
+
+- `/api/admin/**` vuole una sessione con `isAdmin`, `/api/mail/**` una sessione, e `/api/mail/send` spedisce solo da una casella attiva dell'utente (l'userId arriva dalla sessione, mai dal corpo);
+- la registrazione crea solo utenti normali, con un limite per IP;
+- nessuna risposta contiene la chiave privata DKIM o hash di password;
+- i comandi di sistema (sudo, certbot, openssl, nginx) partono con `execFileSync` e argomenti separati, senza shell, dopo un controllo stretto di nomi host, email e percorsi (`lib/mail/validazione.ts`);
+- `scripts/seed-admin.ts` vuole `ADMIN_PASSWORD` (almeno 12 caratteri) dall'ambiente e non la stampa.
+
+`next.config.ts` aggiunge a ogni risposta `X-Content-Type-Options`, `Referrer-Policy`, `X-Frame-Options`, `Permissions-Policy` e HSTS, e toglie `X-Powered-By`. Nessuna CSP per ora: la pagina ha script inline (Analytics, JSON-LD, tema).

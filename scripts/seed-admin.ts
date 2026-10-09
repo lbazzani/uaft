@@ -13,7 +13,13 @@ async function main() {
   console.log('🌱 Seeding admin user...\n');
 
   const adminEmail = process.env.ADMIN_EMAIL || 'lorenzo@uaft.it';
-  const adminPassword = process.env.ADMIN_PASSWORD || 'admin123';
+  // Niente password di riserva: prima ce n'era una debole, scritta qui nel
+  // repository (e stampata a video dopo la creazione).
+  const adminPassword = process.env.ADMIN_PASSWORD ?? '';
+  if (adminPassword.length < 12) {
+    console.error('❌ ADMIN_PASSWORD mancante o più corta di 12 caratteri: impostala nell\'ambiente.');
+    process.exit(1);
+  }
 
   // Check if admin already exists
   const existingAdmin = await prisma.user.findUnique({
@@ -40,7 +46,7 @@ async function main() {
 
   console.log('✅ Admin user created successfully!');
   console.log('📧 Email:', admin.email);
-  console.log('🔑 Password:', adminPassword);
+  console.log('🔑 Password: quella di ADMIN_PASSWORD (non viene stampata)');
   console.log('👑 Role: Super Administrator God Supreme\n');
 }
 

@@ -73,7 +73,7 @@ const IronicGauge = ({ value, label, subtitle }: { value: number; label: string;
           value={100}
           size={100}
           thickness={4}
-          sx={{ color: '#E5E7EB' }}
+          sx={{ color: '#DCD5C9' }}
         />
         <CircularProgress
           variant="determinate"
@@ -101,7 +101,7 @@ const IronicGauge = ({ value, label, subtitle }: { value: number; label: string;
             justifyContent: 'center',
           }}
         >
-          <Typography variant="h5" component="div" sx={{ fontWeight: 700 }}>
+          <Typography variant="h5" component="div" sx={{ fontFamily: 'var(--f-titoli)', fontWeight: 700 }}>
             {value}%
           </Typography>
         </Box>
@@ -134,7 +134,7 @@ const AnimatedTerminal = ({ lines }: { lines: string[] }) => {
   return (
     <Paper
       sx={{
-        backgroundColor: '#1a1a1a',
+        backgroundColor: '#0B1F33',
         color: '#00ff00',
         p: 3,
         fontFamily: 'monospace',
@@ -242,7 +242,7 @@ const DeployDemo = () => {
           ))}
         </Stepper>
         <Box sx={{ mt: 2 }}>
-          <LinearProgress variant="determinate" value={progress} sx={{ height: 8, borderRadius: 4 }} />
+          <LinearProgress variant="determinate" value={progress} sx={{ height: 8, borderRadius: '18px' }} />
           <Typography variant="caption" sx={{ mt: 1, display: 'block', textAlign: 'center' }}>
             {t('demo.deploy.progress.percent', { progress })}
           </Typography>
@@ -255,7 +255,7 @@ const DeployDemo = () => {
         <Card sx={{ flex: 1, minWidth: 200 }}>
           <CardContent>
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-              <CloudUpload sx={{ color: '#F97316', mr: 1 }} />
+              <CloudUpload sx={{ color: '#C2410C', mr: 1 }} />
               <Typography variant="h6">Deploy Time</Typography>
             </Box>
             <Typography variant="h4" color="primary">18.3s</Typography>
@@ -285,10 +285,10 @@ const DeployDemo = () => {
         <Card sx={{ flex: 1, minWidth: 200 }}>
           <CardContent>
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-              <TrendingUp sx={{ color: '#06B6D4', mr: 1 }} />
+              <TrendingUp sx={{ color: '#12304D', mr: 1 }} />
               <Typography variant="h6">Scalabilità</Typography>
             </Box>
-            <Typography variant="h4" sx={{ color: '#06B6D4' }}>∞</Typography>
+            <Typography variant="h4" sx={{ fontFamily: 'var(--f-titoli)', color: '#12304D' }}>∞</Typography>
             <Typography variant="caption" color="text.secondary">
               Letteralmente infinito
             </Typography>
@@ -307,9 +307,9 @@ const DeployDemo = () => {
             <IronicGauge value={99} label="Hype Level" subtitle="MASSIMO!" />
           </Box>
 
-          <Paper sx={{ p: 3, mt: 3, bgcolor: '#FFF7ED' }}>
+          <Paper sx={{ p: 3, mt: 3, bgcolor: '#FFF1EA' }}>
             <Typography variant="h6" sx={{ mb: 2, display: 'flex', alignItems: 'center' }}>
-              <Speed sx={{ mr: 1, color: '#F97316' }} />
+              <Speed sx={{ mr: 1, color: '#C2410C' }} />
               {t('demo.security.comparison')}
             </Typography>
             <Line
@@ -319,7 +319,7 @@ const DeployDemo = () => {
                   {
                     label: 'UAFT Deploy',
                     data: [0, 45, 78, 92, 98],
-                    borderColor: '#F97316',
+                    borderColor: '#FF6B35',
                     backgroundColor: 'rgba(249, 115, 22, 0.1)',
                     tension: 0.4,
                     borderWidth: 3,
@@ -327,7 +327,7 @@ const DeployDemo = () => {
                   {
                     label: 'Competitor Medio',
                     data: [0, 10, 25, 40, 55],
-                    borderColor: '#9CA3AF',
+                    borderColor: '#8A8F99',
                     backgroundColor: 'rgba(156, 163, 175, 0.1)',
                     tension: 0.4,
                     borderDash: [5, 5],
@@ -391,7 +391,7 @@ const AIDemo = () => {
       setPredictions([
         { label: 'Traffic Spike Detection', confidence: 97, color: '#F59E0B' },
         { label: 'Performance Optimization', confidence: 94, color: '#10B981' },
-        { label: 'Cost Reduction', confidence: 89, color: '#3B82F6' },
+        { label: 'Cost Reduction', confidence: 89, color: '#12304D' },
         { label: 'Security Threat Prevention', confidence: 96, color: '#DC2626' },
       ]);
     }
@@ -403,7 +403,7 @@ const AIDemo = () => {
         La nostra AI sta analizzando il tuo sistema in tempo reale...
       </Alert>
 
-      <Paper sx={{ p: 3, mb: 3, background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', color: 'white' }}>
+      <Paper sx={{ p: 3, mb: 3, background: '#0B1F33', color: '#F3EFE8' }}>
         <Typography variant="h6" sx={{ mb: 2, display: 'flex', alignItems: 'center' }}>
           <SmartToy sx={{ mr: 1 }} />
           Neural Network Analysis
@@ -448,7 +448,7 @@ const AIDemo = () => {
                     <Chip
                       label={`${pred.confidence}% confident`}
                       size="small"
-                      sx={{ bgcolor: pred.color, color: 'white' }}
+                      sx={{ bgcolor: pred.color, color: '#F3EFE8' }}
                     />
                   </Box>
                   <LinearProgress
@@ -456,7 +456,7 @@ const AIDemo = () => {
                     value={pred.confidence}
                     sx={{
                       height: 6,
-                      borderRadius: 3,
+                      borderRadius: '16px',
                       backgroundColor: `${pred.color}20`,
                       '& .MuiLinearProgress-bar': {
                         backgroundColor: pred.color,
@@ -488,9 +488,9 @@ const AIDemo = () => {
             <IronicGauge value={89} label="Buzzword Score" subtitle="AI-powered!" />
           </Box>
 
-          <Paper sx={{ p: 3, mt: 3, bgcolor: '#F0F9FF' }}>
+          <Paper sx={{ p: 3, mt: 3, bgcolor: '#F7F4EF' }}>
             <Typography variant="h6" sx={{ mb: 3, display: 'flex', alignItems: 'center' }}>
-              <SmartToy sx={{ mr: 1, color: '#06B6D4' }} />
+              <SmartToy sx={{ mr: 1, color: '#12304D' }} />
               🧠 Come Pensa la Nostra AI (Probabilmente)
             </Typography>
             <Box sx={{ maxWidth: 400, mx: 'auto' }}>
@@ -509,8 +509,8 @@ const AIDemo = () => {
                       backgroundColor: [
                         '#10B981',
                         '#F59E0B',
-                        '#3B82F6',
-                        '#8B5CF6',
+                        '#12304D',
+                        '#12304D',
                         '#EF4444',
                       ],
                       borderWidth: 2,
@@ -600,19 +600,19 @@ const SecurityDemo = () => {
       ) : (
         <>
           <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
-            <Card sx={{ flex: 1, background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)', color: 'white' }}>
+            <Card sx={{ flex: 1, background: '#047857', color: '#F3EFE8' }}>
               <CardContent>
                 <Typography variant="h6">{t('demo.security.threats.detected')}</Typography>
-                <Typography variant="h3" sx={{ fontWeight: 700, my: 1 }}>
+                <Typography variant="h3" sx={{ fontFamily: 'var(--f-titoli)', fontWeight: 700, my: 1 }}>
                   {threats}
                 </Typography>
                 <Typography variant="caption">{t('demo.security.last24h')}</Typography>
               </CardContent>
             </Card>
-            <Card sx={{ flex: 1, background: 'linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)', color: 'white' }}>
+            <Card sx={{ flex: 1, background: '#0B1F33', color: '#F3EFE8' }}>
               <CardContent>
                 <Typography variant="h6">{t('demo.security.blocked')}</Typography>
-                <Typography variant="h3" sx={{ fontWeight: 700, my: 1 }}>
+                <Typography variant="h3" sx={{ fontFamily: 'var(--f-titoli)', fontWeight: 700, my: 1 }}>
                   {blocked}
                 </Typography>
                 <Typography variant="caption">{t('demo.security.success')}</Typography>
@@ -712,7 +712,7 @@ export default function FeatureDemo({ open, onClose, feature, onOpenPricing }: F
             color="primary"
             onClick={handleStartNow}
           >
-            Inizia Ora
+            {t('header.cta')}
           </Button>
         </>
       }

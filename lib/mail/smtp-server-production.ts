@@ -280,6 +280,23 @@ export class UaftSmtpServerProduction {
         }
       }
 
+      // Senza login si accetta solo posta PER i domini locali: prima chiunque
+      // si collegava (authOptional) poteva spedire ovunque passando da qui,
+      // open relay con l'IP e i domini di UAFT. Fa eccezione il loopback: è
+      // la webmail (lib/mail/smtp-client.ts si collega a localhost senza
+      // credenziali, e il mittente lo verifica già /api/mail/send); senza
+      // questa eccezione la webmail non spediva più fuori dai domini locali.
+      // Vale finché la porta 25 la apre questo processo: un proxy TCP locale
+      // davanti (nginx stream, docker-proxy) farebbe sembrare tutti loopback.
+      const daLoopback = ['127.0.0.1', '::1', '::ffff:127.0.0.1'].includes(session.remoteAddress);
+      if (externalRecipients.length > 0 && !session.user && !daLoopback) {
+        console.warn('🚫 Relay refused: unauthenticated client, external recipients');
+        const rifiuto = new Error('Authentication required') as Error & { responseCode?: number };
+        rifiuto.responseCode = 530;
+        callback(rifiuto);
+        return;
+      }
+
       // Salva nel database solo se ci sono destinatari locali
       if (localRecipients.length > 0) {
         await this.saveToDatabase(emailData, userId);

@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function LanguageSwitcher() {
-  const { language, setLanguage } = useLanguage();
+  const { language, setLanguage, t } = useLanguage();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
@@ -24,17 +24,26 @@ export default function LanguageSwitcher() {
 
   return (
     <>
+      {/* pillola con il codice lingua: si capisce dove si è senza aprire il menu */}
       <IconButton
         onClick={handleClick}
         sx={{
           color: 'inherit',
-          '&:hover': {
-            backgroundColor: 'rgba(0,0,0,0.05)',
-          },
+          gap: 0.75,
+          px: 1.5,
+          py: 0.75,
+          borderRadius: 999,
+          border: '1px solid currentColor',
+          borderColor: 'color-mix(in srgb, currentColor 30%, transparent)',
+          '&:hover': { backgroundColor: 'color-mix(in srgb, currentColor 10%, transparent)' },
         }}
-        aria-label="change language"
+        aria-label={t('aria.lingua')}
+        aria-haspopup="menu"
       >
-        <LanguageIcon />
+        <LanguageIcon sx={{ fontSize: 18 }} />
+        <Box component="span" sx={{ fontSize: '0.8rem', fontWeight: 700, letterSpacing: '0.08em', lineHeight: 1 }}>
+          {language.toUpperCase()}
+        </Box>
       </IconButton>
       <Menu
         anchorEl={anchorEl}
@@ -48,6 +57,7 @@ export default function LanguageSwitcher() {
           vertical: 'top',
           horizontal: 'right',
         }}
+        slotProps={{ paper: { sx: { mt: 1, border: '1px solid var(--linea)', boxShadow: '0 12px 30px rgba(11,31,51,0.12)' } } }}
       >
         <MenuItem
           onClick={() => handleLanguageChange('it')}

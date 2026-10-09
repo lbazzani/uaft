@@ -1,17 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
+import { soloAdmin } from '@/lib/mail/guardie';
 
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ domainId: string }> }
 ) {
   try {
+    // Mancava qualunque controllo: chiunque creava utenti con password a
+    // scelta e caselle su qualsiasi dominio.
+    const accesso = await soloAdmin();
+    if (!accesso.ok) return accesso.risposta;
+
     const { domainId } = await params;
     const { localPart, userId, userName, userEmail, password } = await request.json();
 
     // Validate input
-    if (!localPart) {
+    if (typeof localPart !== 'string' || !/^[a-z0-9._+-]{1,64}$/i.test(localPart) || localPart.startsWith('.')) {
       return NextResponse.json(
         { error: 'La parte locale dell\'email è obbligatoria' },
         { status: 400 }
@@ -61,9 +67,16 @@ export async function POST(
       }
     } else {
       // Create new user or find existing by email
-      if (!userEmail || !password) {
+      if (typeof userEmail !== 'string' || typeof password !== 'string' || !userEmail || !password) {
         return NextResponse.json(
           { error: 'Email e password sono obbligatori per creare un nuovo utente' },
+          { status: 400 }
+        );
+      }
+      // stessa regola della registrazione; il tetto evita bcrypt su megabyte
+      if (password.length < 8 || password.length > 200 || userEmail.length > 254) {
+        return NextResponse.json(
+          { error: 'La password deve essere di almeno 8 caratteri' },
           { status: 400 }
         );
       }

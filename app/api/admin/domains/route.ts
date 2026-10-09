@@ -1,26 +1,38 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { soloAdmin } from '@/lib/mail/guardie';
 import { prisma } from '@/lib/prisma';
 import { z } from 'zod';
 import { generateDNSRecords } from '@/lib/crypto/dkim-generator';
+import { nomeHostValido } from '@/lib/mail/validazione';
+
+// La chiave privata DKIM resta nel database (la usa solo il firmatario,
+// lib/mail/dkim-signer.ts): nessuna risposta verso il browser la contiene.
+const SENZA_SEGRETI = { dkimPrivateKey: true } as const;
 
 // Schema di validazione per il dominio
+// Il nome finisce in record DNS, in configurazioni nginx e negli argomenti di
+// certbot/openssl: oltre alla forma «nome.tld» di prima, il controllo stretto
+// di lib/mail/validazione.ts (niente trattini in coda, niente maiuscole).
 const domainSchema = z.object({
-  domain: z.string().min(3).regex(/^[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]?\.[a-zA-Z]{2,}$/),
+  domain: z
+    .string()
+    .trim()
+    .toLowerCase()
+    .min(3)
+    .regex(/^[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]?\.[a-zA-Z]{2,}$/)
+    .refine(nomeHostValido),
   isActive: z.boolean().optional(),
 });
 
 // GET - Ottieni tutti i domini
 export async function GET() {
   try {
-    const session = await getServerSession(authOptions);
-
-    if (!session?.user || !(session.user as any).isAdmin) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    // posta accesa, sessione valida e ruolo admin (lib/mail/guardie.ts)
+    const accesso = await soloAdmin();
+    if (!accesso.ok) return accesso.risposta;
 
     const domains = await prisma.mailDomain.findMany({
+      omit: SENZA_SEGRETI,
       orderBy: { createdAt: 'desc' },
       include: {
         addresses: {
@@ -43,11 +55,9 @@ export async function GET() {
 // POST - Crea un nuovo dominio
 export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
-
-    if (!session?.user || !(session.user as any).isAdmin) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    // posta accesa, sessione valida e ruolo admin (lib/mail/guardie.ts)
+    const accesso = await soloAdmin();
+    if (!accesso.ok) return accesso.risposta;
 
     const body = await request.json();
     const validatedData = domainSchema.parse(body);
@@ -65,6 +75,7 @@ export async function POST(request: NextRequest) {
     const dnsRecords = await generateDNSRecords(validatedData.domain, 'default');
 
     const domain = await prisma.mailDomain.create({
+      omit: SENZA_SEGRETI,
       data: {
         domain: validatedData.domain,
         mailSubdomain: dnsRecords.mailSubdomain,

@@ -136,35 +136,39 @@ export default function CookieBanner() {
   return (
     <>
       <Paper
-        elevation={8}
+        elevation={0}
+        role="dialog"
+        aria-label={t('cookie.title')}
+        className="su-scuro"
         sx={{
+          // scheda navy staccata dai bordi: nota legale, non un muro
           position: 'fixed',
-          bottom: 0,
-          left: 0,
-          right: 0,
+          bottom: { xs: 0, md: 24 },
+          left: { xs: 0, md: 24 },
+          right: { xs: 0, md: 'auto' },
+          maxWidth: { md: 560 },
           zIndex: 9999,
-          p: { xs: 2, md: 3 },
-          borderRadius: 0,
-          backgroundColor: 'rgba(26, 26, 26, 0.98)',
-          backdropFilter: 'blur(10px)',
-          borderTop: '3px solid',
-          borderColor: 'primary.main',
-          color: 'white',
+          p: { xs: 2.5, md: 3.5 },
+          borderRadius: { xs: '18px 18px 0 0', md: '18px' },
+          backgroundColor: 'var(--navy)',
+          border: '1px solid var(--navy-3)',
+          boxShadow: '0 24px 60px rgba(11,31,51,0.35)',
+          color: 'var(--chiaro)',
         }}
       >
         <Box sx={{ maxWidth: '1200px', mx: 'auto' }}>
           <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2 }}>
-            <Cookie sx={{ fontSize: 40, color: 'primary.main', mt: 0.5 }} />
+            <Cookie sx={{ fontSize: 28, color: 'var(--corallo)', mt: 0.25 }} />
 
             <Box sx={{ flex: 1 }}>
-              <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>
+              <Typography variant="h6" sx={{ fontFamily: 'var(--f-titoli)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.01em', mb: 1 }}>
                 {t('cookie.title')}
               </Typography>
-              <Typography variant="body2" sx={{ mb: 1, opacity: 0.9 }}>
+              <Typography variant="body2" sx={{ mb: 1, color: 'var(--chiaro-tenue)' }}>
                 {t('cookie.message')}
               </Typography>
-              <Typography variant="caption" sx={{ opacity: 0.7, display: 'block', mb: 2 }}>
-                <Link href="/privacy" sx={{ color: 'primary.light' }}>
+              <Typography variant="caption" sx={{ fontFamily: 'var(--f-note)', fontStyle: 'italic', fontSize: '0.95rem', display: 'block', mb: 2 }}>
+                <Link href="/privacy" sx={{ color: 'var(--corallo)' }}>
                   Privacy Policy
                 </Link>
               </Typography>
@@ -174,8 +178,9 @@ export default function CookieBanner() {
                   variant="contained"
                   onClick={handleAcceptAll}
                   sx={{
-                    bgcolor: 'primary.main',
-                    '&:hover': { bgcolor: 'primary.dark' }
+                    bgcolor: 'var(--corallo)',
+                    color: 'var(--inchiostro)',
+                    '&:hover': { bgcolor: 'var(--chiaro)' }
                   }}
                 >
                   {t('cookie.accept')}
@@ -184,9 +189,9 @@ export default function CookieBanner() {
                   variant="outlined"
                   onClick={handleRejectAll}
                   sx={{
-                    borderColor: 'rgba(255,255,255,0.3)',
-                    color: 'white',
-                    '&:hover': { borderColor: 'rgba(255,255,255,0.5)' }
+                    borderColor: 'var(--chiaro-filo)',
+                    color: 'var(--chiaro)',
+                    '&:hover': { borderColor: 'var(--chiaro)', backgroundColor: 'transparent' }
                   }}
                 >
                   {t('cookie.reject')}
@@ -194,7 +199,7 @@ export default function CookieBanner() {
                 <Button
                   variant="text"
                   onClick={() => setShowCustomize(true)}
-                  sx={{ color: 'white' }}
+                  sx={{ color: 'var(--chiaro-tenue)', textDecoration: 'underline', textUnderlineOffset: '4px', '&:hover': { color: 'var(--chiaro)' } }}
                 >
                   {t('cookie.customize')}
                 </Button>
@@ -204,7 +209,8 @@ export default function CookieBanner() {
             <IconButton
               onClick={handleRejectAll}
               size="small"
-              sx={{ color: 'white' }}
+              aria-label={t('cookie.reject')}
+              sx={{ color: 'var(--chiaro-tenue)', '&:hover': { color: 'var(--chiaro)' } }}
             >
               <Close />
             </IconButton>
@@ -221,12 +227,12 @@ export default function CookieBanner() {
         fullWidth
         PaperProps={{
           sx: {
-            borderRadius: 3,
+            borderRadius: '18px',
           }
         }}
       >
         <DialogTitle sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <Cookie sx={{ color: 'primary.main' }} />
+          <Cookie sx={{ color: 'var(--corallo)' }} />
           {t('cookie.title')}
         </DialogTitle>
 

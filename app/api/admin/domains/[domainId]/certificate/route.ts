@@ -1,11 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { soloAdmin } from '@/lib/mail/guardie';
 import { prisma } from '@/lib/prisma';
 import { getTLSCertificateManager } from '@/lib/mail/tls-certificate-manager';
 import fs from 'fs/promises';
 import path from 'path';
 import crypto from 'crypto';
+import { emailValida, nomeHostValido, percorsoDentro } from '@/lib/mail/validazione';
+
+// Cartelle in cui la DELETE può cancellare file: i percorsi vengono dal
+// database, e un valore come ../../.. avrebbe fatto cancellare file qualsiasi
+// al processo. Let's Encrypt resta fuori (file di root: li gestisce certbot).
+function cartelleCertificati(): string[] {
+  return [process.env.CERTIFICATES_DIR || path.join(process.cwd(), 'certs'), '/etc/ssl/mail-certs'];
+}
 
 /**
  * GET - Verifica lo stato del certificato
@@ -15,11 +22,9 @@ export async function GET(
   { params }: { params: Promise<{ domainId: string }> }
 ) {
   try {
-    const session = await getServerSession(authOptions);
-
-    if (!session?.user || !(session.user as any).isAdmin) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    // posta accesa, sessione valida e ruolo admin (lib/mail/guardie.ts)
+    const accesso = await soloAdmin();
+    if (!accesso.ok) return accesso.risposta;
 
     const { domainId } = await params;
 
@@ -105,11 +110,9 @@ export async function POST(
   { params }: { params: Promise<{ domainId: string }> }
 ) {
   try {
-    const session = await getServerSession(authOptions);
-
-    if (!session?.user || !(session.user as any).isAdmin) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    // posta accesa, sessione valida e ruolo admin (lib/mail/guardie.ts)
+    const accesso = await soloAdmin();
+    if (!accesso.ok) return accesso.risposta;
 
     const { domainId } = await params;
     const { email, autoRenew } = await request.json();
@@ -119,6 +122,10 @@ export async function POST(
         { error: 'Email is required for Let\'s Encrypt' },
         { status: 400 }
       );
+    }
+    // finisce negli argomenti di certbot: controllata anche nel manager
+    if (!emailValida(email)) {
+      return NextResponse.json({ error: 'Invalid email' }, { status: 400 });
     }
 
     const domain = await prisma.mailDomain.findUnique({
@@ -141,7 +148,7 @@ export async function POST(
       const { keyPath, certPath } = await tlsManager.generateLetsEncryptCertificate(
         domainName,
         email,
-        autoRenew || false
+        autoRenew === true
       );
 
       console.log(`✅ Certificate generated successfully for ${domain.mailSubdomain || domainName}`);
@@ -161,10 +168,10 @@ export async function POST(
     } catch (certError: any) {
       console.error('Error generating certificate:', certError);
 
+      // l'output di certbot resta nei log, non va al browser
       return NextResponse.json(
         {
           error: 'Failed to generate certificate',
-          message: certError.message || 'Unknown error',
         },
         { status: 500 }
       );
@@ -174,7 +181,6 @@ export async function POST(
     return NextResponse.json(
       {
         error: 'Internal server error',
-        message: error.message || 'Unknown error',
       },
       { status: 500 }
     );
@@ -189,11 +195,9 @@ export async function DELETE(
   { params }: { params: Promise<{ domainId: string }> }
 ) {
   try {
-    const session = await getServerSession(authOptions);
-
-    if (!session?.user || !(session.user as any).isAdmin) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    // posta accesa, sessione valida e ruolo admin (lib/mail/guardie.ts)
+    const accesso = await soloAdmin();
+    if (!accesso.ok) return accesso.risposta;
 
     const { domainId } = await params;
 
@@ -212,19 +216,19 @@ export async function DELETE(
 
     // Rimuovi i file del certificato
     try {
-      if (domain.tlsKeyPath) {
-        await fs.unlink(domain.tlsKeyPath).catch(() => {});
-      }
-      if (domain.tlsCertPath) {
-        await fs.unlink(domain.tlsCertPath).catch(() => {});
+      for (const file of [domain.tlsKeyPath, domain.tlsCertPath]) {
+        const sicuro = file ? percorsoDentro(file, cartelleCertificati()) : null;
+        if (sicuro) await fs.unlink(sicuro).catch(() => {});
       }
 
       // Rimuovi la directory del dominio se vuota
-      const domainCertDir = path.join(process.cwd(), 'certs', domain.domain);
-      try {
-        await fs.rmdir(domainCertDir);
-      } catch (error) {
-        // Directory non vuota o non esiste, ignora
+      if (nomeHostValido(domain.domain)) {
+        const domainCertDir = path.join(process.cwd(), 'certs', domain.domain);
+        try {
+          await fs.rmdir(domainCertDir);
+        } catch (error) {
+          // Directory non vuota o non esiste, ignora
+        }
       }
     } catch (error) {
       console.error('Error removing certificate files:', error);

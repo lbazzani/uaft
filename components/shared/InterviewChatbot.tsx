@@ -128,7 +128,7 @@ export default function InterviewChatbot({ open, onClose }: InterviewChatbotProp
       fullWidth
       PaperProps={{
         sx: {
-          borderRadius: 3,
+          borderRadius: '18px',
           maxHeight: '80vh',
         },
       }}
@@ -138,19 +138,19 @@ export default function InterviewChatbot({ open, onClose }: InterviewChatbotProp
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          borderBottom: '2px solid #F3F4F6',
+          borderBottom: '1px solid #DCD5C9',
           pb: 2,
         }}
       >
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <Avatar sx={{ bgcolor: '#F97316' }}>
+          <Avatar sx={{ bgcolor: '#0B1F33', color: '#FF6B35' }}>
             <SmartToy />
           </Avatar>
           <Box>
-            <Typography variant="h6" sx={{ fontWeight: 700 }}>
+            <Typography variant="h6" sx={{ fontFamily: 'var(--f-titoli)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.01em' }}>
               {t('interview.title')}
             </Typography>
-            <Typography variant="caption" color="text.secondary">
+            <Typography variant="caption" color="text.secondary" sx={{ fontFamily: 'var(--f-note)', fontStyle: 'italic', fontSize: '0.95rem' }}>
               {t('interview.subtitle')}
             </Typography>
           </Box>
@@ -163,7 +163,7 @@ export default function InterviewChatbot({ open, onClose }: InterviewChatbotProp
       <DialogContent
         sx={{
           p: 3,
-          backgroundColor: '#F9FAFB',
+          backgroundColor: '#F7F4EF',
           minHeight: 400,
           maxHeight: 500,
           overflowY: 'auto',
@@ -187,18 +187,20 @@ export default function InterviewChatbot({ open, onClose }: InterviewChatbotProp
                   }}
                 >
                   {message.sender === 'ai' && (
-                    <Avatar sx={{ bgcolor: '#F97316', width: 32, height: 32 }}>
+                    <Avatar sx={{ bgcolor: '#0B1F33', color: '#FF6B35', width: 32, height: 32 }}>
                       <SmartToy sx={{ fontSize: 18 }} />
                     </Avatar>
                   )}
                   <Paper
-                    elevation={1}
+                    elevation={0}
                     sx={{
                       p: 2,
                       maxWidth: '75%',
-                      backgroundColor: message.sender === 'user' ? '#F97316' : 'white',
-                      color: message.sender === 'user' ? 'white' : 'text.primary',
-                      borderRadius: 2,
+                      backgroundColor: message.sender === 'user' ? '#FF6B35' : 'white',
+                      color: message.sender === 'user' ? '#14161C' : 'text.primary',
+                      border: '1px solid',
+                      borderColor: message.sender === 'user' ? '#FF6B35' : '#DCD5C9',
+                      borderRadius: message.sender === 'user' ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
                     }}
                   >
                     <Typography variant="body1" sx={{ lineHeight: 1.6 }}>
@@ -220,7 +222,7 @@ export default function InterviewChatbot({ open, onClose }: InterviewChatbotProp
                     </Typography>
                   </Paper>
                   {message.sender === 'user' && (
-                    <Avatar sx={{ bgcolor: '#3B82F6', width: 32, height: 32 }}>
+                    <Avatar sx={{ bgcolor: '#12304D', width: 32, height: 32 }}>
                       <Person sx={{ fontSize: 18 }} />
                     </Avatar>
                   )}
@@ -233,21 +235,21 @@ export default function InterviewChatbot({ open, onClose }: InterviewChatbotProp
           {isTyping && (
             <Fade in={isTyping}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <Avatar sx={{ bgcolor: '#F97316', width: 32, height: 32 }}>
+                <Avatar sx={{ bgcolor: '#0B1F33', color: '#FF6B35', width: 32, height: 32 }}>
                   <SmartToy sx={{ fontSize: 18 }} />
                 </Avatar>
                 <Paper
-                  elevation={1}
+                  elevation={0}
                   sx={{
                     p: 2,
                     backgroundColor: 'white',
-                    borderRadius: 2,
+                    borderRadius: '16px 16px 16px 4px',
                     display: 'flex',
                     alignItems: 'center',
                     gap: 1,
                   }}
                 >
-                  <CircularProgress size={16} sx={{ color: '#F97316' }} />
+                  <CircularProgress size={16} sx={{ color: '#C2410C' }} />
                   <Typography variant="body2" color="text.secondary">
                     {t('interview.thinking')}
                   </Typography>
@@ -263,7 +265,7 @@ export default function InterviewChatbot({ open, onClose }: InterviewChatbotProp
       <DialogActions
         sx={{
           p: 3,
-          borderTop: '2px solid #F3F4F6',
+          borderTop: '1px solid #DCD5C9',
           flexDirection: 'column',
           gap: 2,
           alignItems: 'stretch',
@@ -283,7 +285,7 @@ export default function InterviewChatbot({ open, onClose }: InterviewChatbotProp
               variant="outlined"
               sx={{
                 '& .MuiOutlinedInput-root': {
-                  borderRadius: 2,
+                  borderRadius: '14px',
                 },
               }}
             />
@@ -294,9 +296,11 @@ export default function InterviewChatbot({ open, onClose }: InterviewChatbotProp
               sx={{
                 minWidth: 56,
                 height: 56,
-                backgroundColor: '#F97316',
+                borderRadius: '50%',
+                px: 0,
+                backgroundColor: '#FF6B35',
                 '&:hover': {
-                  backgroundColor: '#EA580C',
+                  backgroundColor: '#FF8C5A',
                 },
               }}
             >
@@ -310,11 +314,11 @@ export default function InterviewChatbot({ open, onClose }: InterviewChatbotProp
               onClick={handleRestart}
               fullWidth
               sx={{
-                borderColor: '#F97316',
-                color: '#F97316',
+                borderColor: '#FF6B35',
+                color: '#C2410C',
                 '&:hover': {
-                  borderColor: '#EA580C',
-                  backgroundColor: '#FFF7ED',
+                  borderColor: '#C2410C',
+                  backgroundColor: '#FFF1EA',
                 },
               }}
             >
@@ -325,9 +329,9 @@ export default function InterviewChatbot({ open, onClose }: InterviewChatbotProp
               onClick={onClose}
               fullWidth
               sx={{
-                backgroundColor: '#F97316',
+                backgroundColor: '#FF6B35',
                 '&:hover': {
-                  backgroundColor: '#EA580C',
+                  backgroundColor: '#FF8C5A',
                 },
               }}
             >

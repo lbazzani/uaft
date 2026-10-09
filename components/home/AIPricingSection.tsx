@@ -172,18 +172,21 @@ export default function AIPricingSection() {
                   gap: 1,
                   px: 2,
                   py: 0.75,
-                  borderRadius: 10,
-                  backgroundColor: '#FFF7ED',
-                  color: '#F97316',
-                  mb: 2,
+                  borderRadius: 999,
+                  backgroundColor: 'transparent',
+                  border: '1px solid #DCD5C9',
+                  color: '#C2410C',
+                  mb: 2.5,
                   fontWeight: 600,
+                  letterSpacing: '0.06em',
+                  textTransform: 'uppercase',
                 }}
               >
                 <SmartToy sx={{ fontSize: 18 }} />
                 <Typography variant="body2" sx={{ fontSize: '0.875rem' }}>{t('pricing.badge')}</Typography>
               </Box>
             </Fade>
-            <Typography variant="h2" sx={{ fontWeight: 700, mb: 1.5, fontSize: { xs: '2rem', md: '2.75rem' } }}>
+            <Typography variant="h2" sx={{ fontFamily: 'var(--f-titoli)', fontWeight: 800, fontStretch: '115%', fontVariationSettings: '"wdth" 115', textTransform: 'uppercase', letterSpacing: '-0.01em', lineHeight: 1, mb: 2, fontSize: { xs: '2rem', md: '3.25rem' }, overflowWrap: 'anywhere' }}>
               {t('pricing.title')}
             </Typography>
             <Typography variant="h6" color="text.secondary" sx={{ mb: 0, fontWeight: 400, maxWidth: '700px', mx: 'auto', fontSize: { xs: '1rem', md: '1.1rem' } }}>
@@ -196,17 +199,16 @@ export default function AIPricingSection() {
         <Box sx={{ maxWidth: '1100px', mx: 'auto', mb: 4 }}>
           <ScrollAnimation delay={0.1}>
             <Paper
-              elevation={isFocused ? 12 : 4}
+              elevation={0}
               sx={{
-                p: { xs: 3, md: 4 },
-                borderRadius: 3,
+                p: { xs: 2.5, md: 5 },
+                borderRadius: '18px',
                 position: 'relative',
                 background: 'white',
-                border: isFocused ? '2px solid #F97316' : '2px solid #E5E7EB',
-                transition: 'all 0.3s ease',
-                boxShadow: isFocused
-                  ? '0 20px 60px rgba(249, 115, 22, 0.15)'
-                  : '0 4px 20px rgba(0, 0, 0, 0.05)',
+                // filo sottile, corallo solo quando si scrive
+                border: isFocused ? '1px solid #FF6B35' : '1px solid #DCD5C9',
+                transition: 'border-color 0.3s ease',
+                boxShadow: 'none',
               }}
             >
               {/* Nudge Message - Più incalzante */}
@@ -215,12 +217,12 @@ export default function AIPricingSection() {
                   severity="warning"
                   sx={{
                     mb: 2,
-                    backgroundColor: '#FFF7ED',
-                    border: '1px solid #FED7AA',
+                    backgroundColor: '#FFF1EA',
+                    border: '1px solid #FFD3BF',
                     fontSize: '0.95rem',
                     fontWeight: 500,
                     '& .MuiAlert-icon': {
-                      color: '#F97316',
+                      color: '#C2410C',
                     }
                   }}
                   onClose={() => setShowNudge(false)}
@@ -233,7 +235,7 @@ export default function AIPricingSection() {
                 {/* Textarea - Più largo */}
                 <Box>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1.5 }}>
-                    <SmartToy sx={{ fontSize: 24, color: '#F97316' }} />
+                    <SmartToy sx={{ fontSize: 24, color: '#C2410C' }} />
                     <Typography variant="h6" sx={{ fontWeight: 600, color: 'text.primary' }}>
                       {t('pricing.input.placeholder')}
                     </Typography>
@@ -251,16 +253,15 @@ export default function AIPricingSection() {
                     sx={{
                       '& .MuiOutlinedInput-root': {
                         fontSize: '1rem',
-                        backgroundColor: '#FAFBFC',
+                        backgroundColor: '#F7F4EF',
                         transition: 'all 0.3s ease',
-                        borderRadius: 2,
-                        fontFamily: 'system-ui, -apple-system, sans-serif',
+                        borderRadius: '12px',
                         '& fieldset': {
-                          borderWidth: 2,
-                          borderColor: isFocused ? '#F97316' : '#E5E7EB',
+                          borderWidth: 1,
+                          borderColor: isFocused ? '#FF6B35' : '#DCD5C9',
                         },
                         '&:hover fieldset': {
-                          borderColor: '#F97316',
+                          borderColor: '#FF6B35',
                         },
                         '&.Mui-focused': {
                           backgroundColor: 'white',
@@ -279,13 +280,13 @@ export default function AIPricingSection() {
                     elevation={0}
                     sx={{
                       p: 2.5,
-                      backgroundColor: '#FFF7ED',
-                      border: '2px dashed #F97316',
-                      borderRadius: 2,
+                      backgroundColor: '#F7F4EF',
+                      border: '1px solid #DCD5C9',
+                      borderRadius: '14px',
                       textAlign: 'center',
                     }}
                   >
-                    <Typography variant="body2" sx={{ fontWeight: 600, color: '#EA580C', mb: 1.5, fontSize: '0.9rem' }}>
+                    <Typography variant="body2" sx={{ fontWeight: 600, color: '#C2410C', mb: 1.5, fontSize: '0.9rem' }}>
                       {t('pricing.input.label')}
                     </Typography>
                     <Button
@@ -298,17 +299,16 @@ export default function AIPricingSection() {
                       sx={{
                         py: 1.75,
                         fontSize: '1.05rem',
-                        backgroundColor: '#F97316',
+                        backgroundColor: '#FF6B35',
                         fontWeight: 700,
-                        borderRadius: 2,
-                        boxShadow: '0 4px 14px rgba(249, 115, 22, 0.3)',
+                        borderRadius: 999,
+                        boxShadow: 'none',
                         '&:hover': {
-                          backgroundColor: '#EA580C',
-                          transform: 'translateY(-2px)',
-                          boxShadow: '0 6px 20px rgba(249, 115, 22, 0.4)',
+                          backgroundColor: '#FF8C5A',
+                          boxShadow: 'none',
                         },
                         '&:disabled': {
-                          backgroundColor: '#FED7AA',
+                          backgroundColor: '#FFD3BF',
                         },
                         transition: 'all 0.3s ease',
                       }}
@@ -345,9 +345,9 @@ export default function AIPricingSection() {
               elevation={0}
               sx={{
                 p: 3,
-                backgroundColor: '#FAFBFC',
-                borderRadius: 2,
-                border: '1px solid #E5E7EB',
+                backgroundColor: '#F7F4EF',
+                borderRadius: '12px',
+                border: '1px solid #DCD5C9',
               }}
             >
               <Box sx={{
@@ -389,10 +389,11 @@ export default function AIPricingSection() {
         fullWidth
         PaperProps={{
           sx: {
-            borderRadius: 2,
+            borderRadius: '12px',
             maxHeight: '95vh',
             minHeight: '600px',
-            boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+            boxShadow: 'none',
+            border: '1px solid #DCD5C9',
           },
         }}
       >
@@ -404,7 +405,7 @@ export default function AIPricingSection() {
             alignItems: 'center',
             borderBottom: '1px solid',
             borderColor: 'divider',
-            backgroundColor: isCalculating ? '#FFF7ED' : '#ECFDF5',
+            backgroundColor: isCalculating ? '#FFF1EA' : '#ECFDF5',
             py: 2.5,
             px: 3,
             transition: 'background-color 0.5s ease',
@@ -414,7 +415,7 @@ export default function AIPricingSection() {
             <SmartToy
               sx={{
                 fontSize: 28,
-                color: isCalculating ? '#F97316' : '#10B981',
+                color: isCalculating ? '#FF6B35' : '#10B981',
                 animation: isCalculating ? 'rotate 2s linear infinite' : 'none',
               }}
             />
@@ -444,7 +445,7 @@ export default function AIPricingSection() {
             // Animazione di caricamento con stile più simpatico
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, py: 2 }}>
               <Box sx={{ textAlign: 'center', mb: 2 }}>
-                <Typography variant="h6" sx={{ fontWeight: 600, color: '#F97316', mb: 1 }}>
+                <Typography variant="h6" sx={{ fontWeight: 600, color: '#C2410C', mb: 1 }}>
                   {t('pricing.modal.thinking')}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
@@ -469,18 +470,18 @@ export default function AIPricingSection() {
                     elevation={loadingStep === step ? 4 : 0}
                     sx={{
                       p: 2.5,
-                      backgroundColor: loadingStep === step ? '#FFF7ED' : '#F9FAFB',
-                      borderLeft: loadingStep === step ? '4px solid #F97316' : '4px solid #E5E7EB',
+                      backgroundColor: loadingStep === step ? '#FFF1EA' : '#F7F4EF',
+                      borderLeft: loadingStep === step ? '4px solid #FF6B35' : '4px solid #DCD5C9',
                       transform: loadingStep === step ? 'translateX(4px)' : 'translateX(0)',
                       transition: 'all 0.3s ease',
-                      border: loadingStep === step ? '1px solid #FED7AA' : '1px solid #F3F4F6',
+                      border: loadingStep === step ? '1px solid #FFD3BF' : '1px solid #EDE7DD',
                     }}
                   >
                     <Typography
                       variant="body1"
                       sx={{
                         fontWeight: loadingStep === step ? 600 : 400,
-                        color: loadingStep === step ? '#EA580C' : 'text.secondary',
+                        color: loadingStep === step ? '#C2410C' : 'text.secondary',
                         fontFamily: 'monospace',
                         fontSize: '0.95rem',
                       }}
@@ -503,7 +504,7 @@ export default function AIPricingSection() {
                     {t('pricing.result.yourtitle')}
                   </Typography>
                   <Box sx={{ display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: 0.5, my: 2 }}>
-                    <Typography variant="h2" sx={{ fontWeight: 800, color: '#F97316' }}>
+                    <Typography variant="h2" sx={{ fontFamily: 'var(--f-titoli)', fontWeight: 800, color: '#C2410C' }}>
                       €{estimatedPrice?.toLocaleString()}
                     </Typography>
                     <Typography variant="h5" sx={{ color: 'text.secondary', fontWeight: 500 }}>
@@ -518,11 +519,11 @@ export default function AIPricingSection() {
                       px: 2,
                       py: 0.75,
                       borderRadius: 10,
-                      backgroundColor: '#FFF7ED',
-                      border: '1px solid #FED7AA',
+                      backgroundColor: '#FFF1EA',
+                      border: '1px solid #FFD3BF',
                     }}
                   >
-                    <Typography variant="caption" sx={{ color: '#EA580C', fontWeight: 600 }}>
+                    <Typography variant="caption" sx={{ color: '#C2410C', fontWeight: 600 }}>
                       💰 {t('pricing.result.disclaimer')}
                     </Typography>
                   </Box>
@@ -552,13 +553,12 @@ export default function AIPricingSection() {
                       sx={{
                         p: 2,
                         textAlign: 'center',
-                        backgroundColor: '#F9FAFB',
-                        border: '1px solid #E5E7EB',
-                        borderRadius: 2,
+                        backgroundColor: '#F7F4EF',
+                        border: '1px solid #DCD5C9',
+                        borderRadius: '12px',
                         '&:hover': {
-                          backgroundColor: '#FFF7ED',
-                          borderColor: '#FED7AA',
-                          transform: 'translateY(-2px)',
+                          backgroundColor: '#FFF1EA',
+                          borderColor: '#FFD3BF',
                         },
                         transition: 'all 0.2s ease',
                       }}
@@ -579,9 +579,9 @@ export default function AIPricingSection() {
                   elevation={0}
                   sx={{
                     p: 3,
-                    backgroundColor: '#F0F9FF',
-                    borderRadius: 2,
-                    border: '2px solid #BAE6FD',
+                    backgroundColor: '#F7F4EF',
+                    borderRadius: '12px',
+                    border: '1px solid #DCD5C9',
                   }}
                 >
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 2 }}>
@@ -590,15 +590,15 @@ export default function AIPricingSection() {
                         width: 36,
                         height: 36,
                         borderRadius: '50%',
-                        backgroundColor: '#0EA5E9',
+                        backgroundColor: '#0B1F33',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                       }}
                     >
-                      <Lightbulb sx={{ color: 'white', fontSize: 20 }} />
+                      <Lightbulb sx={{ color: '#F3EFE8', fontSize: 20 }} />
                     </Box>
-                    <Typography variant="h6" sx={{ fontWeight: 600, color: '#0369A1' }}>
+                    <Typography variant="h6" sx={{ fontWeight: 600, color: '#0B1F33' }}>
                       💡 {t('pricing.result.analysis')}
                     </Typography>
                   </Box>
@@ -618,7 +618,7 @@ export default function AIPricingSection() {
                     sx={{
                       mt: 2,
                       pt: 2,
-                      borderTop: '1px dashed #BAE6FD',
+                      borderTop: '1px dashed #DCD5C9',
                       display: 'flex',
                       alignItems: 'center',
                       gap: 1,
@@ -641,7 +641,7 @@ export default function AIPricingSection() {
             sx={{
               borderTop: '1px solid',
               borderColor: 'divider',
-              backgroundColor: '#FAFBFC',
+              backgroundColor: '#F7F4EF',
               px: 3,
               py: 2,
               gap: 1.5,
@@ -653,11 +653,11 @@ export default function AIPricingSection() {
               size="large"
               sx={{
                 px: 3,
-                borderColor: '#E5E7EB',
+                borderColor: '#DCD5C9',
                 color: 'text.secondary',
                 '&:hover': {
-                  borderColor: '#D1D5DB',
-                  backgroundColor: '#F9FAFB',
+                  borderColor: '#DCD5C9',
+                  backgroundColor: '#F7F4EF',
                 },
               }}
             >
@@ -672,9 +672,9 @@ export default function AIPricingSection() {
               }}
               sx={{
                 px: 4,
-                backgroundColor: '#F97316',
+                backgroundColor: '#FF6B35',
                 '&:hover': {
-                  backgroundColor: '#EA580C',
+                  backgroundColor: '#FF8C5A',
                 },
               }}
             >

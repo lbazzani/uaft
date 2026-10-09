@@ -1,40 +1,83 @@
-/* Smooth scroll behavior */
+/* Token dell'identità UAFT: definiti una volta sola, li usano tutti (landing, componenti, tema) */
+:root {
+  --corallo: #FF6B35;
+  --corallo-scuro: #C2410C;
+  --navy: #0B1F33;
+  --navy-2: #12304D;
+  --navy-3: #1E3A5A;
+  --carta: #F7F4EF;
+  --sabbia: #EDE7DD;
+  --linea: #DCD5C9;
+  --inchiostro: #14161C;
+  --inchiostro-tenue: #5B616E;
+  --chiaro: #F3EFE8;
+  --chiaro-tenue: rgba(243, 239, 232, 0.7);
+  --chiaro-filo: rgba(243, 239, 232, 0.16);
+
+  /* scorciatoie font con fallback di sistema, se next/font non ha ancora caricato */
+  --f-titoli: var(--font-titoli), 'Archivo', system-ui, sans-serif;
+  --f-testi: var(--font-testi), 'Inter', system-ui, sans-serif;
+  --f-note: var(--font-note), 'Instrument Serif', Georgia, serif;
+}
+
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 80px;
   overflow-x: hidden;
+  overflow-x: clip;
 }
 
+/* niente scroll fluido forzato a chi chiede meno movimento */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+
+/* clip e non hidden: hidden fa di body un contenitore che scorre e rompe
+   position: sticky, su cui stanno tutte le scene della landing. hidden resta
+   prima, come riserva per i browser che clip non lo conoscono. */
 body {
   overflow-x: hidden;
+  overflow-x: clip;
 }
 
-/* Custom scrollbar */
+/* scrollbar sottile corallo: il gradiente di prima era rumore */
 ::-webkit-scrollbar {
-  width: 12px;
+  width: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #F1F5F9;
-  border-radius: 10px;
+  background: var(--carta);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #F97316 0%, #FB923C 100%);
-  border-radius: 10px;
-  border: 2px solid #F1F5F9;
+  background: var(--corallo);
+  border-radius: 999px;
+  border: 3px solid var(--carta);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #EA580C 0%, #FDBA74 100%);
+  background: var(--corallo-scuro);
 }
 
-/* Firefox scrollbar */
 * {
   scrollbar-width: thin;
-  scrollbar-color: #F97316 #F1F5F9;
+  scrollbar-color: var(--corallo) var(--carta);
 }
 
+::selection {
+  background: var(--corallo);
+  color: var(--inchiostro);
+}
+
+/* focus sempre visibile: inchiostro su chiaro, corallo dove il contenitore è scuro */
+:focus-visible {
+  outline: 2px solid var(--inchiostro);
+  outline-offset: 3px;
+}
+.su-scuro :focus-visible,
+.su-scuro:focus-visible {
+  outline-color: var(--corallo);
+}
 
 /* Prevent layout shift */
 img {
@@ -42,7 +85,6 @@ img {
   height: auto;
 }
 
-/* Improve scroll snap */
 section {
   scroll-margin-top: 80px;
 }

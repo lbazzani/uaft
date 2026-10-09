@@ -260,16 +260,18 @@ export async function POST(req: Request) {
     return risposta(scelta[Math.floor(Math.random() * scelta.length)]);
   }
 
+  // Prima del limite: senza runner la risposta è una frase fissa, e una frase
+  // fissa non deve consumare il tetto giornaliero dell'AI.
+  if (!runnerConfigurato()) {
+    console.error('chat: CLAUDE_RUNNER_URLS o CLAUDE_RUNNER_TOKEN mancanti, risposta di riserva');
+    return risposta(RISERVA[tipo][lingua], 503, { fallback: true });
+  }
+
   const ip = ipDelClient(req);
   const verdetto = controllaLimiti(ip, Date.now());
   if (!verdetto.ok) {
     console.warn(`chat: limite ${verdetto.motivo} per ${ip} (riprova fra ${verdetto.retryAfterSec} s)`);
     return risposta(TROPPE[tipo][lingua], 429, { limited: true }, { 'retry-after': String(verdetto.retryAfterSec) });
-  }
-
-  if (!runnerConfigurato()) {
-    console.error('chat: CLAUDE_RUNNER_URLS o CLAUDE_RUNNER_TOKEN mancanti, risposta di riserva');
-    return risposta(RISERVA[tipo][lingua], 503, { fallback: true });
   }
 
   // Se il visitatore chiude la pagina, req.signal interrompe la richiesta al

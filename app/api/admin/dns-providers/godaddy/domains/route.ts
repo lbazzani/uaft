@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { soloAdmin } from '@/lib/mail/guardie';
 import { createGoDaddyClient } from '@/lib/dns/godaddy-client';
 
 /**
@@ -8,11 +7,9 @@ import { createGoDaddyClient } from '@/lib/dns/godaddy-client';
  */
 export async function GET() {
   try {
-    const session = await getServerSession(authOptions);
-
-    if (!session?.user || !(session.user as any).isAdmin) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    // posta accesa, sessione valida e ruolo admin (lib/mail/guardie.ts)
+    const accesso = await soloAdmin();
+    if (!accesso.ok) return accesso.risposta;
 
     const godaddyClient = createGoDaddyClient();
 
@@ -51,7 +48,8 @@ export async function GET() {
     console.error('Error fetching GoDaddy domains:', error);
     return NextResponse.json(
       {
-        error: error.message || 'Internal server error',
+        // il testo dell'errore di GoDaddy resta nei log
+        error: 'Internal server error',
         configured: true,
         valid: false,
       },

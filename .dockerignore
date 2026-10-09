@@ -20,3 +20,19 @@ yarn-error.log*
 certs
 tsconfig.tsbuildinfo
 .claude
+# Le regole senza **/ valgono solo nella radice del contesto: queste coprono
+# anche le sottocartelle. File d'ambiente, chiavi e certificati in qualunque
+# formato (DKIM, TLS del vecchio SMTP).
+**/.env*
+**/*.pem
+**/*.key
+**/*.crt
+**/*.p12
+**/*.pfx
+# Configurazioni del vecchio host (nginx, compose, systemd): alla build non
+# servono e non devono finire nell'immagine.
+deploy
+# Log locali (chat, SMTP, debug): non devono finire nell'immagine.
+log
+logs
+**/*.log

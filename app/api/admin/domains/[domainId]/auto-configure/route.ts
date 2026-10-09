@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { soloAdmin } from '@/lib/mail/guardie';
 import { prisma } from '@/lib/prisma';
 import { createGoDaddyClient } from '@/lib/dns/godaddy-client';
 
@@ -12,11 +11,9 @@ export async function POST(
   { params }: { params: Promise<{ domainId: string }> }
 ) {
   try {
-    const session = await getServerSession(authOptions);
-
-    if (!session?.user || !(session.user as any).isAdmin) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    // posta accesa, sessione valida e ruolo admin (lib/mail/guardie.ts)
+    const accesso = await soloAdmin();
+    if (!accesso.ok) return accesso.risposta;
 
     const { domainId: id } = await params;
 
@@ -82,7 +79,7 @@ export async function POST(
     return NextResponse.json(
       {
         error: 'Internal server error',
-        message: error.message || 'Errore durante la configurazione automatica',
+        message: 'Errore durante la configurazione automatica',
       },
       { status: 500 }
     );

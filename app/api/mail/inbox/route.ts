@@ -1,17 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { soloUtente } from '@/lib/mail/guardie';
 import { prisma } from '@/lib/prisma';
 
 export async function GET(req: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
-
-    if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    const userId = (session.user as any).id;
+    // posta accesa e sessione valida; l'userId viene dal JWT, mai dalla richiesta
+    const accesso = await soloUtente();
+    if (!accesso.ok) return accesso.risposta;
+    const userId = accesso.userId;
 
     // Ottieni email ricevute dall'utente
     const emails = await prisma.mailMessage.findMany({

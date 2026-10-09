@@ -15,9 +15,14 @@
 
 import 'dotenv/config';
 import { prisma } from '../lib/prisma';
-import { execSync } from 'child_process';
+import { execFileSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
+import { nomeHostValido } from '../lib/mail/validazione';
+
+// Comandi senza shell (execFileSync con argomenti separati) e dominio
+// controllato prima di usarlo: prima finiva interpolato in una stringa per
+// /bin/sh, insieme a «admin@dominio» e «mail.dominio».
 
 const CERTS_DIR = process.env.CERTIFICATES_DIR || '/etc/ssl/mail-certs';
 
@@ -40,8 +45,13 @@ async function main() {
     process.exit(1);
   }
 
-  const domain = args[0];
+  const domain = args[0].trim().toLowerCase();
   const selfSigned = args.includes('--self-signed');
+
+  if (!nomeHostValido(domain) || !nomeHostValido(`mail.${domain}`)) {
+    console.error(`❌ Invalid domain name: ${JSON.stringify(args[0])}`);
+    process.exit(1);
+  }
 
   console.log(`\n🔐 Generating TLS certificate for: ${domain}`);
   console.log(`   Method: ${selfSigned ? 'Self-Signed' : 'Let\'s Encrypt'}\n`);
@@ -99,7 +109,7 @@ async function generateLetsEncryptCertificate(domain: string): Promise<Certifica
 
     // Verifica che certbot sia installato
     try {
-      execSync('which certbot', { stdio: 'ignore' });
+      execFileSync('which', ['certbot'], { stdio: 'ignore' });
     } catch {
       return {
         success: false,
@@ -113,13 +123,15 @@ async function generateLetsEncryptCertificate(domain: string): Promise<Certifica
     console.log('');
 
     // Genera certificato con certbot
-    const command = `certbot certonly --standalone --non-interactive --agree-tos ` +
-      `--email admin@${domain} ` +
-      `--domains mail.${domain} ` +
-      `--preferred-challenges http`;
+    const certbotArgs = [
+      'certonly', '--standalone', '--non-interactive', '--agree-tos',
+      '--email', `admin@${domain}`,
+      '--domains', `mail.${domain}`,
+      '--preferred-challenges', 'http',
+    ];
 
     try {
-      execSync(command, { stdio: 'inherit' });
+      execFileSync('certbot', certbotArgs, { stdio: 'inherit' });
     } catch (error) {
       return {
         success: false,
@@ -168,12 +180,16 @@ async function generateSelfSignedCertificate(domain: string): Promise<Certificat
     console.log('🔧 Generating self-signed certificate...');
 
     // Genera certificato self-signed
-    const command = `openssl req -x509 -nodes -days 365 -newkey rsa:2048 ` +
-      `-keyout "${keyPath}" ` +
-      `-out "${certPath}" ` +
-      `-subj "/C=IT/ST=Italy/L=Rome/O=UAFT Mail/CN=mail.${domain}"`;
-
-    execSync(command, { stdio: 'inherit' });
+    execFileSync(
+      'openssl',
+      [
+        'req', '-x509', '-nodes', '-days', '365', '-newkey', 'rsa:2048',
+        '-keyout', keyPath,
+        '-out', certPath,
+        '-subj', `/C=IT/ST=Italy/L=Rome/O=UAFT Mail/CN=mail.${domain}`,
+      ],
+      { stdio: 'inherit' }
+    );
 
     // Imposta permessi corretti
     fs.chmodSync(keyPath, 0o600);

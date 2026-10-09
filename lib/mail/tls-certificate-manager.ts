@@ -2,6 +2,21 @@ import fs from 'fs';
 import path from 'path';
 import { prisma } from '@/lib/prisma';
 import { SecureContextOptions } from 'tls';
+import { execFileSync } from 'child_process';
+import {
+  CARTELLA_LETSENCRYPT,
+  emailValida,
+  percorsoDentro,
+  richiediNomeHost,
+} from '@/lib/mail/validazione';
+
+// Comandi senza shell: execFileSync con argomenti separati. Prima nomi di
+// dominio, percorsi ed email (quest'ultima dal corpo della richiesta admin)
+// finivano interpolati in stringhe passate a `sudo …` via /bin/sh: un
+// `--email "x; comando"` girava come root.
+function sudoFile(args: string[]): Buffer {
+  return execFileSync('sudo', args, { stdio: ['ignore', 'pipe', 'ignore'] });
+}
 
 /**
  * TLS Certificate Manager
@@ -77,15 +92,29 @@ export class TLSCertificateManager {
     certPath: string
   ): Promise<boolean> {
     try {
-      const { execSync } = require('child_process');
-      const isLetsEncrypt = keyPath.includes('/etc/letsencrypt/');
+      const isLetsEncrypt =
+        path.resolve(keyPath).startsWith('/etc/letsencrypt/') ||
+        path.resolve(certPath).startsWith('/etc/letsencrypt/');
+
+      if (isLetsEncrypt) {
+        // sudo legge come root: solo dentro /etc/letsencrypt/live, dopo
+        // path.resolve (niente ../ per arrivare a /etc/shadow)
+        const chiave = percorsoDentro(keyPath, [CARTELLA_LETSENCRYPT]);
+        const certificato = percorsoDentro(certPath, [CARTELLA_LETSENCRYPT]);
+        if (!chiave || !certificato) {
+          console.warn(`⚠️  TLS paths outside ${CARTELLA_LETSENCRYPT} refused for ${domain}`);
+          return false;
+        }
+        keyPath = chiave;
+        certPath = certificato;
+      }
 
       // Verifica esistenza file
       if (isLetsEncrypt) {
         // Per Let's Encrypt usa sudo test
         try {
-          execSync(`sudo test -f "${keyPath}"`, { stdio: 'ignore' });
-          execSync(`sudo test -f "${certPath}"`, { stdio: 'ignore' });
+          sudoFile(['test', '-f', keyPath]);
+          sudoFile(['test', '-f', certPath]);
         } catch {
           console.warn(`⚠️  TLS files not found for ${domain}: ${keyPath}`);
           return false;
@@ -104,8 +133,8 @@ export class TLSCertificateManager {
 
       if (isLetsEncrypt) {
         // Per Let's Encrypt usa sudo cat
-        key = execSync(`sudo cat "${keyPath}"`);
-        cert = execSync(`sudo cat "${certPath}"`);
+        key = sudoFile(['cat', '--', keyPath]);
+        cert = sudoFile(['cat', '--', certPath]);
       } else {
         // Per certificati locali usa fs.readFileSync
         key = fs.readFileSync(keyPath);
@@ -123,7 +152,7 @@ export class TLSCertificateManager {
         key,
         cert,
         isValid,
-        expiresAt,
+        expiresAt: expiresAt ?? undefined,
       });
 
       console.log(`✅ Loaded TLS certificate for: ${domain}${!isValid ? ' (EXPIRED!)' : ''}`);
@@ -229,21 +258,24 @@ export class TLSCertificateManager {
     keyPath: string;
     certPath: string;
   }> {
-    const { execSync } = require('child_process');
-
     // Usa mailSubdomain se fornito, altrimenti domain
-    const certDomain = mailSubdomain || domain;
+    // (nome host stretto: finisce in un percorso e nel soggetto del certificato)
+    const certDomain = richiediNomeHost(mailSubdomain || domain);
     const keyPath = path.join(this.certificatesDir, `${certDomain}.key`);
     const certPath = path.join(this.certificatesDir, `${certDomain}.crt`);
 
     console.log(`🔧 Generating self-signed certificate for: ${certDomain}`);
 
     // Genera certificato self-signed
-    execSync(
-      `openssl req -x509 -nodes -days 365 -newkey rsa:2048 ` +
-      `-keyout "${keyPath}" ` +
-      `-out "${certPath}" ` +
-      `-subj "/C=IT/ST=Italy/L=Rome/O=UAFT Mail Server/CN=${certDomain}"`
+    execFileSync(
+      'openssl',
+      [
+        'req', '-x509', '-nodes', '-days', '365', '-newkey', 'rsa:2048',
+        '-keyout', keyPath,
+        '-out', certPath,
+        '-subj', `/C=IT/ST=Italy/L=Rome/O=UAFT Mail Server/CN=${certDomain}`,
+      ],
+      { stdio: 'ignore' }
     );
 
     // Imposta permessi
@@ -283,7 +315,11 @@ export class TLSCertificateManager {
     keyPath: string;
     certPath: string;
   }> {
-    const { execSync } = require('child_process');
+    // L'email arriva dal corpo della richiesta: solo forme semplici, e mai
+    // qualcosa che inizi con un trattino (sarebbe un'opzione di certbot).
+    if (!emailValida(email)) {
+      throw new Error('Invalid email for Let\'s Encrypt');
+    }
 
     // Recupera il mailSubdomain dal database
     const domainInfo = await prisma.mailDomain.findUnique({
@@ -295,7 +331,7 @@ export class TLSCertificateManager {
       throw new Error(`Domain ${domain} not found in database`);
     }
 
-    const certDomain = domainInfo.mailSubdomain || domain;
+    const certDomain = richiediNomeHost(domainInfo.mailSubdomain || domain);
 
     console.log(`🔐 Generating Let's Encrypt certificate for: ${certDomain}`);
     console.log(`📧 Using email: ${email}`);
@@ -304,24 +340,25 @@ export class TLSCertificateManager {
       // Usa certbot per generare il certificato
       // IMPORTANTE: Questo richiede che certDomain punti all'IP del server
       // e che nginx sia configurato con un server block per il dominio
-      const certbotCommand =
-        `sudo certbot certonly --nginx ` +
-        `--non-interactive --agree-tos ` +
-        `--email ${email} ` +
-        `-d ${certDomain}`;
+      const certbotArgs = [
+        'certbot', 'certonly', '--nginx',
+        '--non-interactive', '--agree-tos',
+        '--email', email,
+        '-d', certDomain,
+      ];
 
-      console.log(`Running: ${certbotCommand}`);
-      execSync(certbotCommand, { stdio: 'inherit' });
+      console.log(`Running: sudo certbot certonly --nginx -d ${certDomain}`);
+      execFileSync('sudo', certbotArgs, { stdio: 'inherit' });
 
       // I certificati Let's Encrypt vengono salvati in /etc/letsencrypt/live/{domain}/
-      const letsencryptDir = `/etc/letsencrypt/live/${certDomain}`;
+      const letsencryptDir = path.join(CARTELLA_LETSENCRYPT, certDomain);
       const keyPath = path.join(letsencryptDir, 'privkey.pem');
       const certPath = path.join(letsencryptDir, 'fullchain.pem');
 
       // Verifica che i file esistano usando sudo (i file sono in directory root-only)
       try {
-        execSync(`sudo test -f "${keyPath}"`, { stdio: 'ignore' });
-        execSync(`sudo test -f "${certPath}"`, { stdio: 'ignore' });
+        sudoFile(['test', '-f', keyPath]);
+        sudoFile(['test', '-f', certPath]);
       } catch {
         throw new Error('Certificate files not found after certbot execution');
       }

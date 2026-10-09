@@ -58,7 +58,7 @@ const getPlanConfig = () => [
       'payment.plan.basic.feature5',
     ] as const,
     icon: <Star />,
-    color: '#6B7280',
+    color: '#5B616E',
   },
   {
     id: 'standard',
@@ -73,7 +73,7 @@ const getPlanConfig = () => [
       'payment.plan.standard.feature6',
     ] as const,
     icon: <CheckCircle />,
-    color: '#3B82F6',
+    color: '#12304D',
     badgeKey: 'payment.plan.standard.badge' as const,
   },
   {
@@ -91,7 +91,7 @@ const getPlanConfig = () => [
       'payment.plan.enterprise.feature8',
     ] as const,
     icon: <Rocket />,
-    color: '#F59E0B',
+    color: '#C2410C',
     badgeKey: 'payment.plan.enterprise.badge' as const,
   },
 ];
@@ -197,9 +197,10 @@ export default function PaymentDialog({ open, onClose, selectedService }: Paymen
       fullWidth
       PaperProps={{
         sx: {
-          borderRadius: 2,
+          borderRadius: '18px',
           minHeight: '80vh',
-          boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+          boxShadow: 'none',
+          border: '1px solid #DCD5C9',
         },
       }}
     >
@@ -211,18 +212,18 @@ export default function PaymentDialog({ open, onClose, selectedService }: Paymen
           alignItems: 'center',
           borderBottom: '1px solid',
           borderColor: 'divider',
-          backgroundColor: paymentStep === 'success' ? '#ECFDF5' : '#FAFBFC',
+          backgroundColor: paymentStep === 'success' ? '#ECFDF5' : '#F7F4EF',
           py: 2.5,
           px: 3,
         }}
       >
         <Box>
-          <Typography variant="h6" sx={{ fontWeight: 600, color: 'text.primary', mb: 0.5 }}>
+          <Typography variant="h6" sx={{ fontFamily: 'var(--f-titoli)', fontWeight: 800, letterSpacing: '-0.005em', color: 'text.primary', mb: 0.5 }}>
             {paymentStep === 'plans' && '💎 ' + t('payment.title.plans')}
             {paymentStep === 'payment' && '💳 ' + t('payment.title.payment')}
             {paymentStep === 'success' && '✨ ' + t('payment.title.success')}
           </Typography>
-          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+          <Typography variant="body2" sx={{ fontFamily: 'var(--f-note)', fontStyle: 'italic', fontSize: '1rem', color: 'text.secondary' }}>
             {paymentStep === 'plans' && t('payment.subtitle.plans')}
             {paymentStep === 'payment' && t('payment.subtitle.payment')}
             {paymentStep === 'success' && t('payment.subtitle.success')}
@@ -269,14 +270,12 @@ export default function PaymentDialog({ open, onClose, selectedService }: Paymen
                     flexDirection: 'column',
                     position: 'relative',
                     cursor: 'pointer',
-                    border: selectedPlan === plan.id ? `2px solid ${plan.color}` : '2px solid #E5E7EB',
-                    borderRadius: 2,
-                    backgroundColor: selectedPlan === plan.id ? `${plan.color}05` : 'white',
-                    transition: 'all 0.3s ease',
-                    transform: hoveredPlan === plan.id ? 'translateY(-4px)' : 'translateY(0)',
+                    border: selectedPlan === plan.id ? `2px solid ${plan.color}` : '1px solid #DCD5C9',
+                    borderRadius: '18px',
+                    backgroundColor: selectedPlan === plan.id ? '#F7F4EF' : 'white',
+                    transition: 'border-color 0.3s ease, background-color 0.3s ease',
                     '&:hover': {
                       borderColor: plan.color,
-                      boxShadow: `0 8px 24px ${plan.color}20`,
                     },
                   }}
                   onClick={() => handleSelectPlan(plan.id)}
@@ -291,7 +290,7 @@ export default function PaymentDialog({ open, onClose, selectedService }: Paymen
                         py: 0.5,
                         borderRadius: 10,
                         backgroundColor: plan.color,
-                        color: 'white',
+                        color: '#F3EFE8',
                         fontSize: '0.75rem',
                         fontWeight: 700,
                         letterSpacing: 0.5,
@@ -305,7 +304,7 @@ export default function PaymentDialog({ open, onClose, selectedService }: Paymen
                     sx={{
                       width: 56,
                       height: 56,
-                      borderRadius: 2,
+                      borderRadius: '12px',
                       backgroundColor: `${plan.color}15`,
                       color: plan.color,
                       display: 'flex',
@@ -318,12 +317,12 @@ export default function PaymentDialog({ open, onClose, selectedService }: Paymen
                     {plan.icon}
                   </Box>
 
-                  <Typography variant="h5" sx={{ fontWeight: 700, mb: 1, color: 'text.primary' }}>
+                  <Typography variant="h5" sx={{ fontFamily: 'var(--f-titoli)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.01em', mb: 1, color: 'text.primary' }}>
                     {t(plan.nameKey)}
                   </Typography>
 
                   <Box sx={{ display: 'flex', alignItems: 'baseline', mb: 3 }}>
-                    <Typography variant="h3" sx={{ fontWeight: 800, color: plan.color, fontSize: '2.5rem' }}>
+                    <Typography variant="h3" sx={{ fontFamily: 'var(--f-titoli)', fontWeight: 800, color: plan.color, fontSize: '2.5rem' }}>
                       €{prices[plan.id] || plan.basePrice}
                     </Typography>
                     <Typography variant="body2" color="text.secondary" sx={{ ml: 1, fontWeight: 500 }}>
@@ -369,14 +368,14 @@ export default function PaymentDialog({ open, onClose, selectedService }: Paymen
                     sx={{
                       py: 1.25,
                       backgroundColor: selectedPlan === plan.id ? plan.color : 'transparent',
-                      borderColor: selectedPlan === plan.id ? plan.color : '#E5E7EB',
+                      borderColor: selectedPlan === plan.id ? plan.color : '#DCD5C9',
                       color: selectedPlan === plan.id ? 'white' : 'text.primary',
                       fontWeight: 600,
                       borderWidth: 2,
                       '&:hover': {
                         backgroundColor: plan.color,
                         borderColor: plan.color,
-                        color: 'white',
+                        color: '#F3EFE8',
                         transform: 'scale(1.02)',
                       },
                       transition: 'all 0.2s ease',
@@ -393,9 +392,9 @@ export default function PaymentDialog({ open, onClose, selectedService }: Paymen
               elevation={0}
               sx={{
                 p: 2.5,
-                backgroundColor: '#F9FAFB',
-                border: '1px solid #E5E7EB',
-                borderRadius: 2,
+                backgroundColor: '#F7F4EF',
+                border: '1px solid #DCD5C9',
+                borderRadius: '12px',
                 textAlign: 'center',
               }}
             >
@@ -412,9 +411,9 @@ export default function PaymentDialog({ open, onClose, selectedService }: Paymen
               sx={{
                 p: 3,
                 mb: 3,
-                backgroundColor: '#F9FAFB',
-                border: '2px solid #E5E7EB',
-                borderRadius: 2,
+                backgroundColor: '#F7F4EF',
+                border: '1px solid #DCD5C9',
+                borderRadius: '12px',
               }}
             >
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 2.5 }}>
@@ -422,9 +421,9 @@ export default function PaymentDialog({ open, onClose, selectedService }: Paymen
                   sx={{
                     width: 56,
                     height: 56,
-                    borderRadius: 2,
+                    borderRadius: '12px',
                     backgroundColor: selectedPlanData.color,
-                    color: 'white',
+                    color: '#F3EFE8',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -459,12 +458,12 @@ export default function PaymentDialog({ open, onClose, selectedService }: Paymen
               icon={<Lock />}
               sx={{
                 mb: 3,
-                backgroundColor: '#EFF6FF',
-                border: '1px solid #BFDBFE',
-                '& .MuiAlert-icon': { color: '#3B82F6' },
+                backgroundColor: '#F7F4EF',
+                border: '1px solid #DCD5C9',
+                '& .MuiAlert-icon': { color: '#12304D' },
               }}
             >
-              <Typography variant="body2" sx={{ fontWeight: 600, color: '#1E40AF' }}>
+              <Typography variant="body2" sx={{ fontWeight: 600, color: '#0B1F33' }}>
                 🔒 {t(PAYMENT_MESSAGE_KEYS[messageIndex])}
               </Typography>
             </Alert>
@@ -552,15 +551,15 @@ export default function PaymentDialog({ open, onClose, selectedService }: Paymen
                 elevation={0}
                 sx={{
                   p: 2.5,
-                  backgroundColor: '#F0F9FF',
-                  border: '1px solid #BAE6FD',
-                  borderRadius: 2,
+                  backgroundColor: '#F7F4EF',
+                  border: '1px solid #DCD5C9',
+                  borderRadius: '12px',
                 }}
               >
                 <Typography variant="body2" sx={{ color: 'text.primary', lineHeight: 1.7 }}>
                   <strong>{t('payment.guarantee.title')}</strong>
                   <br />
-                  <span style={{ color: '#64748B' }}>
+                  <span style={{ color: '#5B616E' }}>
                     {t('payment.guarantee.desc')}
                   </span>
                 </Typography>
@@ -600,7 +599,7 @@ export default function PaymentDialog({ open, onClose, selectedService }: Paymen
               {t('payment.success.subtitle')}
             </Typography>
 
-            <Paper elevation={3} sx={{ p: 3, maxWidth: 500, margin: '0 auto', backgroundColor: '#FFF7ED' }}>
+            <Paper elevation={0} sx={{ p: 3, maxWidth: 500, margin: '0 auto', backgroundColor: '#FFF1EA' }}>
               <Typography variant="body1" sx={{ mb: 2, lineHeight: 1.8 }} dangerouslySetInnerHTML={{ __html: t('payment.success.msg', { plan: selectedPlanData ? t(selectedPlanData.nameKey) : '' }) }} />
               <Typography variant="body2" sx={{ fontStyle: 'italic', opacity: 0.8, mt: 2 }}>
                 {t('payment.success.ps')}
@@ -615,7 +614,7 @@ export default function PaymentDialog({ open, onClose, selectedService }: Paymen
           sx={{
             borderTop: '1px solid',
             borderColor: 'divider',
-            backgroundColor: '#FAFBFC',
+            backgroundColor: '#F7F4EF',
             px: 3,
             py: 2,
             gap: 1.5,
@@ -627,11 +626,11 @@ export default function PaymentDialog({ open, onClose, selectedService }: Paymen
             size="large"
             sx={{
               px: 3,
-              borderColor: '#E5E7EB',
+              borderColor: '#DCD5C9',
               color: 'text.secondary',
               '&:hover': {
-                borderColor: '#D1D5DB',
-                backgroundColor: '#F9FAFB',
+                borderColor: '#DCD5C9',
+                backgroundColor: '#F7F4EF',
               },
             }}
           >
@@ -645,14 +644,14 @@ export default function PaymentDialog({ open, onClose, selectedService }: Paymen
               disabled={!selectedPlan}
               sx={{
                 px: 4,
-                backgroundColor: '#F97316',
+                backgroundColor: '#FF6B35',
                 fontWeight: 600,
                 '&:hover': {
-                  backgroundColor: '#EA580C',
+                  backgroundColor: '#FF8C5A',
                 },
                 '&:disabled': {
-                  backgroundColor: '#E5E7EB',
-                  color: '#9CA3AF',
+                  backgroundColor: '#DCD5C9',
+                  color: '#8A8F99',
                 },
               }}
             >

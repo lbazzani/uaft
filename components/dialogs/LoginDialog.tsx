@@ -75,16 +75,16 @@ export default function LoginDialog({ open, onClose }: LoginDialogProps) {
       fullWidth
       PaperProps={{
         sx: {
-          borderRadius: 4,
+          borderRadius: '18px',
         },
       }}
     >
       <DialogTitle sx={{ pb: 1 }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Typography variant="h5" sx={{ fontWeight: 700, color: 'primary.main' }}>
+          <Typography variant="h5" sx={{ fontFamily: 'var(--f-titoli)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.01em', color: 'text.primary' }}>
             {t('login.admin.title')}
           </Typography>
-          <IconButton onClick={onClose} size="small">
+          <IconButton onClick={onClose} size="small" aria-label={t('aria.chiudi')}>
             <Close />
           </IconButton>
         </Box>
@@ -102,7 +102,7 @@ export default function LoginDialog({ open, onClose }: LoginDialogProps) {
             lineHeight: 1.6,
             '& strong': {
               fontWeight: 700,
-              color: 'primary.main',
+              color: 'primary.dark',
             },
           }}
           dangerouslySetInnerHTML={{
@@ -115,9 +115,10 @@ export default function LoginDialog({ open, onClose }: LoginDialogProps) {
           sx={{
             p: 2.5,
             mb: 3,
-            backgroundColor: '#f8f9fa',
-            border: '1px solid',
-            borderColor: 'divider',
+            backgroundColor: '#F7F4EF',
+            border: 'none',
+            borderLeft: '3px solid #FF6B35',
+            borderRadius: 0,
           }}
         >
           <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1.5, color: 'text.primary' }}>
@@ -126,7 +127,7 @@ export default function LoginDialog({ open, onClose }: LoginDialogProps) {
           <Typography variant="body2" sx={{ fontFamily: 'monospace', mb: 1.5, color: 'text.secondary' }}>
             {t('login.credentials.email')}
           </Typography>
-          <Typography variant="caption" sx={{ color: 'text.secondary', lineHeight: 1.6, display: 'block' }}>
+          <Typography variant="caption" sx={{ fontFamily: 'var(--f-note)', fontStyle: 'italic', fontSize: '0.95rem', color: 'text.secondary', lineHeight: 1.5, display: 'block' }}>
             {t('login.credentials.challenge')}
           </Typography>
         </Paper>

@@ -1,5 +1,5 @@
 'use client';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { ReactNode } from 'react';
 
@@ -14,6 +14,8 @@ export default function ScrollAnimation({
   delay = 0,
   style,
 }: ScrollAnimationProps) {
+  // con movimento ridotto il contenuto compare subito, senza scivolare
+  const ridotto = useReducedMotion();
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.1,
@@ -23,7 +25,7 @@ export default function ScrollAnimation({
     <motion.div
       ref={ref}
       style={style}
-      initial={{ opacity: 0, y: 20 }}
+      initial={ridotto ? false : { opacity: 0, y: 20 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
       transition={{
         duration: 0.5,

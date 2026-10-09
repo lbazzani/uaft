@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { Archivo, Inter, Instrument_Serif } from 'next/font/google';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -9,6 +10,16 @@ import GoogleAnalytics from './GoogleAnalytics';
 import { LanguageProvider } from '@/contexts/LanguageContext';
 import { AuthProvider } from '@/components/Providers';
 import './globals.css';
+
+// Tre voci: Archivo largo per i titoloni "da grande azienda", Inter per leggere, Instrument Serif
+// corsivo per le note a piè di pagina, dove sta la battuta. Esposti come variabili su <html>.
+const titoli = Archivo({ subsets: ['latin', 'latin-ext'], axes: ['wdth'], variable: '--font-titoli', display: 'swap' });
+const testi = Inter({ subsets: ['latin', 'latin-ext'], variable: '--font-testi', display: 'swap' });
+const note = Instrument_Serif({ subsets: ['latin', 'latin-ext'], weight: '400', style: ['normal', 'italic'], variable: '--font-note', display: 'swap' });
+
+// Prima del disegno: .moto solo se gli script girano e nessuno ha chiesto meno movimento. Se il
+// motore (lib/scena.ts) non parte entro 4 s, .moto si toglie: il contenuto non resta mai nascosto.
+const primo = `(function(){try{var h=document.documentElement;if(window.matchMedia('(prefers-reduced-motion: no-preference)').matches){h.classList.add('moto');setTimeout(function(){if(!h.classList.contains('scena-pronta'))h.classList.remove('moto')},4000)}}catch(e){}})();`;
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://uaft.it'),
@@ -48,20 +59,11 @@ export const metadata: Metadata = {
     siteName: 'UAFT - Una Azienda che può Fare Tutto',
     title: 'UAFT - Servizi IT Innovativi con un Tocco Ironico',
     description: 'Cloud, AI, automazione e soluzioni as-a-Service. UAFT è la tua azienda IT che può fare tutto (o quasi). Preventivi AI, servizi scalabili e supporto 24/7.',
-    images: [
-      {
-        url: '/og-image.png',
-        width: 1200,
-        height: 630,
-        alt: 'UAFT - Una Azienda che può Fare Tutto',
-      },
-    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'UAFT - Servizi IT Innovativi',
     description: 'Cloud, AI, automazione e soluzioni as-a-Service con un tocco ironico ma professionale.',
-    images: ['/og-image.png'],
     creator: '@uaft_it',
   },
   robots: {
@@ -90,12 +92,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="it">
+    <html lang="it" suppressHydrationWarning className={`${titoli.variable} ${testi.variable} ${note.variable}`}>
       <head>
-        <link rel="icon" href="/favicon.ico" sizes="any" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-        <link rel="manifest" href="/manifest.json" />
-        <meta name="theme-color" content="#F97316" />
+        <script dangerouslySetInnerHTML={{ __html: primo }} />
+        {/* icona e manifest li aggiunge Next da app/icon.svg e app/manifest.ts: i vecchi link puntavano a file assenti */}
+        <meta name="theme-color" content="#0B1F33" />
       </head>
       <body style={{ margin: 0 }}>
         <GoogleAnalytics />

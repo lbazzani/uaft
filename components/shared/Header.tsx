@@ -13,11 +13,9 @@ import {
   ListItemText,
   useMediaQuery,
   useTheme,
-  Chip,
-  alpha,
   Typography,
 } from '@mui/material';
-import { Menu as MenuIcon, Close, Rocket, ArrowForward } from '@mui/icons-material';
+import { Menu as MenuIcon, Close, ArrowForward } from '@mui/icons-material';
 import Link from 'next/link';
 import Logo from './Logo';
 import ContactDialog from '../dialogs/ContactDialog';
@@ -74,88 +72,83 @@ export default function Header() {
         open={loginDialogOpen}
         onClose={() => setLoginDialogOpen(false)}
       />
+      {/* barra navy alla Blumea: logo a sinistra, nav corta, lingua, accesso */}
       <AppBar
         position="fixed"
         elevation={0}
+        className="su-scuro"
         sx={{
-          backgroundColor: isScrolled
-            ? 'rgba(255, 255, 255, 0.98)'
-            : 'rgba(255, 255, 255, 0.85)',
-          backdropFilter: 'blur(24px)',
-          borderBottom: isScrolled
-            ? '1px solid rgba(0,0,0,0.12)'
-            : '1px solid rgba(0,0,0,0.06)',
-          color: 'primary.main',
-          boxShadow: isScrolled
-            ? '0 4px 20px rgba(0,0,0,0.08)'
-            : '0 2px 8px rgba(0,0,0,0.04)',
-          transition: 'all 0.3s ease',
+          backgroundColor: 'var(--navy)',
+          color: 'var(--chiaro)',
+          borderBottom: '1px solid',
+          borderColor: isScrolled ? 'var(--chiaro-filo)' : 'transparent',
+          boxShadow: 'none',
+          transition: 'border-color 0.3s ease',
         }}
       >
-        <Toolbar sx={{ py: isScrolled ? 0.5 : 1, transition: 'padding 0.3s ease' }}>
-          <Box
-            sx={{
-              flexGrow: 1,
-              display: 'flex',
-              alignItems: 'center',
-              gap: 2,
-            }}
-          >
-            <Logo size={isScrolled ? 32 : 36} />
-            {!isMobile && isScrolled && (
-              <Chip
-                icon={<Rocket sx={{ fontSize: 18 }} />}
-                label={t('header.tagline')}
-                size="small"
+        <Toolbar sx={{ minHeight: { xs: 64, md: 72 }, px: { xs: 2, md: 4 } }}>
+          <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', gap: 2.5, minWidth: 0 }}>
+            <Box component={Link} href="/" aria-label={t('aria.home')} sx={{ color: 'inherit', textDecoration: 'none', display: 'inline-flex', borderRadius: '8px' }}>
+              <Logo size={36} color="var(--chiaro)" />
+            </Box>
+            {!isMobile && (
+              <Typography
+                component="span"
                 sx={{
-                  backgroundColor: alpha('#F97316', 0.1),
-                  color: '#F97316',
-                  fontWeight: 600,
-                  fontSize: '0.75rem',
+                  fontFamily: 'var(--f-note)',
+                  fontStyle: 'italic',
+                  fontSize: '0.95rem',
+                  color: 'var(--chiaro-tenue)',
+                  pl: 2.5,
+                  borderLeft: '1px solid var(--chiaro-filo)',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
                 }}
-              />
+              >
+                {t('header.tagline')}*
+              </Typography>
             )}
           </Box>
 
-          {/* Desktop Menu */}
           {!isMobile && (
             <>
-              {menuItems.map((item) => (
-                <Button
-                  key={item.label}
-                  color="inherit"
-                  component={Link}
-                  href={item.href}
-                  sx={{
-                    mx: 0.5,
-                    px: 2,
-                    fontWeight: 600,
-                    fontSize: '0.95rem',
-                  }}
-                >
-                  {item.label}
-                </Button>
-              ))}
+              <Box component="nav" sx={{ display: 'flex', alignItems: 'center' }}>
+                {menuItems.map((item) => (
+                  <Button
+                    key={item.label}
+                    color="inherit"
+                    component={Link}
+                    href={item.href}
+                    sx={{
+                      mx: 0.25,
+                      px: 1.75,
+                      fontWeight: 500,
+                      fontSize: '0.95rem',
+                      color: 'var(--chiaro-tenue)',
+                      '&:hover': { color: 'var(--chiaro)', backgroundColor: 'var(--chiaro-filo)' },
+                    }}
+                  >
+                    {item.label}
+                  </Button>
+                ))}
+              </Box>
               <Box sx={{ ml: 1 }}>
                 <LanguageSwitcher />
               </Box>
               <Button
                 variant="contained"
                 onClick={() => setLoginDialogOpen(true)}
-                endIcon={<Rocket />}
+                endIcon={<ArrowForward />}
                 sx={{
-                  ml: 1,
-                  px: 3,
-                  py: 1.2,
-                  background: 'linear-gradient(135deg, #F97316 0%, #EA580C 100%)',
+                  ml: 1.5,
+                  px: 2.75,
+                  py: 1,
+                  backgroundColor: 'var(--corallo)',
+                  color: 'var(--inchiostro)',
                   fontWeight: 700,
                   fontSize: '0.95rem',
-                  borderRadius: 2,
-                  boxShadow: '0 4px 12px rgba(249, 115, 22, 0.3)',
-                  textTransform: 'none',
-                  '&:hover': {
-                    background: 'linear-gradient(135deg, #EA580C 0%, #F97316 100%)',
-                  },
+                  '&:hover': { backgroundColor: 'var(--chiaro)' },
                 }}
               >
                 {t('header.login')}
@@ -163,13 +156,13 @@ export default function Header() {
             </>
           )}
 
-          {/* Mobile Menu Icon */}
           {isMobile && (
             <IconButton
               color="inherit"
               edge="end"
               onClick={handleDrawerToggle}
-              sx={{ ml: 2 }}
+              aria-label={t('aria.menu')}
+              sx={{ ml: 1, border: '1px solid var(--chiaro-filo)' }}
             >
               <MenuIcon />
             </IconButton>
@@ -177,19 +170,21 @@ export default function Header() {
         </Toolbar>
       </AppBar>
 
-      {/* Mobile Drawer */}
+      {/* Drawer mobile: stessa logica, foglio navy */}
       <Drawer
         anchor="right"
         open={mobileOpen}
         onClose={handleDrawerToggle}
         sx={{
           '& .MuiDrawer-paper': {
-            width: 300,
-            background: 'linear-gradient(180deg, #F97316 0%, #EA580C 100%)',
-            color: 'white',
-            boxShadow: '-8px 0 24px rgba(0,0,0,0.15)',
+            width: 'min(320px, 100vw)',
+            backgroundColor: 'var(--navy)',
+            color: 'var(--chiaro)',
+            borderLeft: '1px solid var(--chiaro-filo)',
+            boxShadow: 'none',
           },
         }}
+        PaperProps={{ className: 'su-scuro' }}
       >
         <Box
           sx={{
@@ -197,50 +192,45 @@ export default function Header() {
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            borderBottom: '1px solid rgba(255,255,255,0.15)',
+            borderBottom: '1px solid var(--chiaro-filo)',
           }}
         >
-          <Logo size={36} color="white" />
+          <Logo size={36} color="var(--chiaro)" />
           <IconButton
             onClick={handleDrawerToggle}
-            sx={{
-              color: 'white',
-              '&:hover': {
-                backgroundColor: 'rgba(255,255,255,0.1)',
-              },
-            }}
+            aria-label={t('aria.chiudi')}
+            sx={{ color: 'var(--chiaro)', '&:hover': { backgroundColor: 'var(--chiaro-filo)' } }}
           >
             <Close />
           </IconButton>
         </Box>
-        <List sx={{ px: 2, pt: 3 }}>
+        <List sx={{ px: 2, pt: 2 }}>
           {menuItems.map((item) => (
-            <ListItem key={item.label} disablePadding sx={{ mb: 2 }}>
+            <ListItem key={item.label} disablePadding sx={{ borderBottom: '1px solid var(--chiaro-filo)' }}>
               <ListItemButton
                 component={Link}
                 href={item.href}
                 onClick={handleDrawerToggle}
-                sx={{
-                  borderRadius: 2,
-                  py: 1.5,
-                  backgroundColor: 'rgba(255,255,255,0.1)',
-                  '&:hover': {
-                    backgroundColor: 'rgba(255,255,255,0.2)',
-                  },
-                }}
+                sx={{ py: 2, px: 1, borderRadius: 0, '&:hover': { backgroundColor: 'var(--chiaro-filo)' } }}
               >
                 <ListItemText
                   primary={item.label}
                   primaryTypographyProps={{
+                    fontFamily: 'var(--f-titoli)',
                     fontWeight: 700,
-                    fontSize: '1.1rem',
+                    fontSize: '1.15rem',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.01em',
                   }}
                 />
-                <ArrowForward sx={{ opacity: 0.7 }} />
+                <ArrowForward sx={{ color: 'var(--corallo)' }} />
               </ListItemButton>
             </ListItem>
           ))}
-          <ListItem disablePadding sx={{ mt: 4 }}>
+          <ListItem disablePadding sx={{ mt: 3, mb: 2, justifyContent: 'center' }}>
+            <LanguageSwitcher />
+          </ListItem>
+          <ListItem disablePadding sx={{ mt: 1 }}>
             <Button
               fullWidth
               variant="contained"
@@ -248,40 +238,33 @@ export default function Header() {
                 handleDrawerToggle();
                 setLoginDialogOpen(true);
               }}
-              endIcon={<Rocket />}
+              endIcon={<ArrowForward />}
               sx={{
-                backgroundColor: 'white',
-                color: '#F97316',
-                py: 2,
-                fontSize: '1.1rem',
+                backgroundColor: 'var(--corallo)',
+                color: 'var(--inchiostro)',
+                py: 1.5,
+                fontSize: '1.05rem',
                 fontWeight: 700,
-                borderRadius: 2,
-                boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-                '&:hover': {
-                  backgroundColor: 'rgba(255,255,255,0.95)',
-                },
+                '&:hover': { backgroundColor: 'var(--chiaro)' },
               }}
             >
               {t('header.login')}
             </Button>
           </ListItem>
         </List>
-        <Box
-          sx={{
-            mt: 'auto',
-            p: 3,
-            borderTop: '1px solid rgba(255,255,255,0.15)',
-          }}
-        >
+        <Box sx={{ mt: 'auto', p: 3, borderTop: '1px solid var(--chiaro-filo)' }}>
           <Typography
             variant="caption"
             sx={{
-              opacity: 0.8,
+              fontFamily: 'var(--f-note)',
+              fontStyle: 'italic',
+              fontSize: '0.95rem',
+              color: 'var(--chiaro-tenue)',
               display: 'block',
               textAlign: 'center',
             }}
           >
-            {t('misc.company')}
+            {t('misc.company')}*
           </Typography>
         </Box>
       </Drawer>
