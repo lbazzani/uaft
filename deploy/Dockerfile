@@ -52,5 +52,12 @@ EXPOSE 3000
 
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
+# 24/10/2026 (aggiornamento generale): pacchetti di sistema aggiornati e npm/npx/corepack tolti.
+# A runtime npm non serve (CMD node) e le sue dipendenze (brace-expansion, tar, pacote, sigstore…) erano una
+# buona parte delle high di Trivy; i pacchetti del sistema prendono le correzioni uscite dopo la base.
+USER root
+RUN apk upgrade --no-cache \
+ && rm -rf /usr/local/lib/node_modules/npm /usr/local/lib/node_modules/corepack /usr/local/bin/npm /usr/local/bin/npx /usr/local/bin/corepack
+USER nextjs
 
 CMD ["node", "server.js"]
